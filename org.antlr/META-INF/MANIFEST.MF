@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Antlr Plug-in
+Bundle-SymbolicName: org.antlr.gen
+Bundle-Version: 3.0.1
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: antlr-2.7.7.jar,
+ stringtemplate-3.1b1.jar,
+ .
+Export-Package: org.antlr,
+ org.antlr.analysis,
+ org.antlr.codegen,
+ org.antlr.misc,
+ org.antlr.runtime,
+ org.antlr.runtime.debug,
+ org.antlr.runtime.misc,
+ org.antlr.runtime.tree,
+ org.antlr.stringtemplate,
+ org.antlr.stringtemplate.language,
+ org.antlr.stringtemplate.misc,
+ org.antlr.stringtemplate.test,
+ org.antlr.test,
+ org.antlr.tool
+Require-Bundle: org.junit;bundle-version="3.8.2"
