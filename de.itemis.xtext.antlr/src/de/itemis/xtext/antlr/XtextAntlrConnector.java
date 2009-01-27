@@ -36,7 +36,7 @@ public class XtextAntlrConnector implements IGenModelAssembler {
 			GenService parserService = XtextgenFactory.eINSTANCE.createGenService();
 			parserService.setServiceInterfaceFQName("org.eclipse.xtext.parser.IParser");
 			parserService.setGenClassFQName(namespace + ".parser.antlr." + languageName + "Parser");
-			parserService.setTemplatePath("org::eclipse::xtext::parser::antlr::Parser::root");
+			parserService.setTemplatePath("de::itemis::xtext::antlr::Parser::root");
 			parserService.setExtensionPointID("org.eclipse.xtext.ui.parser");
 			model.getServices().add(parserService);
 
@@ -44,7 +44,7 @@ public class XtextAntlrConnector implements IGenModelAssembler {
 			tokenFileProviderService
 					.setServiceInterfaceFQName("org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider");
 			tokenFileProviderService.setGenClassFQName(namespace + ".parser.antlr." + languageName	+ "AntlrTokenFileProvider");
-			tokenFileProviderService.setTemplatePath("org::eclipse::xtext::parser::antlr::AntlrTokenFileProvider::root");
+			tokenFileProviderService.setTemplatePath("de::itemis::xtext::antlr::AntlrTokenFileProvider::root");
 			// tokenFileProviderService.setExtensionPointID(
 			// "org.eclipse.xtext.ui.parser");
 			model.getServices().add(tokenFileProviderService);

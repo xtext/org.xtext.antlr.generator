@@ -14,7 +14,7 @@
 
 «EXTENSION org::eclipse::xtext::Extensions»
 «EXTENSION org::eclipse::xtext::Properties»
-«EXTENSION org::eclipse::xtext::parser::antlr::Parser»
+«EXTENSION de::itemis::xtext::antlr::Parser»
 
 «DEFINE parser FOR GenService»
 «FILE genClassFQName.toJavaFilePath() SRC_GEN-»
