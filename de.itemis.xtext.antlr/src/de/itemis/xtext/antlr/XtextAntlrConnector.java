@@ -34,7 +34,7 @@ public class XtextAntlrConnector implements IGenModelAssembler {
 			model.getServices().add(elementFactoryService);
 
 			GenService parserService = XtextgenFactory.eINSTANCE.createGenService();
-			parserService.setServiceInterfaceFQName("org.eclipse.xtext.parser.IParser");
+			parserService.setServiceInterfaceFQName("org.eclipse.xtext.parser.antlr.IAntlrParser");
 			parserService.setGenClassFQName(namespace + ".parser.antlr." + languageName + "Parser");
 			parserService.setTemplatePath("de::itemis::xtext::antlr::Parser::root");
 			parserService.setExtensionPointID("org.eclipse.xtext.ui.parser");
