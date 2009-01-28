@@ -9,6 +9,8 @@ package de.itemis.xtext.antlr;
 
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
+import org.eclipse.xtext.parser.ITokenToStringConverter;
+import org.eclipse.xtext.parser.antlr.AntlrTokenToStringConverter;
 import org.eclipse.xtext.xtextgen.GenModel;
 import org.eclipse.xtext.xtextgen.GenService;
 import org.eclipse.xtext.xtextgen.IGenModelAssembler;
@@ -24,15 +26,6 @@ public class XtextAntlrConnector implements IGenModelAssembler {
 		String languageName = GrammarUtil.getName(grammarModel);
 		String namespace = GrammarUtil.getNamespace(grammarModel);
 		if (!GrammarUtil.isAbstract(grammarModel)) {
-
-			GenService elementFactoryService = XtextgenFactory.eINSTANCE.createGenService();
-			elementFactoryService.setServiceInterfaceFQName("org.eclipse.xtext.parser.IAstFactory");
-			elementFactoryService.setGenClassFQName("org.eclipse.xtext.parser.antlr.AntlrEcoreElementFactory");
-			// no template, as service is generic. Nevertheless, we need the
-			// individual registration to avoid conflicts
-			elementFactoryService.setExtensionPointID("org.eclipse.xtext.ui.aSTFactory");
-			model.getServices().add(elementFactoryService);
-
 			GenService parserService = XtextgenFactory.eINSTANCE.createGenService();
 			parserService.setServiceInterfaceFQName("org.eclipse.xtext.parser.antlr.IAntlrParser");
 			parserService.setGenClassFQName(namespace + ".parser.antlr." + languageName + "Parser");
@@ -40,6 +33,11 @@ public class XtextAntlrConnector implements IGenModelAssembler {
 			parserService.setExtensionPointID("org.eclipse.xtext.ui.parser");
 			model.getServices().add(parserService);
 
+			GenService tokenConverterService = XtextgenFactory.eINSTANCE.createGenService();
+			tokenConverterService.setServiceInterfaceFQName(ITokenToStringConverter.class.getName());
+			tokenConverterService.setGenClassFQName(AntlrTokenToStringConverter.class.getName());
+			model.getServices().add(tokenConverterService);
+			
 			GenService tokenFileProviderService = XtextgenFactory.eINSTANCE.createGenService();
 			tokenFileProviderService
 					.setServiceInterfaceFQName("org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider");
