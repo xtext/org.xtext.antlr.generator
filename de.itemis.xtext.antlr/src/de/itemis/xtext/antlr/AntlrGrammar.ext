@@ -30,7 +30,7 @@ setOrAdd(Assignment this) : if operator=='+=' then 'add' else 'set';
 isCalled(ParserRule this) :
 	let x = grammar().allParserRules() :
 		x.indexOf(this)==0 || 
-		x.grammar().eAllContents.flatten().typeSelect(RuleCall).rule.name.contains(this.name);
+		x.containingGrammar().eAllContents.flatten().typeSelect(RuleCall).rule.name.contains(this.name);
 
 //TODO make localVars unique
 localVar(Assignment this) : 'lv_'+feature;
