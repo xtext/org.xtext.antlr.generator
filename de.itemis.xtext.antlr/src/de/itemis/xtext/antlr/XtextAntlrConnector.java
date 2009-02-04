@@ -10,7 +10,9 @@ package de.itemis.xtext.antlr;
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.parser.ITokenToStringConverter;
+import org.eclipse.xtext.parser.antlr.AntlrTokenDefProvider;
 import org.eclipse.xtext.parser.antlr.AntlrTokenToStringConverter;
+import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
 import org.eclipse.xtext.xtextgen.GenModel;
 import org.eclipse.xtext.xtextgen.GenService;
 import org.eclipse.xtext.xtextgen.IGenModelAssembler;
@@ -51,6 +53,23 @@ public class XtextAntlrConnector implements IGenModelAssembler {
 			tokenScannerService.setServiceInterfaceFQName("org.eclipse.xtext.parser.antlr.Lexer");
 			tokenScannerService.setGenClassFQName(namespace + ".parser.antlr.internal.Internal" + languageName	+ "Lexer");
 			model.getServices().add(tokenScannerService);
+			
+			GenService tokenDefProvider = XtextgenFactory.eINSTANCE.createGenService();
+			tokenDefProvider.setServiceInterfaceFQName(ITokenDefProvider.class.getName());
+			tokenDefProvider.setGenClassFQName(AntlrTokenDefProvider.class.getName());
+			model.getServices().add(tokenDefProvider);
+
+			GenService tokenColorer = XtextgenFactory.eINSTANCE.createGenService();
+			tokenColorer.setServiceInterfaceFQName("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.ITokenColorer");
+			tokenColorer.setGenClassFQName("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.BuiltinAntlrTokenColorer");
+			tokenColorer.setUiService(true);
+			model.getServices().add(tokenColorer);
+			
+			GenService tokenScanner = XtextgenFactory.eINSTANCE.createGenService();
+			tokenScanner.setServiceInterfaceFQName("org.eclipse.jface.text.rules.ITokenScanner");
+			tokenScanner.setGenClassFQName("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner");
+			tokenScanner.setUiService(true);
+			model.getServices().add(tokenScanner);
 		}
 	}
 	
