@@ -38,12 +38,15 @@ localVar(RuleCall this) : 'this_'+rule.name;
 
 toStringLiteral(xtext::AbstractElement this) :
 	"null";
+	
+String toJavaString(String this):
+	JAVA org.eclipse.xtext.util.Strings.convertToJavaString(java.lang.String);
 
 toStringLiteral(RuleCall this) :
 	rule!=null ? '"'+this.rule.name+'"' :  "null";
 
 toStringLiteral(Keyword this) :
-	'"'+this.value+'"';
+	'"'+this.value.toJavaString()+'"';
 	
 String toLexerBody(ParserRule this):
 	JAVA de.itemis.xtext.antlr.TerminalRuleToLexerBody.toLexerBody(org.eclipse.xtext.ParserRule);

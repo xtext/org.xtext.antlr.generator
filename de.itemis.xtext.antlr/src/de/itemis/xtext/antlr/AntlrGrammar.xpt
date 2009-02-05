@@ -169,7 +169,7 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 «DEFINE dataTypeEbnf2 FOR Group»«EXPAND dataTypeEbnf FOREACH abstractTokens»«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2 FOR Keyword»
-	kw='«value»' 
+	kw='«value.toJavaString()»' 
     {
         $current.merge(kw);
         «EXPAND createLeafNode» 
@@ -265,7 +265,7 @@ import org.eclipse.xtext.conversion.ValueConverterException;
     }
 «ENDDEFINE»
 
-«DEFINE ebnf2 FOR Keyword»'«value»' 
+«DEFINE ebnf2 FOR Keyword»'«value.toJavaString()»' 
     {
         «EXPAND createLeafNode» 
     }
