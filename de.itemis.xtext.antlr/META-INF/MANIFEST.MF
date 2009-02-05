@@ -8,5 +8,6 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.antlr.gen;bundle-version="3.0.1";visibility:=reexport,
  org.eclipse.xtext,
  org.eclipse.xtext.util,
- org.eclipse.xtext.generator
+ org.eclipse.xtext.generator,
+ org.eclipse.xtend.util.stdlib;bundle-version="0.7.0"
 Export-Package: de.itemis.xtext.antlr
