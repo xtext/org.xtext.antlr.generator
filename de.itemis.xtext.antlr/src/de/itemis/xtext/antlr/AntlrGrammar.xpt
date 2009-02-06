@@ -129,7 +129,7 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 «ruleName()» returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
     @init { setCurrentLookahead(); resetLookahead(); 
 «IF definesHiddenTokens-»
-		HiddenTokens myHiddenTokenState = input.setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
+		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-» 
     }
     @after { resetLookahead(); 
