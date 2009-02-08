@@ -10,6 +10,7 @@ import xtext;
 
 extension org::eclipse::xtext::Properties reexport;
 extension org::eclipse::xtext::Extensions reexport;
+extension org::eclipse::xtext::GrammarUtil reexport;
 extension org::eclipse::xtend::util::stdlib::io;
 
 ruleName(ParserRule this) : !terminal ? 'rule'+name : "RULE_" + name.toUpperCase();
@@ -58,3 +59,9 @@ mustBeParenthesized(Alternatives this) : true;
 mustBeParenthesized(Keyword this) : cardinality!=null;
 mustBeParenthesized(RuleCall this) : cardinality!=null;
 
+List[String] initialHiddenTokens(Grammar this):
+  if (definesHiddenTokens) then 
+  	hiddenTokens.ruleName() 
+  else if (getSuperGrammar() != null) then 
+  	initialHiddenTokens(getSuperGrammar()) 
+  else {};

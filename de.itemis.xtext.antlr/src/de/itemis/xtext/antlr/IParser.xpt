@@ -12,6 +12,7 @@
 «IMPORT xtext»
 «IMPORT xtextgen»
 
+«EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
 «EXTENSION org::eclipse::xtext::Extensions»
 «EXTENSION org::eclipse::xtext::Properties»
 «EXTENSION de::itemis::xtext::antlr::Parser»
@@ -43,6 +44,7 @@ public class «genClassFQName.toSimpleName()» extends org.eclipse.xtext.parser.an
 	protected IParseResult parse(String ruleName, ANTLRInputStream in) {
 		«internalLexerClassName()» lexer = new «internalLexerClassName()»(in);
 		XtextTokenStream stream = new XtextTokenStream(lexer, antlrTokenDefProvider);
+		stream.setInitialHiddenTokens(«FOREACH grammar().initialHiddenTokens() AS hidden SEPARATOR ", "»"«hidden»"«ENDFOREACH-»);
 		«internalParserClassName()» parser = new «internalParserClassName()»(
 				stream, getElementFactory(), grammarAccess.getGrammar());
 		parser.setTokenTypeMap(antlrTokenDefProvider.getTokenDefMap());
