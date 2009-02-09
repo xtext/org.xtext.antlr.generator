@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.itemis.xtext.antlr.gen.feature_1.0.0.jar" id="de.itemis.xtext.antlr.gen.feature" version="1.0.0">
+      <category name="openArchitectureWare (external)"/>
+   </feature>
+   <category-def name="openArchitectureWare (external)" label="openArchitectureWare (external)">
+      <description>
+         External features for openArchitectureware
+      </description>
+   </category-def>
+</site>
