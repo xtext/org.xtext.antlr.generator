@@ -177,7 +177,7 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 «ENDDEFINE»
 
 «DEFINE dataTypeEbnf2 FOR RuleCall-»
-«IF ParserRule.isInstance(rule) && !isAssigned()»
+«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal && !isAssigned()»
     { 
         currentNode=«EXPAND createCompositeNode» 
     }
@@ -186,12 +186,12 @@ import org.eclipse.xtext.conversion.ValueConverterException;
     {
 		$current.merge(«localVar()»);
     }
-«IF ParserRule.isInstance(rule) && !isAssigned()»
+«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal && !isAssigned()»
     { 
         currentNode = currentNode.getParent();
     }
 «ENDIF-»
-«IF LexerRule.isInstance(rule)»
+«IF LexerRule.isInstance(rule) || ((ParserRule)rule).terminal»
     { 
     «EXPAND createLeafNode» 
     }
@@ -244,10 +244,21 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR CrossReference»
-	«calledLexerRule().ruleName()-»
+«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal»
+    { 
+        currentNode=«EXPAND createCompositeNode» 
+    }
+«ENDIF-»
+	«rule.ruleName()-»
+«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal»
+    { 
+        currentNode = currentNode.getParent();
+    }
+«ELSE-»
     { 
     «EXPAND createLeafNode» 
     }
+«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR Action»
@@ -272,13 +283,13 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR RuleCall-»
-«IF ParserRule.isInstance(rule) && !isAssigned()»
+«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal && !isAssigned()»
     { 
         currentNode=«EXPAND createCompositeNode» 
     }
     «localVar()»=«ENDIF-»
 «rule.ruleName()-»
-«IF ParserRule.isInstance(rule) && !isAssigned()»
+«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal && !isAssigned()»
     { 
         $current = $«localVar()».current; 
         currentNode = currentNode.getParent();
