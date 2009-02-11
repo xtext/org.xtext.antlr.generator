@@ -304,14 +304,14 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 
 «DEFINE createCompositeNode FOR emf::EObject
     »createCompositeNode("«
-    objectURI()
+    objectURI(grammar(), this)
     »" /* «
     this.metaType.name» */, currentNode);«
 ENDDEFINE»
 
 «DEFINE insertCompositeNode FOR Action
     »CompositeNode newNode = createCompositeNode("«
-    objectURI()
+    objectURI(grammar(), this)
     »" /* «
     this.metaType.name» */, currentNode.getParent());
     newNode.getChildren().add(currentNode);
@@ -321,7 +321,7 @@ ENDDEFINE»
 
 «DEFINE createLeafNode FOR emf::EObject
     »createLeafNode("«
-    objectURI()
+    objectURI(grammar(), this)
     »" /* «
     this.metaType.name
     » */, «

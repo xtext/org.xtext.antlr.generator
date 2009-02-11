@@ -52,6 +52,8 @@ toStringLiteral(Keyword this) :
 String toLexerBody(ParserRule this):
 	JAVA de.itemis.xtext.antlr.TerminalRuleToLexerBody.toLexerBody(org.eclipse.xtext.ParserRule);
 
+objectURI(Grammar grammar, emf::EObject object) :
+	JAVA de.itemis.xtext.antlr.AntlrGrammarGenUtil.getClasspathURI(org.eclipse.xtext.Grammar, org.eclipse.emf.ecore.EObject);
 
 mustBeParenthesized(AbstractElement this) : true;
 mustBeParenthesized(Group this) : true;
