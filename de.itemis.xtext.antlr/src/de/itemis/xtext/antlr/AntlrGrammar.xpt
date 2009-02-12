@@ -50,15 +50,17 @@ import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream.HiddenTokens;
 import org.eclipse.xtext.parser.antlr.AntlrDatatypeRuleToken;
 import org.eclipse.xtext.conversion.ValueConverterException;
+import «grammar().gaFQName()»;
 
 }
 
 @parser::members {
  
-    public «internalParserClassName()»(TokenStream input, IAstFactory factory, Grammar g) {
-        this(input);
-        this.factory = factory;
-		grammar = g;
+ 	private «grammar().gaSimpleName()» grammarAccess;
+ 	
+    public «internalParserClassName()»(TokenStream input, IAstFactory factory, «grammar().gaSimpleName()» grammarAccess) {
+        super(input, factory, grammarAccess.getGrammar());
+        this.grammarAccess = grammarAccess;
     }
     
     @Override
@@ -303,28 +305,24 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 «ENDDEFINE»
 
 «DEFINE createCompositeNode FOR emf::EObject
-    »createCompositeNode("«
-    objectURI(grammar(), this)
-    »" /* «
-    this.metaType.name» */, currentNode);«
+    »createCompositeNode(grammarAccess.«
+    grammarElementAccess(this)
+    », currentNode);«
 ENDDEFINE»
 
 «DEFINE insertCompositeNode FOR Action
-    »CompositeNode newNode = createCompositeNode("«
-    objectURI(grammar(), this)
-    »" /* «
-    this.metaType.name» */, currentNode.getParent());
+    »CompositeNode newNode = createCompositeNode(grammarAccess.«
+    grammarElementAccess(this)
+    », currentNode.getParent());
     newNode.getChildren().add(currentNode);
     moveLookaheadInfo(currentNode, newNode);
     currentNode = newNode;«
 ENDDEFINE»
 
 «DEFINE createLeafNode FOR emf::EObject
-    »createLeafNode("«
-    objectURI(grammar(), this)
-    »" /* «
-    this.metaType.name
-    » */, «
+    »createLeafNode(grammarAccess.«
+    grammarElementAccess(this)
+    », «
     IF isAssigned()
         »"«
         containingAssignment().feature

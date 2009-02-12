@@ -7,8 +7,10 @@
  *
  *******************************************************************************/
 import xtext;
+import emf;
 
 extension org::eclipse::xtext::Properties reexport;
+extension org::eclipse::xtext::grammaraccess::GrammarAccess reexport;
 extension org::eclipse::xtext::Extensions reexport;
 extension org::eclipse::xtext::GrammarUtil reexport;
 extension org::eclipse::xtend::util::stdlib::io;
@@ -60,6 +62,15 @@ mustBeParenthesized(Group this) : true;
 mustBeParenthesized(Alternatives this) : true;
 mustBeParenthesized(Keyword this) : cardinality!=null;
 mustBeParenthesized(RuleCall this) : cardinality!=null;
+
+String grammarElementAccess(EObject object):
+	error("grammarElementAccess for: " + object.toString()); 
+	
+String grammarElementAccess(AbstractRule rule):
+	rule.gaRuleAccessor() + ".getRule()"; 
+
+String grammarElementAccess(AbstractElement element):
+	gaRuleElementAccessor(element);
 
 List[String] initialHiddenTokens(Grammar this):
   if (definesHiddenTokens) then 

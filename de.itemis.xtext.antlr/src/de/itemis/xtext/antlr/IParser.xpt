@@ -13,6 +13,7 @@
 «IMPORT xtextgen»
 
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
+«EXTENSION org::eclipse::xtext::grammaraccess::GrammarAccess»
 «EXTENSION org::eclipse::xtext::Extensions»
 «EXTENSION org::eclipse::xtext::Properties»
 «EXTENSION de::itemis::xtext::antlr::Parser»
@@ -35,10 +36,15 @@ import com.google.inject.Inject;
 import «internalPackage()».«internalLexerClassName()»;
 import «internalPackage()».«internalParserClassName()»;
 
+import «grammar().gaFQName()»;
+
 public class «genClassFQName.toSimpleName()» extends org.eclipse.xtext.parser.antlr.AbstractAntlrParser {
 	
 	@Inject 
     protected ITokenDefProvider antlrTokenDefProvider;
+	
+	@Inject
+	private «grammar().gaSimpleName()» grammarAccess;
 	
 	@Override
 	protected IParseResult parse(String ruleName, ANTLRInputStream in) {
@@ -46,14 +52,12 @@ public class «genClassFQName.toSimpleName()» extends org.eclipse.xtext.parser.an
 		XtextTokenStream stream = new XtextTokenStream(lexer, antlrTokenDefProvider);
 		stream.setInitialHiddenTokens(«FOREACH grammar().initialHiddenTokens() AS hidden SEPARATOR ", "»"«hidden»"«ENDFOREACH-»);
 		«internalParserClassName()» parser = new «internalParserClassName()»(
-				stream, getElementFactory(), grammarAccess.getGrammar());
+				stream, getElementFactory(), grammarAccess);
 		parser.setTokenTypeMap(antlrTokenDefProvider.getTokenDefMap());
 		try {
-			if(ruleName != null) {
+			if(ruleName != null)
 				return parser.parse(ruleName);
-			} else {
-				return parser.parse();
-			}
+			return parser.parse();
 		} catch (Exception re) {
 			throw new ParseException(re.getMessage(),re);
 		}
@@ -62,6 +66,14 @@ public class «genClassFQName.toSimpleName()» extends org.eclipse.xtext.parser.an
 	@Override 
 	protected String getDefaultRuleName() {
 		return "«grammar().allParserRules().first().name»";
+	}
+	
+	public «grammar().gaSimpleName()» getGrammarAccess() {
+		return this.grammarAccess;
+	}
+	
+	public void setGrammarAccess(«grammar().gaSimpleName()» grammarAccess) {
+		this.grammarAccess = grammarAccess;
 	}
 }
 «ENDFILE»
