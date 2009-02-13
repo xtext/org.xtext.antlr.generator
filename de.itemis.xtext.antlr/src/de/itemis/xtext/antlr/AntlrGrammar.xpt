@@ -113,6 +113,7 @@ import «grammar().gaFQName()»;
 «ENDIF-»    
     }
     @after { resetLookahead(); 
+    	lastConsumedNode = currentNode;
 «IF definesHiddenTokens-»
 		myHiddenTokenState.restore();
 «ENDIF-»
@@ -135,6 +136,8 @@ import «grammar().gaFQName()»;
 «ENDIF-» 
     }
     @after { resetLookahead(); 
+	    lastConsumedNode = currentNode;
+	    lastConsumedDatatypeToken = $current;
 «IF definesHiddenTokens-»
 		myHiddenTokenState.restore();
 «ENDIF-» 
@@ -206,6 +209,103 @@ import «grammar().gaFQName()»;
 
 «DEFINE ebnf2 FOR Group»«EXPAND ebnf FOREACH abstractTokens»«ENDDEFINE»
 
+«DEFINE assignmentEbnf FOR AbstractElement-»
+«EXPAND ebnf»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf FOR Group-»
+«ERROR "assignmentEbnf is not supported for Group"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf FOR Assignment-»
+«ERROR "assignmentEbnf is not supported for Assignment"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf FOR Action-»
+«ERROR "assignmentEbnf is not supported for Action"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf FOR CrossReference-»
+«EXPAND crossrefEbnf(this) FOR rule-»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR AbstractRule-»
+«ERROR "crossrefEbnf is not supported for AbstractRule"»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR ParserRule-»
+«IF !isDatatypeRule() && !terminal-»
+«ERROR "crossrefEbnf is not supported for ParserRule that is not a datatype rule and not a terminal rule"»
+«ELSE-»
+«IF !terminal-»
+		{ 
+	        currentNode=«EXPAND createCompositeNode FOR ref» 
+	    }
+		«ruleName()-»
+		{ 
+	        currentNode = currentNode.getParent();
+	    }
+«ELSE-»
+	«ruleName()»
+	{
+		«EXPAND createLeafNode FOR ref» 
+	}
+«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR LexerRule-»
+	«ruleName()»
+	{
+		«EXPAND createLeafNode FOR ref» 
+	}
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf FOR Alternatives-»
+(«EXPAND assignmentEbnf FOREACH groups SEPARATOR '\n    |'»)
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf FOR RuleCall-»
+«EXPAND assignmentEbnf(this) FOR rule-»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(RuleCall call) FOR AbstractRule-»
+«ERROR "assignmentEbnf is not supported for AbstractRule"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(RuleCall call) FOR ParserRule-»
+«IF call.eContainer.metaType!=Alternatives-»
+«ruleName()-»
+«IF terminal-»
+	{
+		«EXPAND createLeafNode FOR call» 
+	}
+«ENDIF-»
+«ELSE-»
+«IF !terminal-»
+		{ 
+	        currentNode=«EXPAND createCompositeNode FOR call» 
+	    }
+		«ruleName()-»
+		{ 
+	        currentNode = currentNode.getParent();
+	    }
+«ELSE-»
+	«ruleName()»
+	{
+		«EXPAND createLeafNode FOR call» 
+	}
+«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(RuleCall call) FOR LexerRule-»
+	«ruleName()»
+	{
+		«EXPAND createLeafNode FOR call» 
+	}
+«ENDDEFINE»
+
 «DEFINE ebnf2 FOR Assignment»	
 	«IF !eAllContents.typeSelect(CrossReference).isEmpty»
 		«REM» Cross references are handled in the linking phase «ENDREM»
@@ -215,14 +315,15 @@ import «grammar().gaFQName()»;
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
-		«EXPAND ebnf FOR terminal» 
+		«EXPAND assignmentEbnf FOR terminal»
+		// TODO assign feature to currentNode
 	«ELSE»
 	    «IF isParserRuleAssignment()»
 	    { 
 	        currentNode=«EXPAND createCompositeNode FOR terminal» 
 	    }
 	    «ENDIF-»
-	    «localVar()»=«EXPAND ebnf FOR terminal» 
+	    «localVar()»=«EXPAND assignmentEbnf FOR terminal» 
 	    {
 	        if ($current==null) {
 	            $current = factory.create("«containingParserRule().typeName()»");
@@ -232,10 +333,12 @@ import «grammar().gaFQName()»;
 	        }
 	        «REM»the use of input.LT(-1) in the following line is a workaroudn for a bug of antlr, where assignements of alternative keywords are ignored when there are actions«ENDREM»
 	        try {
-	        	factory.«setOrAdd()»($current, "«feature»", «
+	       		«setOrAdd()»($current, "«feature»", «
 	        		IF isBoolean()»true«
-	        		ELSE»«eAllContents.typeSelect(Keyword).isEmpty ? localVar() : "input.LT(-1)"»«
-	        		ENDIF», «terminal.toStringLiteral()», currentNode);
+	        		ELSE»«eAllContents.typeSelect(Keyword).isEmpty ? localVar() : "/* " + localVar() + " */ input.LT(-1)"»«
+	        		ENDIF», «terminal.toStringLiteral()», «
+	        		IF isParserRuleAssignment()»currentNode«
+	        		ELSE»lastConsumedNode«ENDIF»);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }

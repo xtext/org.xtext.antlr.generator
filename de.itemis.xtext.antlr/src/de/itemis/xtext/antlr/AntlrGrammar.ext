@@ -35,10 +35,21 @@ isCalled(ParserRule this) :
 		x.indexOf(this)==0 || 
 		x.containingGrammar().eAllContents.flatten().typeSelect(RuleCall).select(call|call.rule!=null).rule.name.contains(this.name);
 
-//TODO make localVars unique
-localVar(Assignment this) : 'lv_'+feature;
-localVar(RuleCall this) : 'this_'+rule.name;
+localVar(Assignment this) : 'lv_'+feature + '_' + containingParserRule().contentsAsList().indexOf(this);
+localVar(RuleCall this) : 'this_'+rule.name + '_' + containingParserRule().contentsAsList().indexOf(this);
 
+List[AbstractElement] contentsAsList(xtext::ParserRule this):
+	alternatives.contentsAsList();
+	
+List[AbstractElement] contentsAsList(xtext::AbstractElement this):
+	{this};
+	
+List[AbstractElement] contentsAsList(xtext::Alternatives this):
+	this.groups.contentsAsList();
+
+List[AbstractElement] contentsAsList(xtext::Group this):
+	this.abstractTokens.contentsAsList();
+	
 toStringLiteral(xtext::AbstractElement this) :
 	"null";
 	
