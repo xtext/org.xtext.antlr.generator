@@ -77,8 +77,8 @@ mustBeParenthesized(RuleCall this) : cardinality!=null;
 String grammarElementAccess(EObject object):
 	error("grammarElementAccess for: " + object.toString()); 
 	
-String grammarElementAccess(AbstractRule rule):
-	rule.gaRuleAccessor() + ".getRule()"; 
+String grammarElementAccess(AbstractRule this):
+	gaRuleAccessor() + ".getRule()"; 
 
 String grammarElementAccess(AbstractElement element):
 	gaRuleElementAccessor(element);
