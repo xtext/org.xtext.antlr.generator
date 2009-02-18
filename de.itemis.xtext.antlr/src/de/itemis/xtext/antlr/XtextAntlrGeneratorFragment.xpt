@@ -10,12 +10,18 @@
 «ENDREM»
 
 «IMPORT xtext»
-«IMPORT xtextgen»
-«EXTENSION de::itemis::xtext::antlr::Parser»
-«EXTENSION org::eclipse::xtext::Properties»
 
-«DEFINE root FOR GenService»
+«EXTENSION de::itemis::xtext::antlr::Parser»
+«EXTENSION org::eclipse::xtext::generator::Naming»
+
+«DEFINE generate FOR Grammar»
 	«EXPAND IParser::parser»
 	«EXPAND AntlrGrammar::grammar»
-	«runAntlrTool(outletPath("SRC_GEN") + "/" +internalAntlrGrammarFullPath())»
+	«EXPAND AntlrTokenFileProvider::file FOR this»
 «ENDDEFINE»
+
+«DEFINE addToPluginXmlRt FOR Grammar»«ENDDEFINE»
+
+«DEFINE addToPluginXmlUi FOR Grammar»«ENDDEFINE»
+
+«DEFINE addToStandaloneSetup FOR Grammar»«ENDDEFINE»

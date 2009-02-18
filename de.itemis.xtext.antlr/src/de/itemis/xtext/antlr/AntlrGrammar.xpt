@@ -12,23 +12,23 @@
 «IMPORT xtext»
 «IMPORT xtextgen»
 
+«EXTENSION org::eclipse::xtext::generator::Naming»
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
-«EXTENSION org::eclipse::xtext::Extensions»
 «EXTENSION de::itemis::xtext::antlr::Parser»
 
-«DEFINE grammar FOR GenService»
-«FILE internalAntlrGrammarFullPath() SRC_GEN-»
+«DEFINE grammar FOR Grammar»
+«FILE getGrammarFileName().asPath()+".g" SRC_GEN-»
 /*
 «fileHeader()»
 */
-grammar «internalAntlrGrammarName()»;
+grammar «getGrammarFileName().toSimpleName()»;
 
 options {
 	superClass=AbstractInternalAntlrParser;
 }
 
 @lexer::header {
-package «internalPackage()»;
+package «getGrammarFileName().toJavaPackage()»;
 
 // Hack: Use our own Lexer superclass by means of import. 
 // Currently there is no other way to specify the superclass for the lexer.
@@ -36,7 +36,7 @@ import org.eclipse.xtext.parser.antlr.Lexer;
 }
 
 @parser::header {
-package «internalPackage()»; 
+package «getGrammarFileName().toJavaPackage()»; 
 
 import java.io.InputStream;
 import org.eclipse.xtext.*;
@@ -50,28 +50,28 @@ import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream.HiddenTokens;
 import org.eclipse.xtext.parser.antlr.AntlrDatatypeRuleToken;
 import org.eclipse.xtext.conversion.ValueConverterException;
-import «grammar().gaFQName()»;
+import «gaFQName()»;
 
 }
 
 @parser::members {
  
- 	private «grammar().gaSimpleName()» grammarAccess;
+ 	private «gaSimpleName()» grammarAccess;
  	
-    public «internalParserClassName()»(TokenStream input, IAstFactory factory, «grammar().gaSimpleName()» grammarAccess) {
+    public «getInternalParserClassName().toSimpleName()»(TokenStream input, IAstFactory factory, «gaSimpleName()» grammarAccess) {
         super(input, factory, grammarAccess.getGrammar());
         this.grammarAccess = grammarAccess;
     }
     
     @Override
     protected InputStream getTokenFile() {
-    	ClassLoader classLoader = «internalParserClassName()».class.getClassLoader();
-    	return classLoader.getResourceAsStream("«internalPackageFullPath()»/«internalAntlrGrammarName()».tokens");
+    	ClassLoader classLoader = getClass().getClassLoader();
+    	return classLoader.getResourceAsStream("«getGrammarFileName().asPath()».tokens");
     }
     
     @Override
     protected String getFirstRuleName() {
-    	return "«grammar().allParserRules().first().name»";	
+    	return "«allParserRules().first().name»";	
    	} 
 }
 
@@ -81,20 +81,20 @@ import «grammar().gaFQName()»;
         appendSkippedTokens();
     } 
 }
-«EXPAND antlrRules FOR grammar()»
+«EXPAND antlrRules»
 «ENDFILE»
 «ENDDEFINE»
 
 «DEFINE antlrRules FOR Grammar»
-«EXPAND rule FOREACH allParserRules()»
+«EXPAND rule(this) FOREACH allParserRules()»
 
 «EXPAND terminalRule FOREACH allParserRules()»
 «EXPAND rule FOREACH allLexerRules()»
 «ENDDEFINE»
 
 
-«DEFINE rule FOR ParserRule»
-«IF isCalled()»
+«DEFINE rule(Grammar original) FOR ParserRule»
+«IF isCalled(original,this)»
 «IF !terminal»
 «IF !isDatatypeRule()»
 // Entry rule «entryRuleName()»

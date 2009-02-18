@@ -9,15 +9,14 @@
 import xtext;
 import emf;
 
-extension org::eclipse::xtext::Properties reexport;
-extension org::eclipse::xtext::grammaraccess::GrammarAccess reexport;
+extension org::eclipse::xtext::generator::grammarAccess::GrammarAccess reexport;
 extension org::eclipse::xtext::Extensions reexport;
 extension org::eclipse::xtext::GrammarUtil reexport;
-extension org::eclipse::xtend::util::stdlib::io;
+extension org::eclipse::xtext::Utilities;
 
 ruleName(ParserRule this) : !terminal ? 'rule'+name : "RULE_" + name.toUpperCase();
 ruleName(LexerRule this) : 'RULE_'+name.toUpperCase();
-ruleName(AbstractRule this) : error("Unsupported");
+ruleName(AbstractRule this) : "Unsupported";
 
 entryRuleName(ParserRule this) : 'entryRule'+name;
 
@@ -30,8 +29,8 @@ setOrAdd(Action this) : if operator=='+=' then 'add' else 'set';
 
 setOrAdd(Assignment this) : if operator=='+=' then 'add' else 'set';
 
-isCalled(ParserRule this) :
-	let x = grammar().allParserRules() :
+isCalled(Grammar grammar, ParserRule this) :
+	let x = grammar.allParserRules() :
 		x.indexOf(this)==0 || 
 		x.containingGrammar().eAllContents.flatten().typeSelect(RuleCall).select(call|call.rule!=null).rule.name.contains(this.name);
 
@@ -75,7 +74,7 @@ mustBeParenthesized(Keyword this) : cardinality!=null;
 mustBeParenthesized(RuleCall this) : cardinality!=null;
 
 String grammarElementAccess(EObject object):
-	error("grammarElementAccess for: " + object.toString()); 
+	"Unsupported : grammarElementAccess for: " + object.toString(); 
 	
 String grammarElementAccess(AbstractRule this):
 	gaRuleAccessor() + ".getRule()"; 

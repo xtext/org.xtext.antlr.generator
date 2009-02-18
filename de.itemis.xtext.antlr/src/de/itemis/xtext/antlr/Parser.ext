@@ -6,32 +6,25 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-import xtextgen;
-
-extension org::eclipse::xtext::Properties;
+import xtext;
 
 // These are candidates for genParameters of the parser's GenService 
 
-internalParserClassName() :
-	'Internal' + languageName() + 'Parser';
-	
-internalLexerClassName() : 
-	'Internal' + languageName() + 'Lexer';
+String getAntlrTokenFileProviderClassName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getAntlrTokenFileProviderClassName(org.eclipse.xtext.Grammar);
 
-internalPackage(GenService service) :
-	service.genClassFQName.toJavaPackage() + ".internal";
+String getParserClassName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getParserClassName(org.eclipse.xtext.Grammar);
 
-internalPackageFullPath(GenService service) :
-	internalPackage(service).toPath();
+String getLexerClassName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getLexerClassName(org.eclipse.xtext.Grammar);
 
-internalAntlrGrammarFullPath(GenService service) :
-	internalPackageFullPath(service) + '/' + internalAntlrGrammarName() + '.g';
-	
-internalAntlrTokensFullPath(GenService service) :
-	internalPackageFullPath(service) + '/' + internalAntlrGrammarName() + '.tokens';
-	
-internalAntlrGrammarName() :
-	 'Internal' + languageName();
-	 
+String getInternalParserClassName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getInternalParserClassName(org.eclipse.xtext.Grammar);
+
+String getGrammarFileName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getGrammarFileName(org.eclipse.xtext.Grammar);
+
+
 Void runAntlrTool(String grammarFullPath) :
 	JAVA de.itemis.xtext.antlr.AntlrToolRunner.run(java.lang.String);
