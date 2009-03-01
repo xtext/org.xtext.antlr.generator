@@ -13,10 +13,10 @@ import org.eclipse.xtext.Alternatives;
 import org.eclipse.xtext.CharacterRange;
 import org.eclipse.xtext.Group;
 import org.eclipse.xtext.Keyword;
-import org.eclipse.xtext.LexerRule;
 import org.eclipse.xtext.NegatedToken;
 import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.RuleCall;
+import org.eclipse.xtext.TerminalRule;
 import org.eclipse.xtext.UpToToken;
 import org.eclipse.xtext.Wildcard;
 import org.eclipse.xtext.util.Strings;
@@ -32,16 +32,16 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 	private TerminalRuleToLexerBody() {
 		this.result = new StringBuilder();
 	}
-	
-	public static String toLexerBody(ParserRule rule) {
+
+	public static String toLexerBody(TerminalRule rule) {
 		return new TerminalRuleToLexerBody().print(rule);
 	}
-	
-	public String print(ParserRule rule) {
+
+	public String print(TerminalRule rule) {
 		doSwitch(rule.getAlternatives());
 		return result.toString();
 	}
-	
+
 	@Override
 	public String caseAlternatives(Alternatives object) {
 		result.append('(');
@@ -68,7 +68,7 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 		}
 		return "";
 	}
-	
+
 	@Override
 	public String defaultCase(EObject object) {
 		throw new IllegalArgumentException(object.eClass().getName() + " is not a valid argument.");
@@ -107,16 +107,14 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 	}
 
 	@Override
-	public String caseLexerRule(LexerRule object) {
-		throw new IllegalStateException("Cannot interpret native lexer rules!");
+	public String caseTerminalRule(TerminalRule object) {
+		result.append("RULE_").append(object.getName().toUpperCase());
+		return "";
 	}
 
 	@Override
 	public String caseParserRule(ParserRule object) {
-		if (!object.isTerminal())
-			throw new IllegalStateException("Cannot call parser rules that are not terminal rules.");
-		result.append("RULE_").append(object.getName().toUpperCase());
-		return "";
+		throw new IllegalStateException("Cannot call parser rules that are not terminal rules.");
 	}
 
 	@Override
@@ -140,5 +138,5 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 		doSwitch(object.getTerminal());
 		return "";
 	}
-	
+
 }

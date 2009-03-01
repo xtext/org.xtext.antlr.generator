@@ -87,15 +87,12 @@ import «gaFQName()»;
 
 «DEFINE antlrRules FOR Grammar»
 «EXPAND rule(this) FOREACH allParserRules()»
-
-«EXPAND terminalRule FOREACH allParserRules()»
-«EXPAND rule FOREACH allLexerRules()»
+«EXPAND rule FOREACH allTerminalRules()»
 «ENDDEFINE»
 
 
 «DEFINE rule(Grammar original) FOR ParserRule»
 «IF isCalled(original,this)»
-«IF !terminal»
 «IF !isDatatypeRule()»
 // Entry rule «entryRuleName()»
 «entryRuleName()» returns [EObject current=null] :
@@ -146,17 +143,10 @@ import «gaFQName()»;
     ;
 «ENDIF»
 «ENDIF»
-«ENDIF»
 «ENDDEFINE»
 
-«DEFINE terminalRule FOR ParserRule»
-«IF terminal»
+«DEFINE rule FOR TerminalRule»
 «ruleName()» : «toLexerBody()»;
-«ENDIF»
-«ENDDEFINE»
-
-«DEFINE rule FOR LexerRule»
-«ruleName()» : «body»;
 «ENDDEFINE»
 
 «DEFINE ebnf FOR AbstractElement-»
@@ -182,7 +172,7 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE dataTypeEbnf2 FOR RuleCall-»
-«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal && !isAssigned()»
+«IF ParserRule.isInstance(rule) && !isAssigned()»
     { 
         currentNode=«EXPAND createCompositeNode» 
     }
@@ -191,12 +181,12 @@ import «gaFQName()»;
     {
 		$current.merge(«localVar()»);
     }
-«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal && !isAssigned()»
+«IF ParserRule.isInstance(rule) && !isAssigned()»
     { 
         currentNode = currentNode.getParent();
     }
 «ENDIF-»
-«IF LexerRule.isInstance(rule) || ((ParserRule)rule).terminal»
+«IF TerminalRule.isInstance(rule)»
     { 
     «EXPAND createLeafNode» 
     }
@@ -234,10 +224,9 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE crossrefEbnf(CrossReference ref) FOR ParserRule-»
-«IF !isDatatypeRule() && !terminal-»
-«ERROR "crossrefEbnf is not supported for ParserRule that is not a datatype rule and not a terminal rule"»
+«IF !isDatatypeRule()-»
+«ERROR "crossrefEbnf is not supported for ParserRule that is not a datatype rule"»
 «ELSE-»
-«IF !terminal-»
 		{ 
 	        currentNode=«EXPAND createCompositeNode FOR ref» 
 	    }
@@ -245,16 +234,10 @@ import «gaFQName()»;
 		{ 
 	        currentNode = currentNode.getParent();
 	    }
-«ELSE-»
-	«ruleName()»
-	{
-		«EXPAND createLeafNode FOR ref» 
-	}
-«ENDIF-»
 «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE crossrefEbnf(CrossReference ref) FOR LexerRule-»
+«DEFINE crossrefEbnf(CrossReference ref) FOR TerminalRule-»
 	«ruleName()»
 	{
 		«EXPAND createLeafNode FOR ref» 
@@ -276,30 +259,18 @@ import «gaFQName()»;
 «DEFINE assignmentEbnf(RuleCall call) FOR ParserRule-»
 «IF call.eContainer.metaType!=Alternatives-»
 «ruleName()-»
-«IF terminal-»
-	{
-		«EXPAND createLeafNode FOR call» 
-	}
-«ENDIF-»
 «ELSE-»
-«IF !terminal-»
-		{ 
-	        currentNode=«EXPAND createCompositeNode FOR call» 
-	    }
-		«ruleName()-»
-		{ 
-	        currentNode = currentNode.getParent();
-	    }
-«ELSE-»
-	«ruleName()»
-	{
-		«EXPAND createLeafNode FOR call» 
-	}
-«ENDIF-»
+	{ 
+        currentNode=«EXPAND createCompositeNode FOR call» 
+    }
+	«ruleName()-»
+	{ 
+        currentNode = currentNode.getParent();
+    }
 «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf(RuleCall call) FOR LexerRule-»
+«DEFINE assignmentEbnf(RuleCall call) FOR TerminalRule-»
 	«ruleName()»
 	{
 		«EXPAND createLeafNode FOR call» 
@@ -349,13 +320,13 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR CrossReference»
-«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal»
+«IF ParserRule.isInstance(rule)»
     { 
         currentNode=«EXPAND createCompositeNode» 
     }
 «ENDIF-»
 	«rule.ruleName()-»
-«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal»
+«IF ParserRule.isInstance(rule)»
     { 
         currentNode = currentNode.getParent();
     }
@@ -388,19 +359,19 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR RuleCall-»
-«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal && !isAssigned()»
+«IF ParserRule.isInstance(rule) && !isAssigned()»
     { 
         currentNode=«EXPAND createCompositeNode» 
     }
     «localVar()»=«ENDIF-»
 «rule.ruleName()-»
-«IF ParserRule.isInstance(rule) && !((ParserRule)rule).terminal && !isAssigned()»
+«IF ParserRule.isInstance(rule) && !isAssigned()»
     { 
         $current = $«localVar()».current; 
         currentNode = currentNode.getParent();
     }
 «ENDIF-»
-«IF LexerRule.isInstance(rule) || (ParserRule.isInstance(rule) && ((ParserRule)rule).terminal)»
+«IF TerminalRule.isInstance(rule) || ParserRule.isInstance(rule)»
     { 
     «EXPAND createLeafNode» 
     }

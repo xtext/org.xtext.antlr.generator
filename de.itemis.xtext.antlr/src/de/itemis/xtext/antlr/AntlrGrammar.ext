@@ -14,8 +14,8 @@ extension org::eclipse::xtext::Extensions reexport;
 extension org::eclipse::xtext::GrammarUtil reexport;
 extension org::eclipse::xtext::Utilities;
 
-ruleName(ParserRule this) : !terminal ? 'rule'+name : "RULE_" + name.toUpperCase();
-ruleName(LexerRule this) : 'RULE_'+name.toUpperCase();
+ruleName(ParserRule this) : 'rule'+name;
+ruleName(TerminalRule this) : 'RULE_'+name.toUpperCase();
 ruleName(AbstractRule this) : "Unsupported";
 
 entryRuleName(ParserRule this) : 'entryRule'+name;
@@ -61,9 +61,9 @@ toStringLiteral(RuleCall this) :
 toStringLiteral(Keyword this) :
 	'"'+this.value.toJavaString()+'"';
 	
-String toLexerBody(ParserRule this):
-	JAVA de.itemis.xtext.antlr.TerminalRuleToLexerBody.toLexerBody(org.eclipse.xtext.ParserRule);
-
+String toLexerBody(TerminalRule this):
+	JAVA de.itemis.xtext.antlr.TerminalRuleToLexerBody.toLexerBody(org.eclipse.xtext.TerminalRule);
+	
 String objectURI(Grammar grammar, emf::EObject object) :
 	JAVA de.itemis.xtext.antlr.AntlrGrammarGenUtil.getClasspathURI(org.eclipse.xtext.Grammar, org.eclipse.emf.ecore.EObject);
 
