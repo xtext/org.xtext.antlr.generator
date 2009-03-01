@@ -50,7 +50,7 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getGuiceBindingsUi(Grammar grammar) {
-		return toMap(pair("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.ITokenColorer","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.BuiltinAntlrTokenColorer"),
+		return toMap(pair("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.ITokenColorer","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.CommonAntlrTokenColorer"),
 					pair("org.eclipse.jface.text.rules.ITokenScanner","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner"));
 	}
 
