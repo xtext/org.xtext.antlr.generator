@@ -340,11 +340,13 @@ import «gaFQName()»;
 «DEFINE ebnf2 FOR Action»
     { 
         temp=factory.create(grammarAccess.«grammarElementAccess()».getTypeName().getType());
+«IF feature != null-»
         try {
         	factory.«setOrAdd()»(temp, "«feature»", $current, null /*ParserRule*/, currentNode);
         } catch(ValueConverterException vce) {
         	handleValueConverterException(vce);
         }
+«ENDIF-»
         $current = temp; 
         temp = null;
         «EXPAND insertCompositeNode» 
