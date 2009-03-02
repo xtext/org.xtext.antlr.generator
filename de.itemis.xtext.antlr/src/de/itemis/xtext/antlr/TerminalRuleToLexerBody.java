@@ -17,7 +17,7 @@ import org.eclipse.xtext.NegatedToken;
 import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.TerminalRule;
-import org.eclipse.xtext.UpToToken;
+import org.eclipse.xtext.UntilToken;
 import org.eclipse.xtext.Wildcard;
 import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.util.XtextSwitch;
@@ -133,7 +133,7 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 	}
 
 	@Override
-	public String caseUpToToken(UpToToken object) {
+	public String caseUntilToken(UntilToken object) {
 		result.append("( options {greedy=false;} : . )*");
 		doSwitch(object.getTerminal());
 		return "";
