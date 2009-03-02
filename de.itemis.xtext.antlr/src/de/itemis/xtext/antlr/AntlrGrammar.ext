@@ -85,6 +85,6 @@ String grammarElementAccess(AbstractElement element):
 List[String] initialHiddenTokens(Grammar this):
   if (definesHiddenTokens) then 
   	hiddenTokens.ruleName() 
-  else if (getSuperGrammar() != null) then 
-  	initialHiddenTokens(getSuperGrammar()) 
+  else if (usedGrammars.size == 1) then 
+  	initialHiddenTokens(usedGrammars.first()) 
   else {};
