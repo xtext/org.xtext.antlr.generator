@@ -20,10 +20,6 @@ ruleName(AbstractRule this) : "Unsupported";
 
 entryRuleName(ParserRule this) : 'entryRule'+name;
 
-
-typeName(Action this) : typeName.type.name;
-typeName(AbstractRule this) : type.type.name;
-
 setOrAdd(Action this) : if operator=='+=' then 'add' else 'set';
 
 
@@ -47,7 +43,7 @@ List[AbstractElement] contentsAsList(xtext::Alternatives this):
 	this.groups.contentsAsList();
 
 List[AbstractElement] contentsAsList(xtext::Group this):
-	this.abstractTokens.contentsAsList();
+	this.tokens.contentsAsList();
 	
 toStringLiteral(xtext::AbstractElement this) :
 	"null";

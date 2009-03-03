@@ -79,7 +79,7 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 		if (!Strings.isEmpty(object.getCardinality()))
 			result.append('(');
 		boolean first = true;
-		for (AbstractElement elem : object.getAbstractTokens()) {
+		for (AbstractElement elem : object.getTokens()) {
 			if (!first) result.append(' ');
 			first = false;
 			doSwitch(elem);

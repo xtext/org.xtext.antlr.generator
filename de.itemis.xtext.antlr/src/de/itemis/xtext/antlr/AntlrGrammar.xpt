@@ -161,7 +161,7 @@ import «gaFQName()»;
 
 «DEFINE dataTypeEbnf2 FOR Alternatives-»«EXPAND dataTypeEbnf FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
 
-«DEFINE dataTypeEbnf2 FOR Group»«EXPAND dataTypeEbnf FOREACH abstractTokens»«ENDDEFINE»
+«DEFINE dataTypeEbnf2 FOR Group»«EXPAND dataTypeEbnf FOREACH tokens»«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2 FOR Keyword»
 	kw='«value.toJavaString()»' 
@@ -197,7 +197,7 @@ import «gaFQName()»;
 
 «DEFINE ebnf2 FOR Alternatives-»«EXPAND ebnf FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
 
-«DEFINE ebnf2 FOR Group»«EXPAND ebnf FOREACH abstractTokens»«ENDDEFINE»
+«DEFINE ebnf2 FOR Group»«EXPAND ebnf FOREACH tokens»«ENDDEFINE»
 
 «DEFINE assignmentEbnf FOR AbstractElement-»
 «EXPAND ebnf»
@@ -216,7 +216,15 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE assignmentEbnf FOR CrossReference-»
-«EXPAND crossrefEbnf(this) FOR rule-»
+«EXPAND crossrefEbnf(this) FOR terminal-»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR AbstractElement-»
+«ERROR "crossrefEbnf is not supported for AbstractElement"»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR RuleCall-»
+«EXPAND crossrefEbnf(ref) FOR rule-»
 «ENDDEFINE»
 
 «DEFINE crossrefEbnf(CrossReference ref) FOR AbstractRule-»
@@ -282,7 +290,7 @@ import «gaFQName()»;
 		«REM» Cross references are handled in the linking phase «ENDREM»
 		{
 			if ($current==null) {
-	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getType());
+	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getClassifier());
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
@@ -297,7 +305,7 @@ import «gaFQName()»;
 	    «localVar()»=«EXPAND assignmentEbnf FOR terminal» 
 	    {
 	        if ($current==null) {
-	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getType());
+	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getClassifier());
 	            «IF isParserRuleAssignment()»associateNodeWithAstElement(currentNode.getParent(), $current);
 	            «ELSE»associateNodeWithAstElement(currentNode, $current);
 	            «ENDIF-»
@@ -320,26 +328,12 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR CrossReference»
-«IF ParserRule.isInstance(rule)»
-    { 
-        currentNode=«EXPAND createCompositeNode» 
-    }
-«ENDIF-»
-	«rule.ruleName()-»
-«IF ParserRule.isInstance(rule)»
-    { 
-        currentNode = currentNode.getParent();
-    }
-«ELSE-»
-    { 
-    «EXPAND createLeafNode» 
-    }
-«ENDIF-»
+«ERROR "ebnf2 is not supported for CrossReference"»
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR Action»
     { 
-        temp=factory.create(grammarAccess.«grammarElementAccess()».getTypeName().getType());
+        temp=factory.create(grammarAccess.«grammarElementAccess()».getType().getClassifier());
 «IF feature != null-»
         try {
         	factory.«setOrAdd()»(temp, "«feature»", $current, null /*ParserRule*/, currentNode);
