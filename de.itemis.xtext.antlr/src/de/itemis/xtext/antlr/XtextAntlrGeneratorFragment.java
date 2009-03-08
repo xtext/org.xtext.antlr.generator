@@ -36,7 +36,21 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 		String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath();
 		de.itemis.xtext.antlr.AntlrToolRunner.run(srcGenPath+"/"+getGrammarFileName(grammar).replace('.', '/')+".g");
 	}
-
+	
+	@Override
+	public String[] getExportedPackagesRt(Grammar grammar) {
+		return new String[]{
+				GrammarUtil.getNamespace(grammar) + ".parser.antlr"
+		};
+	}
+	
+	@Override
+	public String[] getRequiredBundlesRt(Grammar grammar) {
+		return new String[]{
+				"org.antlr.runtime"
+		};
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getGuiceBindingsRt(Grammar grammar) {
@@ -55,7 +69,7 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 	}
 
 	public static String getAntlrTokenFileProviderClassName(Grammar grammar) {
-		return GrammarUtil.getNamespace(grammar) + ".parser.antlr." + GrammarUtil.getName(grammar)	+ "AntlrTokenFileProvider";
+		return GrammarUtil.getNamespace(grammar) + ".parser.antlr" +"." + GrammarUtil.getName(grammar)	+ "AntlrTokenFileProvider";
 	}
 
 	public static String getLexerClassName(Grammar g) {
