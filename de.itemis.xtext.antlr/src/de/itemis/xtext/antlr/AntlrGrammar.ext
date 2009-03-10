@@ -73,7 +73,7 @@ String grammarElementAccess(EObject object):
 	"Unsupported : grammarElementAccess for: " + object.toString(); 
 	
 String grammarElementAccess(AbstractRule this):
-	gaRuleAccessor() + ".getRule()"; 
+	gaRuleAccessor(); 
 
 String grammarElementAccess(AbstractElement element):
 	gaRuleElementAccessor(element);
