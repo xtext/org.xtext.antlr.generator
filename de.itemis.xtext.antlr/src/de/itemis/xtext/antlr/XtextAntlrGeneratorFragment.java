@@ -36,21 +36,21 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 		String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath();
 		de.itemis.xtext.antlr.AntlrToolRunner.run(srcGenPath+"/"+getGrammarFileName(grammar).replace('.', '/')+".g");
 	}
-	
+
 	@Override
 	public String[] getExportedPackagesRt(Grammar grammar) {
 		return new String[]{
 				GrammarUtil.getNamespace(grammar) + ".parser.antlr"
 		};
 	}
-	
+
 	@Override
 	public String[] getRequiredBundlesRt(Grammar grammar) {
 		return new String[]{
 				"org.antlr.runtime"
 		};
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getGuiceBindingsRt(Grammar grammar) {
@@ -64,8 +64,10 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getGuiceBindingsUi(Grammar grammar) {
-		return toMap(pair("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.ITokenColorer","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.CommonAntlrTokenColorer"),
-					pair("org.eclipse.jface.text.rules.ITokenScanner","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner"));
+		return toMap(
+				pair("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.ITokenColorer", "org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.CommonAntlrTokenColorer"),
+				pair("org.eclipse.jface.text.rules.ITokenScanner", "org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner"),
+				pair("org.eclipse.xtext.ui.common.editor.syntaxcoloring.ITokenStyleProvider", "org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenStyleProvider"));
 	}
 
 	public static String getAntlrTokenFileProviderClassName(Grammar grammar) {
