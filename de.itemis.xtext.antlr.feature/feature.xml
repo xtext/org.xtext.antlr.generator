@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="de.itemis.xtext.antlr.gen.feature"
-      label="AntLR Generator Feature Feature"
-      version="1.0.0"
+      id="de.itemis.xtext.antlr.feature"
+      label="Xtext Antlr Feature"
+      version="0.7.0.qualifier"
       provider-name="itemis AG">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      Additinal plugins for Xtext
    </description>
 
    <copyright url="http://www.example.com/copyright">
