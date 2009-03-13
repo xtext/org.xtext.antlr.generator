@@ -7,14 +7,15 @@
  *******************************************************************************/
 package de.itemis.xtext.antlr;
 
-import static org.eclipse.xtext.util.Tuples.*;
-
 import java.util.Map;
 
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.generator.AbstractGeneratorFragment;
+import org.eclipse.xtext.generator.BindFactory;
+import org.eclipse.xtext.generator.BindKey;
+import org.eclipse.xtext.generator.BindValue;
 import org.eclipse.xtext.generator.Generator;
 import org.eclipse.xtext.parser.ITokenToStringConverter;
 import org.eclipse.xtext.parser.antlr.AntlrTokenDefProvider;
@@ -36,38 +37,39 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 		String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath();
 		de.itemis.xtext.antlr.AntlrToolRunner.run(srcGenPath+"/"+getGrammarFileName(grammar).replace('.', '/')+".g");
 	}
-
+	
 	@Override
 	public String[] getExportedPackagesRt(Grammar grammar) {
 		return new String[]{
 				GrammarUtil.getNamespace(grammar) + ".parser.antlr"
 		};
 	}
-
+	
 	@Override
 	public String[] getRequiredBundlesRt(Grammar grammar) {
 		return new String[]{
 				"org.antlr.runtime"
 		};
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	@Override
-	public Map<String, String> getGuiceBindingsRt(Grammar grammar) {
-		return toMap(pair(IAntlrParser.class.getName(),getParserClassName(grammar)),
-					pair(ITokenToStringConverter.class.getName(),AntlrTokenToStringConverter.class.getName()),
-					pair(IAntlrTokenFileProvider.class.getName(),getAntlrTokenFileProviderClassName(grammar)),
-					pair(Lexer.class.getName(),getLexerClassName(grammar)),
-					pair(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName()));
+	public Map<BindKey, BindValue> getGuiceBindingsRt(Grammar grammar) {
+		return new BindFactory()
+			.addTypeToType(IAntlrParser.class.getName(),getParserClassName(grammar))
+			.addTypeToType(ITokenToStringConverter.class.getName(),AntlrTokenToStringConverter.class.getName())
+			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getAntlrTokenFileProviderClassName(grammar))
+			.addTypeToType(Lexer.class.getName(),getLexerClassName(grammar))
+			.addTypeToType(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName())
+			.getBindings();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, String> getGuiceBindingsUi(Grammar grammar) {
-		return toMap(
-				pair("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.ITokenColorer", "org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.CommonAntlrTokenColorer"),
-				pair("org.eclipse.jface.text.rules.ITokenScanner", "org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner"),
-				pair("org.eclipse.xtext.ui.common.editor.syntaxcoloring.ITokenStyleProvider", "org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenStyleProvider"));
+	public Map<BindKey, BindValue> getGuiceBindingsUi(Grammar grammar) {
+		return new BindFactory()
+			.addTypeToType("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.ITokenColorer","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.CommonAntlrTokenColorer")
+			.addTypeToType("org.eclipse.jface.text.rules.ITokenScanner","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner")
+			.addTypeToType("org.eclipse.xtext.ui.common.editor.syntaxcoloring.ITokenStyleProvider", "org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenStyleProvider")
+			.getBindings();
 	}
 
 	public static String getAntlrTokenFileProviderClassName(Grammar grammar) {
