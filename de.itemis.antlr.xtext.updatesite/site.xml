@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.itemis.xtext.antlr.gen.feature_1.0.0.jar" id="de.itemis.xtext.antlr.gen.feature" version="1.0.0">
-      <category name="openArchitectureWare (external)"/>
+   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200903171742.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200903171742">
+      <category name="Xtext Antlr Support"/>
    </feature>
-   <category-def name="openArchitectureWare (external)" label="openArchitectureWare (external)">
+   <category-def name="Xtext Antlr Support" label="Xtext Antlr Support">
       <description>
-         External features for openArchitectureware
+         Provides Antlr Support for Xtext
       </description>
    </category-def>
 </site>
