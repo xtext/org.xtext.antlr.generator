@@ -15,6 +15,7 @@ extension org::eclipse::xtext::GrammarUtil reexport;
 extension org::eclipse::xtext::Utilities;
 
 ruleName(ParserRule this) : 'rule'+name;
+ruleName(EnumRule this) : 'rule'+name;
 ruleName(TerminalRule this) : 'RULE_'+name.toUpperCase();
 ruleName(AbstractRule this) : "Unsupported";
 
@@ -25,10 +26,10 @@ setOrAdd(Action this) : if operator=='+=' then 'add' else 'set';
 
 setOrAdd(Assignment this) : if operator=='+=' then 'add' else 'set';
 
-isCalled(Grammar grammar, ParserRule this) :
-	let x = grammar.allParserRules() :
+isCalled(Grammar grammar, AbstractRule this) :
+	let x = grammar.allRules() :
 		x.indexOf(this)==0 || 
-		x.containingGrammar().eAllContents.flatten().typeSelect(RuleCall).select(call|call.rule!=null).rule.name.contains(this.name);
+		x.eAllContents.flatten().typeSelect(RuleCall).select(call|call.rule!=null).rule.contains(this);
 
 localVar(Assignment this) : 'lv_'+feature + '_' + containingParserRule().contentsAsList().indexOf(this);
 localVar(RuleCall this) : 'this_'+rule.name + '_' + containingParserRule().contentsAsList().indexOf(this);
@@ -66,6 +67,7 @@ String objectURI(Grammar grammar, emf::EObject object) :
 mustBeParenthesized(AbstractElement this) : true;
 mustBeParenthesized(Group this) : true;
 mustBeParenthesized(Alternatives this) : true;
+mustBeParenthesized(EnumLiteralDeclaration this) : true;
 mustBeParenthesized(Keyword this) : cardinality!=null;
 mustBeParenthesized(RuleCall this) : cardinality!=null;
 
