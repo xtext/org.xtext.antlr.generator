@@ -93,10 +93,82 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 	@Override
 	public String caseKeyword(Keyword object) {
 		result.append("'");
-		String value = Strings.convertToJavaString(object.getValue());
+		String value = toLexerString(object.getValue());
 		result.append(value).append("'");
 		result.append(Strings.emptyIfNull(object.getCardinality()));
 		return "";
+	}
+	
+	private String toLexerString(String theString) {
+//		return Strings.convertToJavaString(value);
+		int len = theString.length();
+		int bufLen = len * 2;
+		if (bufLen < 0) {
+			bufLen = Integer.MAX_VALUE;
+		}
+		StringBuffer outBuffer = new StringBuffer(bufLen);
+
+		for (int x = 0; x < len; x++) {
+			char aChar = theString.charAt(x);
+			// Handle common case first, selecting largest block that
+			// avoids the specials below
+			if ((aChar > 61) && (aChar < 127)) {
+				if (aChar == '\\') {
+					outBuffer.append('\\');
+					outBuffer.append('\\');
+					continue;
+				}
+				outBuffer.append(aChar);
+				continue;
+			}
+			switch (aChar) {
+				case ' ':
+					outBuffer.append(' ');
+					break;
+				case '\t':
+					outBuffer.append('\\');
+					outBuffer.append('t');
+					break;
+				case '\n':
+					outBuffer.append('\\');
+					outBuffer.append('n');
+					break;
+				case '\r':
+					outBuffer.append('\\');
+					outBuffer.append('r');
+					break;
+				case '\f':
+					outBuffer.append('\\');
+					outBuffer.append('f');
+					break;
+				case '\b':
+					outBuffer.append('\\');
+					outBuffer.append('b');
+					break;
+				case '\'':
+					outBuffer.append('\\');
+					outBuffer.append('\'');
+					break;
+					// don't escape double quotes
+//				case '"':
+//					outBuffer.append('\\');
+//					outBuffer.append('"');
+//					break;
+				default:
+					if ((aChar < 0x0020) || (aChar > 0x007e)) {
+						outBuffer.append('\\');
+						outBuffer.append('u');
+						outBuffer.append(Strings.toHex((aChar >> 12) & 0xF));
+						outBuffer.append(Strings.toHex((aChar >> 8) & 0xF));
+						outBuffer.append(Strings.toHex((aChar >> 4) & 0xF));
+						outBuffer.append(Strings.toHex(aChar & 0xF));
+					}
+					else {
+						outBuffer.append(aChar);
+					}
+			}
+		}
+		return outBuffer.toString();
 	}
 
 	@Override
