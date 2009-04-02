@@ -6,13 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-import xtext;
-import emf;
+import org::eclipse::xtext;
+import org::eclipse::emf::ecore;
 
 extension org::eclipse::xtext::generator::grammarAccess::GrammarAccess reexport;
 extension org::eclipse::xtext::Extensions reexport;
 extension org::eclipse::xtext::GrammarUtil reexport;
 extension org::eclipse::xtext::Utilities;
+extension org::eclipse::xtext::EcoreUtils;
 
 ruleName(ParserRule this) : 'rule'+name;
 ruleName(EnumRule this) : 'rule'+name;
@@ -29,24 +30,24 @@ setOrAdd(Assignment this) : if operator=='+=' then 'add' else 'set';
 isCalled(Grammar grammar, AbstractRule this) :
 	let x = grammar.allRules() :
 		x.indexOf(this)==0 || 
-		x.eAllContents.flatten().typeSelect(RuleCall).select(call|call.rule!=null).rule.contains(this);
+		x.allContents().flatten().typeSelect(RuleCall).select(call|call.rule!=null).rule.contains(this);
 
 localVar(Assignment this) : 'lv_'+feature + '_' + containingParserRule().contentsAsList().indexOf(this);
 localVar(RuleCall this) : 'this_'+rule.name + '_' + containingParserRule().contentsAsList().indexOf(this);
 
-List[AbstractElement] contentsAsList(xtext::ParserRule this):
+List[AbstractElement] contentsAsList(ParserRule this):
 	alternatives.contentsAsList();
 	
-List[AbstractElement] contentsAsList(xtext::AbstractElement this):
+List[AbstractElement] contentsAsList(AbstractElement this):
 	{this};
 	
-List[AbstractElement] contentsAsList(xtext::Alternatives this):
+List[AbstractElement] contentsAsList(Alternatives this):
 	this.groups.contentsAsList();
 
-List[AbstractElement] contentsAsList(xtext::Group this):
+List[AbstractElement] contentsAsList(Group this):
 	this.tokens.contentsAsList();
 	
-toStringLiteral(xtext::AbstractElement this) :
+toStringLiteral(AbstractElement this) :
 	"null";
 	
 String toJavaString(String this):
@@ -61,7 +62,7 @@ toStringLiteral(Keyword this) :
 String toLexerBody(TerminalRule this):
 	JAVA de.itemis.xtext.antlr.TerminalRuleToLexerBody.toLexerBody(org.eclipse.xtext.TerminalRule);
 	
-String objectURI(Grammar grammar, emf::EObject object) :
+String objectURI(Grammar grammar, EObject object) :
 	JAVA de.itemis.xtext.antlr.AntlrGrammarGenUtil.getClasspathURI(org.eclipse.xtext.Grammar, org.eclipse.emf.ecore.EObject);
 
 mustBeParenthesized(AbstractElement this) : true;

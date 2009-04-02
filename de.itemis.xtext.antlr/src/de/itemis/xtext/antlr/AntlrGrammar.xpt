@@ -9,12 +9,13 @@
  *******************************************************************************/
 «ENDREM»
 
-«IMPORT xtext»
-«IMPORT xtextgen»
+«IMPORT org::eclipse::xtext»
+«IMPORT org::eclipse::emf::ecore»
 
 «EXTENSION org::eclipse::xtext::generator::Naming»
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
 «EXTENSION de::itemis::xtext::antlr::Parser»
+«EXTENSION org::eclipse::xtext::EcoreUtils»
 
 «DEFINE grammar FOR Grammar»
 «FILE getGrammarFileName().asPath()+".g" SRC_GEN-»
@@ -299,7 +300,7 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE assignmentEbnf(RuleCall call) FOR ParserRule-»
-«IF call.eContainer.metaType!=Alternatives-»
+«IF Assignment.isInstance(call.eContainer())-»
 «ruleName()-»
 «ELSE-»
 	{ 
@@ -313,7 +314,7 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE assignmentEbnf(RuleCall call) FOR EnumRule-»
-«IF call.eContainer.metaType!=Alternatives-»
+«IF Assignment.isInstance(call.eContainer())-»
 «ruleName()-»
 «ELSE-»
 	{ 
@@ -334,7 +335,7 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR Assignment»	
-	«IF !eAllContents.typeSelect(CrossReference).isEmpty»
+	«IF !allContents().typeSelect(CrossReference).isEmpty»
 		«REM» Cross references are handled in the linking phase «ENDREM»
 		{
 			if ($current==null) {
@@ -362,7 +363,7 @@ import «gaFQName()»;
 	        try {
 	       		«setOrAdd()»($current, "«feature»", «
 	        		IF isBoolean()»true«
-	        		ELSE»«eAllContents.typeSelect(Keyword).isEmpty ? localVar() : "/* " + localVar() + " */ input.LT(-1)"»«
+	        		ELSE»«allContents().typeSelect(Keyword).isEmpty ? localVar() : "/* " + localVar() + " */ input.LT(-1)"»«
 	        		ENDIF», «terminal.toStringLiteral()», «
 	        		IF isParserRuleAssignment()»currentNode«
 	        		ELSE»lastConsumedNode«ENDIF»);
@@ -423,7 +424,7 @@ import «gaFQName()»;
 «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE createCompositeNode FOR emf::EObject
+«DEFINE createCompositeNode FOR EObject
     »createCompositeNode(grammarAccess.«
     grammarElementAccess(this)
     », currentNode);«
@@ -438,7 +439,7 @@ ENDDEFINE»
     currentNode = newNode;«
 ENDDEFINE»
 
-«DEFINE createLeafNode FOR emf::EObject
+«DEFINE createLeafNode FOR EObject
     »createLeafNode(grammarAccess.«
     grammarElementAccess(this)
     », «

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-import xtext;
+import org::eclipse::xtext;
 
 // These are candidates for genParameters of the parser's GenService 
 
