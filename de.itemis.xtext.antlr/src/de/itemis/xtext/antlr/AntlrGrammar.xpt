@@ -405,13 +405,13 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR RuleCall-»
-«IF (ParserRule.isInstance(rule) || EnumRule.isInstance(rule)) && !isAssigned()»
+«IF (ParserRule.isInstance(rule) && !isDatatypeRule((ParserRule)rule) || EnumRule.isInstance(rule)) && !isAssigned()»
     { 
         currentNode=«EXPAND createCompositeNode» 
     }
     «localVar()»=«ENDIF-»
 «rule.ruleName()-»
-«IF (ParserRule.isInstance(rule) || EnumRule.isInstance(rule)) && !isAssigned()»
+«IF (ParserRule.isInstance(rule) && !isDatatypeRule((ParserRule)rule) || EnumRule.isInstance(rule)) && !isAssigned()»
     { 
         $current = $«localVar()».current; 
         currentNode = currentNode.getParent();
