@@ -355,7 +355,7 @@ import «gaFQName()»;
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getClassifier());
-	            «IF isParserRuleAssignment()»associateNodeWithAstElement(currentNode.getParent(), $current);
+	            «IF isParserRuleAssignment() || isEnumRuleAssignment()»associateNodeWithAstElement(currentNode.getParent(), $current);
 	            «ELSE»associateNodeWithAstElement(currentNode, $current);
 	            «ENDIF-»
 	        }
