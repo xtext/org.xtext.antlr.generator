@@ -31,9 +31,6 @@ import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 
 import com.google.inject.Inject;
 
-import «getLexerClassName()»;
-import «getInternalParserClassName()»;
-
 import «gaFQName()»;
 
 public class «getParserClassName().toSimpleName()» extends org.eclipse.xtext.parser.antlr.AbstractAntlrParser {

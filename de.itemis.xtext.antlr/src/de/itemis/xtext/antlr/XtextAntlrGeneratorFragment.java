@@ -7,15 +7,14 @@
  *******************************************************************************/
 package de.itemis.xtext.antlr;
 
-import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.generator.AbstractGeneratorFragment;
 import org.eclipse.xtext.generator.BindFactory;
-import org.eclipse.xtext.generator.BindKey;
-import org.eclipse.xtext.generator.BindValue;
+import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
 import org.eclipse.xtext.parser.ITokenToStringConverter;
 import org.eclipse.xtext.parser.antlr.AntlrTokenDefProvider;
@@ -53,7 +52,7 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 	}
 	
 	@Override
-	public Map<BindKey, BindValue> getGuiceBindingsRt(Grammar grammar) {
+	public Set<Binding> getGuiceBindingsRt(Grammar grammar) {
 		return new BindFactory()
 			.addTypeToType(IAntlrParser.class.getName(),getParserClassName(grammar))
 			.addTypeToType(ITokenToStringConverter.class.getName(),AntlrTokenToStringConverter.class.getName())
@@ -64,12 +63,13 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 	}
 
 	@Override
-	public Map<BindKey, BindValue> getGuiceBindingsUi(Grammar grammar) {
+	public Set<Binding> getGuiceBindingsUi(Grammar grammar) {
 		return new BindFactory()
 			.addTypeToType("org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.ITokenColorer","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.CommonAntlrTokenColorer")
 			.addTypeToType("org.eclipse.jface.text.rules.ITokenScanner","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner")
 			.addTypeToType("org.eclipse.xtext.ui.common.editor.syntaxcoloring.ITokenStyleProvider", "org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenStyleProvider")
 			.addTypeToType("org.eclipse.xtext.ui.common.editor.contentassist.IProposalConflictHelper", "org.eclipse.xtext.ui.common.editor.contentassist.antlr.AntlrProposalConflictHelper")
+			.addTypeToType("org.eclipse.xtext.ui.core.editor.IDamagerRepairer", "org.eclipse.xtext.ui.core.editor.XtextDamagerRepairer")
 			.getBindings();
 	}
 
