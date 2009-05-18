@@ -7,6 +7,8 @@
  *******************************************************************************/
 package de.itemis.xtext.antlr;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.xpand2.XpandExecutionContext;
@@ -29,6 +31,17 @@ import org.eclipse.xtext.parser.antlr.Lexer;
  * @author Sven Efftinge
  */
 public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
+	
+	private AntlrOptions options = new AntlrOptions();
+	
+	public void setOptions(AntlrOptions options) {
+		this.options = options;
+	}
+	
+	@Override
+	protected List<Object> getParameters(Grammar grammar) {
+		return Collections.singletonList((Object)options);
+	}
 
 	@Override
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
