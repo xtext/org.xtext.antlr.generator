@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200905111747.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200905111747"/>
+   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200905191205.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200905191205"/>
    <category-def name="Xtext Antlr Support" label="Xtext Antlr Support">
       <description>
          Provides Antlr Support for Xtext
