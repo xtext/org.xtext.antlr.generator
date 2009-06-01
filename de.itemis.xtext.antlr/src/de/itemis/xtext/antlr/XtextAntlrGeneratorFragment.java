@@ -7,14 +7,11 @@
  *******************************************************************************/
 package de.itemis.xtext.antlr;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
-import org.eclipse.xtext.generator.AbstractGeneratorFragment;
 import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
@@ -30,24 +27,13 @@ import org.eclipse.xtext.parser.antlr.Lexer;
  * @author Sebastian Zarnekow - Initial contribution and API
  * @author Sven Efftinge
  */
-public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
+public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment {
 	
-	private AntlrOptions options = new AntlrOptions();
-	
-	public void setOptions(AntlrOptions options) {
-		this.options = options;
-	}
-	
-	@Override
-	protected List<Object> getParameters(Grammar grammar) {
-		return Collections.singletonList((Object)options);
-	}
-
 	@Override
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
 		super.generate(grammar, ctx);
 		String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath();
-		de.itemis.xtext.antlr.AntlrToolRunner.run(srcGenPath+"/"+getGrammarFileName(grammar).replace('.', '/')+".g");
+		AntlrToolRunner.run(srcGenPath+"/"+getGrammarFileName(grammar).replace('.', '/')+".g");
 	}
 	
 	@Override
@@ -85,11 +71,11 @@ public class XtextAntlrGeneratorFragment extends AbstractGeneratorFragment {
 			.addTypeToType("org.eclipse.xtext.ui.core.editor.IDamagerRepairer", "org.eclipse.xtext.ui.core.editor.XtextDamagerRepairer")
 			.getBindings();
 	}
-
+	
 	public static String getAntlrTokenFileProviderClassName(Grammar grammar) {
 		return GrammarUtil.getNamespace(grammar) + ".parser.antlr" +"." + GrammarUtil.getName(grammar)	+ "AntlrTokenFileProvider";
 	}
-
+	
 	public static String getLexerClassName(Grammar g) {
 		return GrammarUtil.getNamespace(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g)	+ "Lexer";
 	}

@@ -21,8 +21,11 @@ import org.eclipse.xtext.util.TailWriter;
  */
 public class AntlrToolRunner {
     
-    public static void run(String grammarFullPath) {        
-        Tool antlr = new Tool(new String[] { grammarFullPath }) {
+	public static void runWithParams(String grammarFullPath, String... furtherArgs) {
+		String[] args = new String[furtherArgs.length + 1];
+		System.arraycopy(furtherArgs, 0, args, 0, furtherArgs.length);
+		args[furtherArgs.length] = grammarFullPath;
+		Tool antlr = new Tool(args) {
         	/**
         	 * Use a writer that suppresses the first comment line of java files, because
         	 * we don't want to have a timestamp in our generated parsers and lexers.
@@ -36,5 +39,9 @@ public class AntlrToolRunner {
 			}
         };
         antlr.process();
+	}
+	
+    public static void run(String grammarFullPath) {
+    	runWithParams(grammarFullPath);
     }
 }

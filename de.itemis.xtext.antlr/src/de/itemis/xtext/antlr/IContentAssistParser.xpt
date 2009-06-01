@@ -1,0 +1,99 @@
+«REM»
+/*******************************************************************************
+ * Copyright (c) 2009 itemis AG (http://www.itemis.eu) and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ *******************************************************************************/
+«ENDREM»
+
+«IMPORT org::eclipse::xtext»
+
+«EXTENSION org::eclipse::xtext::generator::Naming»
+«EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
+«EXTENSION org::eclipse::xtext::generator::grammarAccess::GrammarAccess»
+«EXTENSION de::itemis::xtext::antlr::ContentAssistParser»
+
+«DEFINE parser FOR Grammar»
+«FILE getParserClassName().asPath()+".java" SRC_GEN_UI-»
+/*
+«fileHeader()»
+*/
+package «getParserClassName().toJavaPackage()»;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.RecognitionException;
+import org.eclipse.xtext.AbstractElement;
+import org.eclipse.xtext.ui.common.editor.contentassist.antlr.AbstractContentAssistParser;
+import org.eclipse.xtext.ui.common.editor.contentassist.antlr.FollowElement;
+import org.eclipse.xtext.ui.common.editor.contentassist.antlr.internal.AbstractInternalContentAssistParser;
+
+import com.google.inject.Inject;
+
+import «gaFQName()»;
+
+public class «getParserClassName().toSimpleName()» extends AbstractContentAssistParser {
+	
+	@Inject
+	private «gaSimpleName()» grammarAccess;
+	
+	private Map<AbstractElement, String> nameMappings;
+	
+	@Override
+	protected «getInternalLexerClassName()» createLexer(CharStream stream) {
+		return new «getInternalLexerClassName()»(stream);
+	}
+	
+	@Override
+	protected «getInternalParserClassName()» createParser() {
+		«getInternalParserClassName()» result = new «getInternalParserClassName()»(null);
+		result.setGrammarAccess(grammarAccess);
+		return result;
+	}
+	
+	@Override
+	protected String getRuleName(AbstractElement element) {
+		if (nameMappings == null) {
+			nameMappings = new HashMap<AbstractElement, String>() {
+				{
+		«FOREACH allAlternatives().union(allGroups()) AS ele-»
+					put(grammarAccess.«grammarElementAccess(ele)», "rule__«ele.containingRule().gaRuleIdentifyer()»__«ele.gaElementIdentifyer()»");
+		«ENDFOREACH-»
+				}
+			};
+		}
+		return nameMappings.get(element);
+	}
+	
+	@Override
+	protected Collection<FollowElement> getFollowElements(AbstractInternalContentAssistParser parser) {
+		try {
+			«getInternalParserClassName()» typedParser = («getInternalParserClassName()») parser;
+			typedParser.«allParserRules().first().entryRuleName()»();
+			return typedParser.getFollowElements();
+		} catch(RecognitionException ex) {
+			throw new RuntimeException(ex);
+		}		
+	}
+	
+	@Override
+	protected String[] getInitialHiddenTokens() {
+		return new String[] { «FOREACH initialHiddenTokens() AS hidden SEPARATOR ", "»"«hidden»"«ENDFOREACH-» };
+	}
+	
+	public «gaSimpleName()» getGrammarAccess() {
+		return this.grammarAccess;
+	}
+	
+	public void setGrammarAccess(«gaSimpleName()» grammarAccess) {
+		this.grammarAccess = grammarAccess;
+	}
+}
+«ENDFILE»
+«ENDDEFINE»

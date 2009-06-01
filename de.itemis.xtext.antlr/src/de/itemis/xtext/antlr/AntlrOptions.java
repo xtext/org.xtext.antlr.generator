@@ -10,7 +10,6 @@ package de.itemis.xtext.antlr;
 
 /**
  * @author Sven Efftinge - Initial contribution and API
- *
  */
 public class AntlrOptions {
 	private boolean backtrack = false;

@@ -25,6 +25,5 @@ String getInternalParserClassName(Grammar grammar) :
 String getGrammarFileName(Grammar grammar) :
 	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getGrammarFileName(org.eclipse.xtext.Grammar);
 
-
 Void runAntlrTool(String grammarFullPath) :
 	JAVA de.itemis.xtext.antlr.AntlrToolRunner.run(java.lang.String);
