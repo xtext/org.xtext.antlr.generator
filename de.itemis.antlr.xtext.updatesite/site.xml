@@ -6,6 +6,9 @@
    <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200906021421.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200906021421">
       <category name="Xtext Antlr Support"/>
    </feature>
+   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200906091156.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200906091156">
+      <category name="Xtext Antlr Support"/>
+   </feature>
    <category-def name="Xtext Antlr Support" label="Xtext Antlr Support">
       <description>
          Provides Antlr Support for Xtext
