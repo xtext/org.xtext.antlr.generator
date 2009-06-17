@@ -18,7 +18,7 @@
    </copyright>
 
    <url>
-      <update label="Xtext Antlr Support" url="http://xtext.itemis.com/updates/milestones/site.xml"/>
+      <update label="Xtext Antlr Support" url="http://download.itemis.com/updates/milestones/site.xml"/>
    </url>
 
    <plugin
