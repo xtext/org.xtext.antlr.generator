@@ -24,6 +24,9 @@ import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
 import org.eclipse.xtext.parser.antlr.Lexer;
 
 /**
+ * Converts the Xtext grammar to an AntLR grammar runs the AntLR generator. 
+ * Additionally generates some parser/lexer related services
+ *  
  * @author Sebastian Zarnekow - Initial contribution and API
  * @author Sven Efftinge
  */
