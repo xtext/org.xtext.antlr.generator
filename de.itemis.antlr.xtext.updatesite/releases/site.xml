@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Xtext Antlr Support" url="http://download.itemis.com/updates/releases/">
+      Provides Antlr support for Xtext
+   </description>
+   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200906230945.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200906230945">
+      <category name="Xtext Antlr Support 0.7.0"/>
+   </feature>
+   <category-def name="Xtext Antlr Support 0.7.0" label="Xtext Antlr Support 0.7.0"/>
+</site>
