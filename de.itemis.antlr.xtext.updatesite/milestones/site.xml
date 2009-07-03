@@ -3,32 +3,8 @@
    <description name="Xtext Antlr Support" url="http://download.itemis.com/updates/milestones/">
       Provides Antlr support for Xtext
    </description>
-   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200905191256.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200905191256">
-      <category name="Xtext Antlr Support 0.7.0.200905191256"/>
-   </feature>
-   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200906021421.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200906021421">
-      <category name="Xtext Antlr Support 0.7.0.200906021421"/>
-   </feature>
-   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200906091156.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200906091156">
-      <category name="Xtext Antlr Support 0.7.0.200906091156"/>
-   </feature>
-   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200906241611.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200906241611">
+   <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200907031240.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200907031240">
       <category name="Xtext Antlr Support 0.7.0.RC5"/>
    </feature>
-   <category-def name="Xtext Antlr Support 0.7.0.200906091156" label="Xtext Antlr Support 0.7.0.200906091156">
-      <description>
-         Provides Antlr Support for Xtext
-      </description>
-   </category-def>
-   <category-def name="Xtext Antlr Support 0.7.0.200906021421" label="Xtext Antlr Support 0.7.0.200906021421">
-      <description>
-         Provides Antlr Support for Xtext
-      </description>
-   </category-def>
-   <category-def name="Xtext Antlr Support 0.7.0.200905191256" label="Xtext Antlr Support 0.7.0.200905191256">
-      <description>
-         Provides Antlr Support for Xtext
-      </description>
-   </category-def>
    <category-def name="Xtext Antlr Support 0.7.0.RC5" label="Xtext Antlr Support 0.7.0.RC5"/>
 </site>
