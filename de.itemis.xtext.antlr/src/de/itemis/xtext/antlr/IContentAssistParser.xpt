@@ -62,9 +62,7 @@ public class «getParserClassName().toSimpleName()» extends AbstractContentAssist
 		if (nameMappings == null) {
 			nameMappings = new HashMap<AbstractElement, String>() {
 				{
-		«FOREACH allAlternatives().union(allGroups()) AS ele-»
-					put(grammarAccess.«grammarElementAccess(ele)», "rule__«ele.containingRule().gaRuleIdentifyer()»__«ele.gaElementIdentifyer()»");
-		«ENDFOREACH-»
+«EXPAND ruleName FOREACH allAlternatives().union(allGroups()).union(allAssignments())-»
 				}
 			};
 		}
@@ -96,4 +94,20 @@ public class «getParserClassName().toSimpleName()» extends AbstractContentAssist
 	}
 }
 «ENDFILE»
+«ENDDEFINE»
+
+«DEFINE ruleName FOR AbstractElement-»
+«ERROR "unsupported type: " + metaType.name-»
+«ENDDEFINE»
+
+«DEFINE ruleName FOR Alternatives-»
+					put(grammarAccess.«grammarElementAccess()», "rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»");
+«ENDDEFINE»
+
+«DEFINE ruleName FOR Assignment-»
+					put(grammarAccess.«grammarElementAccess()», "rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»");
+«ENDDEFINE»
+
+«DEFINE ruleName FOR Group-»
+					put(grammarAccess.«grammarElementAccess()», "rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__0");
 «ENDDEFINE»

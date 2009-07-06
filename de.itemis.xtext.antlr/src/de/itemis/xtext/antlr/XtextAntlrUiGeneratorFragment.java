@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.AbstractElement;
 import org.eclipse.xtext.Alternatives;
+import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.EnumRule;
 import org.eclipse.xtext.Grammar;
@@ -24,7 +25,6 @@ import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
-import org.eclipse.xtext.generator.IGeneratorFragment;
 
 /**
  * A {@link IGeneratorFragment} to generate a lightweight AntLR based parser used in content assist.
@@ -83,6 +83,10 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 
 	public static Collection<Group> getAllGroups(Grammar g) {
 		return getAllElementsByType(g, Group.class);
+	}
+	
+	public static Collection<Assignment> getAllAssignments(Grammar g) {
+		return getAllElementsByType(g, Assignment.class);
 	}
 
 	private static <T extends AbstractElement> Collection<T> getAllElementsByType(Grammar g, Class<T> type) {

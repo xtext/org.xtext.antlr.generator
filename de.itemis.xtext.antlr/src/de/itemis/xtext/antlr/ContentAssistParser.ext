@@ -30,3 +30,6 @@ Collection[Alternatives] allAlternatives(Grammar grammar):
 	
 Collection[Group] allGroups(Grammar grammar):
 	JAVA de.itemis.xtext.antlr.XtextAntlrUiGeneratorFragment.getAllGroups(org.eclipse.xtext.Grammar);
+
+Collection[Assignment] allAssignments(Grammar grammar):
+	JAVA de.itemis.xtext.antlr.XtextAntlrUiGeneratorFragment.getAllAssignments(org.eclipse.xtext.Grammar);

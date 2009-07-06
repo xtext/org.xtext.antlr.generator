@@ -86,6 +86,7 @@ import «gaFQName()»;
 «EXPAND rule(this) FOREACH allEnumRules()»
 «EXPAND rule(this) FOREACH allAlternatives()»
 «EXPAND rule(this) FOREACH allGroups()»
+«EXPAND rule(this) FOREACH allAssignments()»
 «EXPAND rule FOREACH allTerminalRules()»
 «ENDDEFINE»
 
@@ -151,19 +152,45 @@ finally {
 «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE rule(Grammar original) FOR Group»
+«DEFINE rule(Grammar original) FOR Assignment»
 «IF isCalled(original, containingRule())-»
 rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
     @init {
 		int stackSize = keepStackSize();
     }
 :
-	«EXPAND ebnf FOREACH tokens»
+	«EXPAND assignmentEbnf FOR terminal»
 ;
 finally {
 	restoreStackSize(stackSize);
 }
 «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE rule(Grammar original) FOR Group»
+«IF isCalled(original, containingRule())-»
+«EXPAND ruleImpl(this, 0) FOR tokens-»
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE ruleImpl(Group group, int index) FOR List[AbstractElement]»
+rule__«group.containingRule().gaRuleIdentifyer()»__«group.gaElementIdentifyer()»__«index»
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+	«EXPAND ebnf FOR first()»
+«IF size > 1-»
+	rule__«group.containingRule().gaRuleIdentifyer()»__«group.gaElementIdentifyer()»__«index + 1»
+«ENDIF-» 
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+«IF size > 1-»
+«EXPAND ruleImpl(group, index+1) FOR withoutFirst()»
+«ENDIF»
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR EnumLiteralDeclaration-»
@@ -175,18 +202,35 @@ finally {
 «ENDDEFINE»
 
 «DEFINE ebnf FOR AbstractElement-»
+«IF !isOptionalCardinality() && isMultipleCardinality()-»
+(
 (
 { before(grammarAccess.«grammarElementAccess(this)»); }
-«IF mustBeParenthesized()»(«EXPAND ebnf2»)«ELSE»«EXPAND ebnf2»«ENDIF»«cardinality-»
+(«EXPAND ebnf2»)
 { after(grammarAccess.«grammarElementAccess(this)»); }
 )
+(
+{ before(grammarAccess.«grammarElementAccess(this)»); }
+(«EXPAND ebnf2»)*
+{ after(grammarAccess.«grammarElementAccess(this)»); }
+)
+)
+«ELSE-»
+(
+{ before(grammarAccess.«grammarElementAccess(this)»); }
+«IF mustBeParenthesized()»(«EXPAND ebnf2»)«ELSE»«EXPAND ebnf2»«ENDIF»«cardinality»
+{ after(grammarAccess.«grammarElementAccess(this)»); }
+)
+«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
 
 «DEFINE ebnf2 FOR Alternatives-»rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»«ENDDEFINE»
 
-«DEFINE ebnf2 FOR Group»rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»«ENDDEFINE»
+«DEFINE ebnf2 FOR Assignment-»rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»«ENDDEFINE»
+
+«DEFINE ebnf2 FOR Group»rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__0«ENDDEFINE»
 
 «DEFINE assignmentEbnf FOR AbstractElement-»
 (
@@ -278,10 +322,6 @@ finally {
 
 «DEFINE assignmentEbnf(RuleCall call) FOR TerminalRule-»
 	«ruleName()-»
-«ENDDEFINE»
-
-«DEFINE ebnf2 FOR Assignment»	
-    «EXPAND assignmentEbnf FOR terminal» 
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR CrossReference»
