@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="Xtext Antlr Support" url="http://download.itemis.com/updates/releases/">
+   <description name="Xtext Antlr Support" url="http://download.itemis.com/updates/releases/site/">
       Provides Antlr support for Xtext
    </description>
    <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200907031240.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200907031240">
