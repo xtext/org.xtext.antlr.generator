@@ -4,7 +4,10 @@
       Provides Antlr support for Xtext
    </description>
    <feature url="features/de.itemis.xtext.antlr.feature_0.7.0.200907031240.jar" id="de.itemis.xtext.antlr.feature" version="0.7.0.200907031240">
-      <category name="Xtext Antlr Support 0.7.0"/>
+      <category name="Xtext Antlr Support"/>
    </feature>
-   <category-def name="Xtext Antlr Support 0.7.0" label="Xtext Antlr Support 0.7.0"/>
+   <feature url="features/de.itemis.xtext.antlr.feature_0.7.1.200907151417.jar" id="de.itemis.xtext.antlr.feature" version="0.7.1.200907151417">
+      <category name="Xtext Antlr Support"/>
+   </feature>
+   <category-def name="Xtext Antlr Support" label="Xtext Antlr Support"/>
 </site>
