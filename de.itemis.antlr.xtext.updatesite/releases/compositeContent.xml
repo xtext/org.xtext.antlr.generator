@@ -8,5 +8,7 @@
   <children size='2'>
     <child location='site'/>
     <child location='http://download.eclipse.org/modeling/tmf/updates/releases/'/>
+    <child location='http://download.eclipse.org/modeling/emft/updates/releases/'/>
+    <child location='http://download.eclipse.org/modeling/m2t/updates/releases/'/>
   </children>
 </repository>
