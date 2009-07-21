@@ -5,14 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package de.itemis.xtext.antlr;
+package de.itemis.xtext.antlr.ex.ca;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.mwe.core.issues.Issues;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.AbstractElement;
 import org.eclipse.xtext.Alternatives;
@@ -27,28 +26,29 @@ import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
 
+import de.itemis.xtext.antlr.AbstractAntlrGeneratorFragment;
+import de.itemis.xtext.antlr.AntlrToolRunner;
+import de.itemis.xtext.antlr.ex.common.KeywordHelper;
+
 /**
  * A {@link IGeneratorFragment} to generate a lightweight AntLR based parser used in content assist.
  * 
  * @author Sebastian Zarnekow - Initial contribution and API
  */
-public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragment {
+public class ContentAssistParserGeneratorFragment extends AbstractAntlrGeneratorFragment {
 
 	@Override
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
+		KeywordHelper helper = new KeywordHelper(grammar);
 		super.generate(grammar, ctx);
-		String srcUiGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN_UI).getPath();
-		AntlrToolRunner.run(srcUiGenPath + "/" + getGrammarFileName(grammar).replace('.', '/') + ".g");
+		final String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN_UI).getPath();
+		String libPath = srcGenPath + "/" + getLexerGrammarFileName(grammar).replace('.', '/');
+		libPath = libPath.substring(0, libPath.lastIndexOf('/'));
+		AntlrToolRunner.runWithParams(srcGenPath+"/"+getLexerGrammarFileName(grammar).replace('.', '/')+".g");
+		AntlrToolRunner.runWithParams(srcGenPath+"/"+getParserGrammarFileName(grammar).replace('.', '/')+".g", "-lib", libPath);
+		helper.discardHelper(grammar);
 	}
 
-	@Override
-	public void checkConfiguration(Issues issues) {
-		super.checkConfiguration(issues);
-		if (getOptions().isBacktrackLexer()) {
-			issues.addError("This fragment does not support the option 'backtracking' for the lexer. Use 'de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment' instead");
-		}
-	}
-	
 	@Override
 	public Set<Binding> getGuiceBindingsUi(Grammar grammar) {
 		return new BindFactory().addTypeToType(
@@ -73,16 +73,18 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 	}
 
 	public static String getInternalLexerClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g)
-				+ "Lexer";
+		return getLexerGrammarFileName(g) + "Lexer";
 	}
 
 	public static String getInternalParserClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g)
-				+ "Parser";
+		return getParserGrammarFileName(g) + "Parser";
 	}
 
-	public static String getGrammarFileName(Grammar g) {
+	public static String getLexerGrammarFileName(Grammar g) {
+		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.lexer.Internal" + GrammarUtil.getName(g);
+	}
+	
+	public static String getParserGrammarFileName(Grammar g) {
 		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g);
 	}
 

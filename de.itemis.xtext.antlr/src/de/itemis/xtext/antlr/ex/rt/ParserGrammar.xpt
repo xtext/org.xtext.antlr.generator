@@ -1,0 +1,457 @@
+«REM»
+/*******************************************************************************
+ * Copyright (c) 2008 itemis AG (http://www.itemis.eu) and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ *******************************************************************************/
+«ENDREM»
+
+«IMPORT org::eclipse::xtext»
+«IMPORT org::eclipse::emf::ecore»
+«IMPORT de::itemis::xtext::antlr»
+
+«EXTENSION org::eclipse::xtext::generator::Naming»
+«EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
+«EXTENSION de::itemis::xtext::antlr::ex::rt::FileAndClassNames»
+«EXTENSION de::itemis::xtext::antlr::ex::common::Common»
+«EXTENSION org::eclipse::xtext::EcoreUtils»
+
+«DEFINE grammar(AntlrOptions options) FOR Grammar»
+«FILE getParserGrammarFileName().asPath()+".g" SRC_GEN-»
+/*
+«fileHeader()»
+*/
+parser grammar «getParserGrammarFileName().toSimpleName()»;
+
+options {
+	tokenVocab=«getLexerGrammarFileName().toSimpleName()»;
+	superClass=AbstractInternalAntlrParser;
+	«IF options.backtrack-»
+	backtrack=true;
+	«ENDIF-»
+	«IF options.memoize-»
+	 memoize=true;
+	«ENDIF-»
+	«IF options.k>=0»
+	 k=«options.k»;
+	«ENDIF»
+}
+
+@header {
+package «getParserGrammarFileName().toJavaPackage()»; 
+
+import java.io.InputStream;
+import org.eclipse.xtext.*;
+import org.eclipse.xtext.parser.*;
+import org.eclipse.xtext.parser.impl.*;
+import org.eclipse.xtext.parsetree.*;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.EObject;
+«IF !allEnumRules().isEmpty-»
+import org.eclipse.emf.common.util.Enumerator;
+«ENDIF-»
+import org.eclipse.xtext.parser.antlr.AbstractInternalAntlrParser;
+import org.eclipse.xtext.parser.antlr.XtextTokenStream;
+import org.eclipse.xtext.parser.antlr.XtextTokenStream.HiddenTokens;
+import org.eclipse.xtext.parser.antlr.AntlrDatatypeRuleToken;
+import org.eclipse.xtext.conversion.ValueConverterException;
+import «gaFQName()»;
+
+}
+
+@members {
+ 
+ 	private «gaSimpleName()» grammarAccess;
+ 	
+    public «getInternalParserClassName().toSimpleName()»(TokenStream input, IAstFactory factory, «gaSimpleName()» grammarAccess) {
+        this(input);
+        this.factory = factory;
+        registerRules(grammarAccess.getGrammar());
+        this.grammarAccess = grammarAccess;
+    }
+    
+    @Override
+    protected InputStream getTokenFile() {
+    	ClassLoader classLoader = getClass().getClassLoader();
+    	return classLoader.getResourceAsStream("«getParserGrammarFileName().asPath()».tokens");
+    }
+    
+    @Override
+    protected String getFirstRuleName() {
+    	return "«allParserRules().first().name»";	
+   	} 
+}
+
+@rulecatch { 
+    catch (RecognitionException re) { 
+        recover(input,re); 
+        appendSkippedTokens();
+    } 
+}
+«EXPAND antlrRules»
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE antlrRules FOR Grammar»
+«EXPAND rule(this) FOREACH allParserRules()»
+«EXPAND rule(this) FOREACH allEnumRules()»
+«ENDDEFINE»
+
+
+«DEFINE rule(Grammar original) FOR ParserRule»
+«IF isCalled(original,this)»
+«IF !isDatatypeRule()»
+// Entry rule «entryRuleName()»
+«entryRuleName()» returns [EObject current=null] :
+	{ currentNode = «EXPAND createCompositeNode» }
+	 iv_«ruleName()»=«ruleName()» 
+	 { $current=$iv_«ruleName()».current; } 
+	 EOF 
+;
+
+// Rule «name»
+«ruleName()» returns [EObject current=null] 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+«IF definesHiddenTokens-»
+		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
+«ENDIF-»    
+    }
+    @after { resetLookahead(); 
+    	lastConsumedNode = currentNode;
+«IF definesHiddenTokens-»
+		myHiddenTokenState.restore();
+«ENDIF-»
+    }:
+    «EXPAND ebnf(original) FOR this.alternatives»;
+«ELSE»
+// Entry rule «entryRuleName()»
+«entryRuleName()» returns [String current=null] :
+	{ currentNode = «EXPAND createCompositeNode» } 
+	 iv_«ruleName()»=«ruleName()» 
+	 { $current=$iv_«ruleName()».current.getText(); }  
+	 EOF 
+;
+
+// Rule «name»
+«ruleName()» returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
+    @init { setCurrentLookahead(); resetLookahead(); 
+«IF definesHiddenTokens-»
+		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
+«ENDIF-» 
+    }
+    @after { resetLookahead(); 
+	    lastConsumedNode = currentNode;
+	    lastConsumedDatatypeToken = $current;
+«IF definesHiddenTokens-»
+		myHiddenTokenState.restore();
+«ENDIF-» 
+    }:
+   «EXPAND dataTypeEbnf(original) FOR this.alternatives»
+    ;
+«ENDIF»
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE rule(Grammar original) FOR EnumRule»
+«IF isCalled(original,this)»
+// Rule «name»
+«ruleName()» returns [Enumerator current=null] 
+    @init { setCurrentLookahead(); resetLookahead(); }
+    @after { resetLookahead(); 
+    	lastConsumedNode = currentNode;
+    }:
+    «EXPAND ebnf(original) FOR this.alternatives»;
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR EnumLiteralDeclaration-»
+    «grammar.getKeywordRuleName(literal.value)»
+	{
+        $current = grammarAccess.«grammarElementAccess(this)».getEnumLiteral().getInstance();
+        «EXPAND createLeafNode» 
+    }
+«ENDDEFINE»
+
+«DEFINE ebnf(Grammar grammar) FOR AbstractElement-»
+«IF mustBeParenthesized()»(«EXPAND ebnf2(grammar)»)«ELSE»«EXPAND ebnf2(grammar)»«ENDIF»«cardinality-»
+«ENDDEFINE»
+
+«DEFINE dataTypeEbnf(Grammar grammar) FOR AbstractElement-»
+«IF mustBeParenthesized()»(«EXPAND dataTypeEbnf2(grammar)»)«ELSE»«EXPAND dataTypeEbnf2(grammar)»«ENDIF»«cardinality-»
+«ENDDEFINE»
+
+«DEFINE dataTypeEbnf2(Grammar grammar) FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
+
+«DEFINE dataTypeEbnf2(Grammar grammar) FOR Alternatives-»«EXPAND dataTypeEbnf(grammar) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
+
+«DEFINE dataTypeEbnf2(Grammar grammar) FOR Group»«EXPAND dataTypeEbnf(grammar) FOREACH tokens»«ENDDEFINE»
+
+«DEFINE dataTypeEbnf2(Grammar grammar) FOR Keyword»
+	kw=«grammar.getKeywordRuleName(value)» 
+    {
+        $current.merge(kw);
+        «EXPAND createLeafNode» 
+    }
+«ENDDEFINE»
+
+«DEFINE dataTypeEbnf2(Grammar grammar) FOR RuleCall-»
+«IF (ParserRule.isInstance(rule) || EnumRule.isInstance(rule)) && !isAssigned()»
+    { 
+        currentNode=«EXPAND createCompositeNode» 
+    }
+«ENDIF-»
+    «localVar()»=«rule.ruleName()-»
+    {
+		$current.merge(«localVar()»);
+    }
+«IF (ParserRule.isInstance(rule) || EnumRule.isInstance(rule)) && !isAssigned()»
+    { 
+        currentNode = currentNode.getParent();
+    }
+«ENDIF-»
+«IF TerminalRule.isInstance(rule)»
+    { 
+    «EXPAND createLeafNode» 
+    }
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR Alternatives-»«EXPAND ebnf(grammar) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR Group»«EXPAND ebnf(grammar) FOREACH tokens»«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Grammar grammar) FOR AbstractElement-»
+«EXPAND ebnf(grammar)»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Grammar grammar) FOR Group-»
+«ERROR "assignmentEbnf is not supported for Group"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Grammar grammar) FOR Assignment-»
+«ERROR "assignmentEbnf is not supported for Assignment"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Grammar grammar) FOR Action-»
+«ERROR "assignmentEbnf is not supported for Action"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Grammar grammar) FOR CrossReference-»
+«EXPAND crossrefEbnf(this) FOR terminal-»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR AbstractElement-»
+«ERROR "crossrefEbnf is not supported for AbstractElement"»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR RuleCall-»
+«EXPAND crossrefEbnf(ref) FOR rule-»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR AbstractRule-»
+«ERROR "crossrefEbnf is not supported for AbstractRule"»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR ParserRule-»
+«IF !isDatatypeRule()-»
+«ERROR "crossrefEbnf is not supported for ParserRule that is not a datatype rule"»
+«ELSE-»
+		{ 
+	        currentNode=«EXPAND createCompositeNode FOR ref» 
+	    }
+		«ruleName()-»
+		{ 
+	        currentNode = currentNode.getParent();
+	    }
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR EnumRule-»
+		{ 
+	        currentNode=«EXPAND createCompositeNode FOR ref» 
+	    }
+		«ruleName()-»
+		{ 
+	        currentNode = currentNode.getParent();
+	    }
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR TerminalRule-»
+	«ruleName()»
+	{
+		«EXPAND createLeafNode FOR ref» 
+	}
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Grammar grammar) FOR Alternatives-»
+(«EXPAND assignmentEbnf(grammar) FOREACH groups SEPARATOR '\n    |'»)
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf FOR RuleCall-»
+«EXPAND assignmentEbnf(this) FOR rule-»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(RuleCall call) FOR AbstractRule-»
+«ERROR "assignmentEbnf is not supported for AbstractRule"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(RuleCall call) FOR ParserRule-»
+«IF Assignment.isInstance(call.eContainer())-»
+«ruleName()-»
+«ELSE-»
+	{ 
+        currentNode=«EXPAND createCompositeNode FOR call» 
+    }
+	«ruleName()-»
+	{ 
+        currentNode = currentNode.getParent();
+    }
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(RuleCall call) FOR EnumRule-»
+«IF Assignment.isInstance(call.eContainer())-»
+«ruleName()-»
+«ELSE-»
+	{ 
+        currentNode=«EXPAND createCompositeNode FOR call» 
+    }
+	«ruleName()-»
+	{ 
+        currentNode = currentNode.getParent();
+    }
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(RuleCall call) FOR TerminalRule-»
+	«ruleName()»
+	{
+		«EXPAND createLeafNode FOR call» 
+	}
+«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR Assignment»	
+	«IF !allContents().typeSelect(CrossReference).isEmpty»
+		«REM» Cross references are handled in the linking phase «ENDREM»
+		{
+			if ($current==null) {
+	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
+	        }
+        }
+		«EXPAND assignmentEbnf(grammar) FOR terminal»
+		// TODO assign feature to currentNode
+	«ELSE»
+	    «IF isParserRuleAssignment() || isEnumRuleAssignment()»
+	    { 
+	        currentNode=«EXPAND createCompositeNode FOR terminal» 
+	    }
+	    «ENDIF-»
+	    «localVar()»=«EXPAND assignmentEbnf(grammar) FOR terminal» 
+	    {
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getClassifier());
+	            «IF isParserRuleAssignment() || isEnumRuleAssignment()»associateNodeWithAstElement(currentNode.getParent(), $current);
+	            «ELSE»associateNodeWithAstElement(currentNode, $current);
+	            «ENDIF-»
+	        }
+	        «REM»the use of input.LT(-1) in the following line is a workaroudn for a bug of antlr, where assignements of alternative keywords are ignored when there are actions«ENDREM»
+	        try {
+	       		«setOrAdd()»($current, "«feature»", «
+	        		IF isBoolean()»true«
+	        		ELSE»«allContents().typeSelect(Keyword).isEmpty ? localVar() : "/* " + localVar() + " */ input.LT(-1)"»«
+	        		ENDIF», «terminal.toStringLiteral()», «
+	        		IF isParserRuleAssignment()»currentNode«
+	        		ELSE»lastConsumedNode«ENDIF»);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	        «IF isParserRuleAssignment() || isEnumRuleAssignment()-»
+	        currentNode = currentNode.getParent();
+	        «ENDIF-»
+	    }
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR CrossReference»
+«ERROR "ebnf2(Grammar grammar) is not supported for CrossReference"»
+«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR Action»
+    { 
+        temp=factory.create(grammarAccess.«grammarElementAccess()».getType().getClassifier());
+«IF feature != null-»
+        try {
+        	factory.«setOrAdd()»(temp, "«feature»", $current, null /*ParserRule*/, currentNode);
+        } catch(ValueConverterException vce) {
+        	handleValueConverterException(vce);
+        }
+«ENDIF-»
+        $current = temp; 
+        temp = null;
+        «EXPAND insertCompositeNode» 
+        associateNodeWithAstElement(currentNode, $current); 
+    }
+«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR Keyword»
+	«grammar.getKeywordRuleName(value)» 
+    {
+        «EXPAND createLeafNode» 
+    }
+«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar) FOR RuleCall-»
+«IF (ParserRule.isInstance(rule) && !isDatatypeRule((ParserRule)rule) || EnumRule.isInstance(rule)) && !isAssigned()»
+    { 
+        currentNode=«EXPAND createCompositeNode» 
+    }
+    «localVar()»=«ENDIF-»
+«rule.ruleName()-»
+«IF (ParserRule.isInstance(rule) && !isDatatypeRule((ParserRule)rule) || EnumRule.isInstance(rule)) && !isAssigned()»
+    { 
+        $current = $«localVar()».current; 
+        currentNode = currentNode.getParent();
+    }
+«ENDIF-»
+«IF TerminalRule.isInstance(rule)»
+    { 
+    «EXPAND createLeafNode» 
+    }
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE createCompositeNode FOR EObject
+    »createCompositeNode(grammarAccess.«
+    grammarElementAccess(this)
+    », currentNode);«
+ENDDEFINE»
+
+«DEFINE insertCompositeNode FOR Action
+    »CompositeNode newNode = createCompositeNode(grammarAccess.«
+    grammarElementAccess(this)
+    », currentNode.getParent());
+    newNode.getChildren().add(currentNode);
+    moveLookaheadInfo(currentNode, newNode);
+    currentNode = newNode;«
+ENDDEFINE»
+
+«DEFINE createLeafNode FOR EObject
+    »createLeafNode(grammarAccess.«
+    grammarElementAccess(this)
+    », «
+    IF isAssigned()
+        »"«
+        containingAssignment().feature
+        »"«
+    ELSE
+        »null«
+    ENDIF
+    »);«
+ENDDEFINE»
+

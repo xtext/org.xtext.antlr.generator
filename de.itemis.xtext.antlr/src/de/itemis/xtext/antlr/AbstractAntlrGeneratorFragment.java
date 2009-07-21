@@ -23,6 +23,10 @@ public abstract class AbstractAntlrGeneratorFragment extends AbstractGeneratorFr
 	public void setOptions(AntlrOptions options) {
 		this.options = options;
 	}
+	
+	public AntlrOptions getOptions() {
+		return options;
+	}
 
 	@Override
 	protected List<Object> getParameters(Grammar grammar) {

@@ -1,0 +1,97 @@
+«REM»
+/*******************************************************************************
+ * Copyright (c) 2008 itemis AG (http://www.itemis.eu) and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ *******************************************************************************/
+«ENDREM»
+
+«IMPORT org::eclipse::xtext»
+
+«EXTENSION org::eclipse::xtext::generator::Naming»
+«EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
+«EXTENSION de::itemis::xtext::antlr::ex::common::Common»
+«EXTENSION org::eclipse::xtext::EcoreUtils»
+
+
+«DEFINE grammar(de::itemis::xtext::antlr::AntlrOptions options, String fileName, String superclass) FOR Grammar»
+/*
+«fileHeader()»
+*/
+lexer grammar «fileName.toSimpleName()»;
+
+«IF options.backtrackLexer-»
+options {
+	«IF options.backtrackLexer-»
+	backtrack=true;
+	memoize=true;
+	«ENDIF-»
+}
+«ENDIF-»
+
+@header {
+package «fileName.toJavaPackage()»;
+
+// Hack: Use our own Lexer superclass by means of import. 
+// Currently there is no other way to specify the superclass for the lexer.
+import «superclass»;
+}
+
+@members {
+	@Override
+	public «fileName.toSimpleName()»Lexer getNewInstance(CharStream stream) {
+		return new «fileName.toSimpleName()»Lexer(stream);
+	}
+}
+
+«IF options.backtrackLexer-»
+«EXPAND backtrackingAntlrRules»
+«ELSE-»
+«EXPAND antlrRules»
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE antlrRules FOR Grammar»
+«EXPAND keywords»
+«EXPAND rule FOREACH allTerminalRules()»
+«ENDDEFINE»
+
+«DEFINE keywords FOR Grammar»
+«FOREACH allParserRules().select(e|isCalled(this,e)).union(allEnumRules().select(e|isCalled(this,e))).allContents().typeSelect(Keyword).collect(e|e.value).toSet().sortBy(e|e).sortBy(e|e.length*-1) AS kw»
+«getKeywordRuleName(kw)» : '«kw.toJavaString()»';
+«ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE rule FOR TerminalRule»
+«ruleName()» : «toLexerBody()»;
+«ENDDEFINE»
+
+«DEFINE backtrackingAntlrRules FOR Grammar»
+«EXPAND backtrackingKeywords»
+«EXPAND backtrackingRule FOREACH allTerminalRules()»
+«ENDDEFINE»
+
+«DEFINE backtrackingKeywords FOR Grammar»
+SYNTHETIC_ALL_KEYWORDS :
+«FOREACH allParserRules().select(e|isCalled(this,e)).union(allEnumRules().select(e|isCalled(this,e))).allContents().typeSelect(Keyword).collect(e|e.value).toSet().sortBy(e|e).sortBy(e|e.length) AS kw ITERATOR it»
+	(FRAGMENT_«getKeywordRuleName(kw)»)=> FRAGMENT_«getKeywordRuleName(kw)» {$type = «getKeywordRuleName(kw)»; } «IF !it.lastIteration || !allTerminalRules().isEmpty»|
+	«ENDIF-» 
+«ENDFOREACH-»
+«FOREACH allTerminalRules() AS rule ITERATOR  it-»
+	(FRAGMENT_«rule.ruleName()»)=> FRAGMENT_«rule.ruleName()» {$type = «rule.ruleName()»; } «IF !it.lastIteration»|
+«ENDIF-»
+«ENDFOREACH»;
+«FOREACH allParserRules().select(e|isCalled(this,e)).union(allEnumRules().select(e|isCalled(this,e))).allContents().typeSelect(Keyword).collect(e|e.value).toSet().sortBy(e|e).sortBy(e|e.length) AS kw»
+fragment «getKeywordRuleName(kw)» : '«kw.toJavaString()»';
+fragment FRAGMENT_«getKeywordRuleName(kw)» : '«kw.toJavaString()»';
+«ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE backtrackingRule FOR TerminalRule»
+fragment «ruleName()» : ;
+fragment FRAGMENT_«ruleName()» : «toLexerBody()»;
+«ENDDEFINE»
+

@@ -10,21 +10,24 @@
 «ENDREM»
 
 «IMPORT org::eclipse::xtext»
+«IMPORT de::itemis::xtext::antlr»
 «IMPORT org::eclipse::emf::ecore»
 
 «EXTENSION org::eclipse::xtext::generator::Naming»
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
-«EXTENSION de::itemis::xtext::antlr::ContentAssistParser»
+«EXTENSION de::itemis::xtext::antlr::ex::ca::FileAndClassNames»
+«EXTENSION de::itemis::xtext::antlr::ex::common::Common»
 «EXTENSION org::eclipse::xtext::EcoreUtils»
 
 «DEFINE grammar(AntlrOptions options) FOR Grammar»
-«FILE getGrammarFileName().asPath()+".g" SRC_GEN_UI-»
+«FILE getParserGrammarFileName().asPath()+".g" SRC_GEN_UI-»
 /*
 «fileHeader()»
 */
-grammar «getGrammarFileName().toSimpleName()»;
+parser grammar «getParserGrammarFileName().toSimpleName()»;
 
 options {
+	tokenVocab=«getLexerGrammarFileName().toSimpleName()»;
 	superClass=AbstractInternalContentAssistParser;
 	«IF options.backtrack-»
 	backtrack=true;
@@ -37,16 +40,8 @@ options {
 	«ENDIF»
 }
 
-@lexer::header {
-package «getGrammarFileName().toJavaPackage()»;
-
-// Hack: Use our own Lexer superclass by means of import. 
-// Currently there is no other way to specify the superclass for the lexer.
-import org.eclipse.xtext.ui.common.editor.contentassist.antlr.internal.Lexer;
-}
-
-@parser::header {
-package «getGrammarFileName().toJavaPackage()»; 
+@header {
+package «getParserGrammarFileName().toJavaPackage()»; 
 
 import java.io.InputStream;
 import org.eclipse.xtext.*;
@@ -62,9 +57,17 @@ import «gaFQName()»;
 
 }
 
-@parser::members {
+@members {
  
  	private «gaSimpleName()» grammarAccess;
+ 	
+ 	private final Map<String, String> tokenNameToValue = new HashMap<String, String>();
+ 	
+ 	{
+«FOREACH allParserRules().select(e|isCalled(this,e)).union(allEnumRules().select(e|isCalled(this,e))).allContents().typeSelect(Keyword).collect(e|e.value).toSet().sortBy(e|e).sortBy(e|e.length) AS kw-»
+		tokenNameToValue.put("«this.getKeywordRuleName(kw)»", "'«kw.toJavaString()»'");
+«ENDFOREACH-»
+ 	}
  	
     public void setGrammarAccess(«gaSimpleName()» grammarAccess) {
     	this.grammarAccess = grammarAccess;
@@ -74,12 +77,14 @@ import «gaFQName()»;
     protected Grammar getGrammar() {
     	return grammarAccess.getGrammar();
     }
-    
-    @Override
+
+	@Override
     protected String getValueForTokenName(String tokenName) {
+    	String result = tokenNameToValue.get(tokenName);
+    	if (result == null)
+    		result = tokenName;
     	return tokenName;
     }
-
 }
 
 «EXPAND antlrRules»
@@ -92,7 +97,6 @@ import «gaFQName()»;
 «EXPAND rule(this) FOREACH allAlternatives()»
 «EXPAND rule(this) FOREACH allGroups()»
 «EXPAND rule(this) FOREACH allAssignments()»
-«EXPAND rule FOREACH allTerminalRules()»
 «ENDDEFINE»
 
 «DEFINE rule(Grammar original) FOR ParserRule»
@@ -199,11 +203,7 @@ finally {
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR EnumLiteralDeclaration-»
-	'«literal.value.toJavaString()»' 
-«ENDDEFINE»
-
-«DEFINE rule FOR TerminalRule»
-«ruleName()» : «toLexerBody()»;
+	«this.getKeywordRuleName(literal.value)»
 «ENDDEFINE»
 
 «DEFINE ebnf FOR AbstractElement-»
@@ -338,7 +338,7 @@ finally {
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR Keyword»
-	'«value.toJavaString()»' 
+	«getKeywordRuleName(value)» 
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR RuleCall-»

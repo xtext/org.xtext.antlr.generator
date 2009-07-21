@@ -13,6 +13,7 @@ package de.itemis.xtext.antlr;
  */
 public class AntlrOptions {
 	private boolean backtrack = false;
+	private boolean backtrackLexer = false;
 	private boolean memoize = false;
 	private int k = -1;
 	public boolean isBacktrack() {
@@ -33,6 +34,11 @@ public class AntlrOptions {
 	public void setK(int k) {
 		this.k = k;
 	}
-	
+	public void setBacktrackLexer(boolean backtrackLexer) {
+		this.backtrackLexer = backtrackLexer;
+	}
+	public boolean isBacktrackLexer() {
+		return backtrackLexer;
+	}
 	
 }

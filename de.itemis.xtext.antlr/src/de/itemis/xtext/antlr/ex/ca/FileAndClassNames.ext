@@ -1,0 +1,35 @@
+/*******************************************************************************
+ * Copyright (c) 2008 itemis AG (http://www.itemis.eu) and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ *******************************************************************************/
+import org::eclipse::xtext;
+
+// These are candidates for genParameters of the parser's GenService 
+
+String getParserClassName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment.getParserClassName(org.eclipse.xtext.Grammar);
+	
+String getInternalParserClassName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment.getInternalParserClassName(org.eclipse.xtext.Grammar);
+
+String getInternalLexerClassName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment.getInternalLexerClassName(org.eclipse.xtext.Grammar);
+	
+String getLexerGrammarFileName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment.getLexerGrammarFileName(org.eclipse.xtext.Grammar);
+
+String getParserGrammarFileName(Grammar grammar) :
+	JAVA de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment.getParserGrammarFileName(org.eclipse.xtext.Grammar);
+
+Collection[Alternatives] allAlternatives(Grammar grammar):
+	JAVA de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment.getAllAlternatives(org.eclipse.xtext.Grammar);
+	
+Collection[Group] allGroups(Grammar grammar):
+	JAVA de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment.getAllGroups(org.eclipse.xtext.Grammar);
+
+Collection[Assignment] allAssignments(Grammar grammar):
+	JAVA de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment.getAllAssignments(org.eclipse.xtext.Grammar);

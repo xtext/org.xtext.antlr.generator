@@ -1,0 +1,75 @@
+«REM»
+/*******************************************************************************
+ * Copyright (c) 2008 itemis AG (http://www.itemis.eu) and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ *******************************************************************************/
+«ENDREM»
+
+«IMPORT org::eclipse::xtext»
+
+«EXTENSION org::eclipse::xtext::generator::Naming»
+«EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
+«EXTENSION org::eclipse::xtext::generator::grammarAccess::GrammarAccess»
+«EXTENSION de::itemis::xtext::antlr::ex::rt::FileAndClassNames»
+
+«DEFINE parser FOR Grammar»
+«FILE getParserClassName().asPath()+".java" SRC_GEN-»
+/*
+«fileHeader()»
+*/
+package «getParserClassName().toJavaPackage()»;
+
+import org.antlr.runtime.ANTLRInputStream;
+import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
+import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.parser.ParseException;
+import org.eclipse.xtext.parser.antlr.XtextTokenStream;
+
+import com.google.inject.Inject;
+
+import «gaFQName()»;
+
+public class «getParserClassName().toSimpleName()» extends org.eclipse.xtext.parser.antlr.AbstractAntlrParser {
+	
+	@Inject 
+    protected ITokenDefProvider antlrTokenDefProvider;
+	
+	@Inject
+	private «gaSimpleName()» grammarAccess;
+	
+	@Override
+	protected IParseResult parse(String ruleName, ANTLRInputStream in) {
+		«getLexerClassName()» lexer = new «getLexerClassName()»(in);
+		XtextTokenStream stream = new XtextTokenStream(lexer, antlrTokenDefProvider);
+		stream.setInitialHiddenTokens(«FOREACH initialHiddenTokens() AS hidden SEPARATOR ", "»"«hidden»"«ENDFOREACH-»);
+		«getInternalParserClassName()» parser = new «getInternalParserClassName()»(
+				stream, getElementFactory(), grammarAccess);
+		parser.setTokenTypeMap(antlrTokenDefProvider.getTokenDefMap());
+		try {
+			if(ruleName != null)
+				return parser.parse(ruleName);
+			return parser.parse();
+		} catch (Exception re) {
+			throw new ParseException(re.getMessage(),re);
+		}
+	}
+	
+	@Override 
+	protected String getDefaultRuleName() {
+		return "«allParserRules().first().name»";
+	}
+	
+	public «gaSimpleName()» getGrammarAccess() {
+		return this.grammarAccess;
+	}
+	
+	public void setGrammarAccess(«gaSimpleName()» grammarAccess) {
+		this.grammarAccess = grammarAccess;
+	}
+}
+«ENDFILE»
+«ENDDEFINE»
