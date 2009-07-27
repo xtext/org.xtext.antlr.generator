@@ -10,7 +10,11 @@ package de.itemis.xtext.antlr;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.xpand2.XpandExecutionContext;
+import org.eclipse.xtext.AbstractRule;
 import org.eclipse.xtext.Grammar;
+import org.eclipse.xtext.GrammarUtil;
+import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.generator.AbstractGeneratorFragment;
 
 /**
@@ -31,6 +35,14 @@ public abstract class AbstractAntlrGeneratorFragment extends AbstractGeneratorFr
 	@Override
 	protected List<Object> getParameters(Grammar grammar) {
 		return Collections.singletonList((Object)options);
+	}
+	
+	@Override
+	public void generate(Grammar grammar, XpandExecutionContext ctx) {
+		AbstractRule firstRule = grammar.getRules().get(0);
+		if (!(firstRule instanceof ParserRule) || GrammarUtil.isDatatypeRule((ParserRule) firstRule))
+			throw new IllegalArgumentException("You may not generate an ANTLR parser for a grammar without production rules.");
+		super.generate(grammar, ctx);
 	}
 
 }
