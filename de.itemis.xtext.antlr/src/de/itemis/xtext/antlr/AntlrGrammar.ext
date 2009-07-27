@@ -50,14 +50,17 @@ List[AbstractElement] contentsAsList(Group this):
 toStringLiteral(AbstractElement this) :
 	"null";
 	
-String toJavaString(String this):
-	JAVA org.eclipse.xtext.util.Strings.convertToJavaString(java.lang.String);
+String toAntlrString(String this):
+	JAVA de.itemis.xtext.antlr.AntlrGrammarGenUtil.toAntlrString(java.lang.String);
 
+String toJavaStringImpl(String this):
+	JAVA org.eclipse.xtext.util.Strings.convertToJavaString(java.lang.String);
+	
 toStringLiteral(RuleCall this) :
 	rule!=null ? '"'+this.rule.name+'"' :  "null";
 
 toStringLiteral(Keyword this) :
-	'"'+this.value.toJavaString()+'"';
+	'"'+this.value.toJavaStringImpl()+'"';
 	
 String toLexerBody(TerminalRule this):
 	JAVA de.itemis.xtext.antlr.TerminalRuleToLexerBody.toLexerBody(org.eclipse.xtext.TerminalRule);

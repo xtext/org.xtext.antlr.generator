@@ -174,7 +174,7 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR EnumLiteralDeclaration-»
-	'«literal.value.toJavaString()»' 
+	'«literal.value.toAntlrString()»' 
 	{
         $current = grammarAccess.«grammarElementAccess(this)».getEnumLiteral().getInstance();
         «EXPAND createLeafNode» 
@@ -200,7 +200,7 @@ import «gaFQName()»;
 «DEFINE dataTypeEbnf2 FOR Group»«EXPAND dataTypeEbnf FOREACH tokens»«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2 FOR Keyword»
-	kw='«value.toJavaString()»' 
+	kw='«value.toAntlrString()»' 
     {
         $current.merge(kw);
         «EXPAND createLeafNode» 
@@ -409,7 +409,7 @@ import «gaFQName()»;
     }
 «ENDDEFINE»
 
-«DEFINE ebnf2 FOR Keyword»'«value.toJavaString()»' 
+«DEFINE ebnf2 FOR Keyword»'«value.toAntlrString()»' 
     {
         «EXPAND createLeafNode» 
     }

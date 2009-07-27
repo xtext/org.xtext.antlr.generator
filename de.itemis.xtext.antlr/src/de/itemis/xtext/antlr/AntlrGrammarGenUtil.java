@@ -10,11 +10,16 @@ package de.itemis.xtext.antlr;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.Grammar;
+import org.eclipse.xtext.util.Strings;
 
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
  */
 public class AntlrGrammarGenUtil {
+
+	public static String toAntlrString(String string) {
+		return Strings.convertToJavaString(string).replace("\\\"", "\"");
+	}
 
 	public static String getClasspathURI(Grammar grammar, EObject object) {
 		String fragment = EcoreUtil.getURI(object).fragment();

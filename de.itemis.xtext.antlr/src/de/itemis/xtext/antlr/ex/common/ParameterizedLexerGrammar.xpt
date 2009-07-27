@@ -61,7 +61,7 @@ import «superclass»;
 
 «DEFINE keywords FOR Grammar»
 «FOREACH allParserRules().select(e|isCalled(this,e)).union(allEnumRules().select(e|isCalled(this,e))).allContents().typeSelect(Keyword).collect(e|e.value).toSet().sortBy(e|e).sortBy(e|e.length*-1) AS kw»
-«getKeywordRuleName(kw)» : '«kw.toJavaString()»';
+«getKeywordRuleName(kw)» : '«kw.toAntlrString()»';
 «ENDFOREACH»
 «ENDDEFINE»
 
@@ -85,8 +85,8 @@ SYNTHETIC_ALL_KEYWORDS :
 «ENDIF-»
 «ENDFOREACH»;
 «FOREACH allParserRules().select(e|isCalled(this,e)).union(allEnumRules().select(e|isCalled(this,e))).allContents().typeSelect(Keyword).collect(e|e.value).toSet().sortBy(e|e).sortBy(e|e.length) AS kw»
-fragment «getKeywordRuleName(kw)» : '«kw.toJavaString()»';
-fragment FRAGMENT_«getKeywordRuleName(kw)» : '«kw.toJavaString()»';
+fragment «getKeywordRuleName(kw)» : '«kw.toAntlrString()»';
+fragment FRAGMENT_«getKeywordRuleName(kw)» : '«kw.toAntlrString()»';
 «ENDFOREACH»
 «ENDDEFINE»
 
