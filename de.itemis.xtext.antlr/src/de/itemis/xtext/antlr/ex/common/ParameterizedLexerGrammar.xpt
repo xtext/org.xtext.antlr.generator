@@ -40,13 +40,6 @@ package «fileName.toJavaPackage()»;
 import «superclass»;
 }
 
-@members {
-	@Override
-	public «fileName.toSimpleName()»Lexer getNewInstance(CharStream stream) {
-		return new «fileName.toSimpleName()»Lexer(stream);
-	}
-}
-
 «IF options.backtrackLexer-»
 «EXPAND backtrackingAntlrRules»
 «ELSE-»
