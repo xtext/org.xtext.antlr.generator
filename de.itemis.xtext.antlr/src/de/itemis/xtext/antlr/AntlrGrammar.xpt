@@ -253,10 +253,15 @@ import «gaFQName()»;
 
 «DEFINE assignmentEbnf FOR CrossReference-»
 «EXPAND crossrefEbnf(this) FOR terminal-»
+		{ lastConsumedDatatypeToken = null; }
 «ENDDEFINE»
 
 «DEFINE crossrefEbnf(CrossReference ref) FOR AbstractElement-»
 «ERROR "crossrefEbnf is not supported for AbstractElement"»
+«ENDDEFINE»
+
+«DEFINE crossrefEbnf(CrossReference ref) FOR Alternatives-»
+		(«EXPAND crossrefEbnf(ref) FOREACH groups SEPARATOR '\n    |'»)
 «ENDDEFINE»
 
 «DEFINE crossrefEbnf(CrossReference ref) FOR RuleCall-»
