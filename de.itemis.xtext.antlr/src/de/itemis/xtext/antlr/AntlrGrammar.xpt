@@ -150,7 +150,6 @@ import «gaFQName()»;
     }
     @after { resetLookahead(); 
 	    lastConsumedNode = currentNode;
-	    lastConsumedDatatypeToken = $current;
 «IF definesHiddenTokens-»
 		myHiddenTokenState.restore();
 «ENDIF-» 
@@ -235,27 +234,6 @@ import «gaFQName()»;
 
 «DEFINE ebnf2 FOR Group»«EXPAND ebnf FOREACH tokens»«ENDDEFINE»
 
-«DEFINE assignmentEbnf FOR AbstractElement-»
-«EXPAND ebnf»
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf FOR Group-»
-«ERROR "assignmentEbnf is not supported for Group"»
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf FOR Assignment-»
-«ERROR "assignmentEbnf is not supported for Assignment"»
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf FOR Action-»
-«ERROR "assignmentEbnf is not supported for Action"»
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf FOR CrossReference-»
-«EXPAND crossrefEbnf(this) FOR terminal-»
-		{ lastConsumedDatatypeToken = null; }
-«ENDDEFINE»
-
 «DEFINE crossrefEbnf(CrossReference ref) FOR AbstractElement-»
 «ERROR "crossrefEbnf is not supported for AbstractElement"»
 «ENDDEFINE»
@@ -303,94 +281,136 @@ import «gaFQName()»;
 	}
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf FOR Alternatives-»
-(«EXPAND assignmentEbnf FOREACH groups SEPARATOR '\n    |'»)
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf FOR RuleCall-»
-«EXPAND assignmentEbnf(this) FOR rule-»
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf(RuleCall call) FOR AbstractRule-»
-«ERROR "assignmentEbnf is not supported for AbstractRule"»
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf(RuleCall call) FOR ParserRule-»
-«IF Assignment.isInstance(call.eContainer())-»
-«ruleName()-»
-«ELSE-»
-	{ 
-        currentNode=«EXPAND createCompositeNode FOR call» 
-    }
-	«ruleName()-»
-	{ 
-        currentNode = currentNode.getParent();
-    }
-«ENDIF-»
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf(RuleCall call) FOR EnumRule-»
-«IF Assignment.isInstance(call.eContainer())-»
-«ruleName()-»
-«ELSE-»
-	{ 
-        currentNode=«EXPAND createCompositeNode FOR call» 
-    }
-	«ruleName()-»
-	{ 
-        currentNode = currentNode.getParent();
-    }
-«ENDIF-»
-«ENDDEFINE»
-
-«DEFINE assignmentEbnf(RuleCall call) FOR TerminalRule-»
-	«ruleName()»
-	{
-		«EXPAND createLeafNode FOR call» 
-	}
-«ENDDEFINE»
-
-«DEFINE ebnf2 FOR Assignment»	
-	«IF !allContents().typeSelect(CrossReference).isEmpty»
-		«REM» Cross references are handled in the linking phase «ENDREM»
-		{
-			if ($current==null) {
-	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getClassifier());
-	            associateNodeWithAstElement(currentNode, $current);
-	        }
-        }
-		«EXPAND assignmentEbnf FOR terminal»
-		// TODO assign feature to currentNode
-	«ELSE»
-	    «IF isParserRuleAssignment() || isEnumRuleAssignment()»
-	    { 
-	        currentNode=«EXPAND createCompositeNode FOR terminal» 
-	    }
-	    «ENDIF-»
-	    «localVar()»=«EXPAND assignmentEbnf FOR terminal» 
+«DEFINE assignmentEbnf(Assignment assignment) FOR AbstractElement-»
+		«assignment.localVar(this)»=«EXPAND ebnf» 
 	    {
 	        if ($current==null) {
-	            $current = factory.create(grammarAccess.«containingParserRule().grammarElementAccess()».getType().getClassifier());
-	            «IF isParserRuleAssignment() || isEnumRuleAssignment()»associateNodeWithAstElement(currentNode.getParent(), $current);
-	            «ELSE»associateNodeWithAstElement(currentNode, $current);
-	            «ENDIF-»
+	            $current = factory.create(grammarAccess.«assignment.containingParserRule().grammarElementAccess()».getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
 	        }
 	        «REM»the use of input.LT(-1) in the following line is a workaroudn for a bug of antlr, where assignements of alternative keywords are ignored when there are actions«ENDREM»
 	        try {
-	       		«setOrAdd()»($current, "«feature»", «
-	        		IF isBoolean()»true«
-	        		ELSE»«allContents().typeSelect(Keyword).isEmpty ? localVar() : "/* " + localVar() + " */ input.LT(-1)"»«
-	        		ENDIF», «terminal.toStringLiteral()», «
-	        		IF isParserRuleAssignment()»currentNode«
-	        		ELSE»lastConsumedNode«ENDIF»);
+	       		«assignment.setOrAdd()»($current, "«assignment.feature»", «
+	        		IF assignment.isBoolean()»true«
+	        		ELSE»«assignment.localVar(this)»«
+	        		ENDIF», «assignment.terminal.toStringLiteral()», lastConsumedNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
-	        «IF isParserRuleAssignment() || isEnumRuleAssignment()-»
-	        currentNode = currentNode.getParent();
-	        «ENDIF-»
 	    }
-	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment) FOR Group-»
+«ERROR "assignmentEbnf is not supported for Group"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment) FOR Assignment-»
+«ERROR "assignmentEbnf is not supported for Assignment"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment) FOR Action-»
+«ERROR "assignmentEbnf is not supported for Action"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment) FOR Alternatives-»
+(
+«EXPAND assignmentEbnf(assignment) FOREACH groups SEPARATOR '\n    |'»
+)
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment) FOR RuleCall-»
+«EXPAND assignmentEbnf(assignment, this) FOR rule-»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment, RuleCall call) FOR AbstractRule-»
+«ERROR "assignmentEbnf is not supported for AbstractRule"»
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment, RuleCall call) FOR ParserRule-»
+		{ 
+	        currentNode=«EXPAND createCompositeNode FOR call» 
+	    }
+		«assignment.localVar(call)»=«ruleName()-»
+		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.«assignment.containingParserRule().grammarElementAccess()».getType().getClassifier());
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	        }
+	        try {
+	       		«assignment.setOrAdd()»(
+	       			$current, 
+	       			"«assignment.feature»",
+	        		«IF assignment.isBoolean()»true«ELSE»«assignment.localVar(call)»«ENDIF», 
+	        		«call.toStringLiteral()», 
+	        		currentNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	        currentNode = currentNode.getParent();
+	    }
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment, RuleCall call) FOR EnumRule-»
+		{ 
+	        currentNode=«EXPAND createCompositeNode FOR call» 
+	    }
+		«assignment.localVar(call)»=«ruleName()-»
+		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.«assignment.containingParserRule().grammarElementAccess()».getType().getClassifier());
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	        }
+	        try {
+	       		«assignment.setOrAdd()»(
+	       			$current, 
+	       			"«assignment.feature»",
+	        		«IF assignment.isBoolean()»true«ELSE»«assignment.localVar(call)»«ENDIF», 
+	        		«call.toStringLiteral()», 
+	        		currentNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	        currentNode = currentNode.getParent();
+	    }
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment, RuleCall call) FOR TerminalRule-»
+		«assignment.localVar(call)»=«ruleName()»
+		{
+			«EXPAND createLeafNode FOR call» 
+		}
+		{
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.«assignment.containingParserRule().grammarElementAccess()».getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
+	        }
+	        try {
+	       		«assignment.setOrAdd()»(
+	       			$current, 
+	       			"«assignment.feature»",
+	        		«IF assignment.isBoolean()»true«ELSE»«assignment.localVar(call)»«ENDIF», 
+	        		«call.toStringLiteral()», 
+	        		lastConsumedNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	    }
+«ENDDEFINE»
+
+«DEFINE assignmentEbnf(Assignment assignment) FOR CrossReference-»
+		{
+			if ($current==null) {
+	            $current = factory.create(grammarAccess.«assignment.containingParserRule().grammarElementAccess()».getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
+	        }
+        }
+		«EXPAND crossrefEbnf(this) FOR terminal-»
+«ENDDEFINE»
+
+«DEFINE ebnf2 FOR Assignment»
+(
+«EXPAND assignmentEbnf(this) FOR terminal»
+)
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR CrossReference»

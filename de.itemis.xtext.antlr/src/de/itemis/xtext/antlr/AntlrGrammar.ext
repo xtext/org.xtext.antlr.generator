@@ -32,7 +32,8 @@ isCalled(Grammar grammar, AbstractRule this) :
 		x.indexOf(this)==0 || 
 		x.allContents().flatten().typeSelect(RuleCall).select(call|call.rule!=null).rule.contains(this);
 
-localVar(Assignment this) : 'lv_'+feature + '_' + containingParserRule().contentsAsList().indexOf(this);
+localVar(Assignment this, AbstractElement terminal) : 
+	'lv_'+feature + '_' + containingParserRule().contentsAsList().indexOf(this) + '_' + this.allContents().indexOf(terminal);
 localVar(RuleCall this) : 'this_'+rule.name + '_' + containingParserRule().contentsAsList().indexOf(this);
 
 List[AbstractElement] contentsAsList(ParserRule this):
