@@ -33,4 +33,3 @@ Export-Package: antlr,
  org.antlr.stringtemplate.misc,
  org.antlr.stringtemplate.test,
  org.antlr.tool
-Require-Bundle: org.junit;bundle-version="[3.8.2,4.0.0)"
