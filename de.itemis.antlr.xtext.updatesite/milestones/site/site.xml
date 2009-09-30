@@ -9,6 +9,10 @@
    <feature url="features/de.itemis.xtext.antlr.feature_0.7.2.200908111925.jar" id="de.itemis.xtext.antlr.feature" version="0.7.2.200908111925">
       <category name="Xtext Antlr Support 0.7.2RC1"/>
    </feature>
+   <feature url="features/de.itemis.xtext.antlr.feature_0.8.0.200909300931.jar" id="de.itemis.xtext.antlr.feature" version="0.8.0.200909300931">
+      <category name="Xtext Antlr Support 0.8.0M2"/>
+   </feature>
    <category-def name="Xtext Antlr Support 0.7.0.RC5" label="Xtext Antlr Support 0.7.0.RC5"/>
    <category-def name="Xtext Antlr Support 0.7.2RC1" label="Xtext Antlr Support 0.7.2RC1"/>
+   <category-def name="Xtext Antlr Support 0.8.0M2" label="Xtext Antlr Support 0.8.0M2"/>
 </site>
