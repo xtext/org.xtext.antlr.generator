@@ -3,12 +3,14 @@
 <repository name='&quot;TMF Xtext Update Site (Milestones)&quot;'
     type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
   <properties size='1'>
-    <property name='p2.timestamp' value='1247702400'/>
+    <property name='p2.timestamp' value='1247702401'/>
   </properties>
-  <children size='2'>
+  <children size='6'>
     <child location='site'/>
     <child location='http://download.eclipse.org/modeling/tmf/updates/milestones/'/>
     <child location='http://download.eclipse.org/modeling/emft/updates/milestones/'/>
+    <child location='http://download.eclipse.org/modeling/emft/mwe/updates/milestones/'/>
     <child location='http://download.eclipse.org/modeling/m2t/updates/milestones/'/>
+    <child location='http://download.eclipse.org/modeling/m2t/xpand/updates/milestones/'/>
   </children>
 </repository>
