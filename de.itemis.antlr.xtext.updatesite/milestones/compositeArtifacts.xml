@@ -5,11 +5,12 @@
   <properties size='1'>
     <property name='p2.timestamp' value='1247702401'/>
   </properties>
-  <children size='6'>
+  <children size='7'>
     <child location='site'/>
     <child location='http://download.eclipse.org/modeling/tmf/updates/milestones/'/>
     <child location='http://download.eclipse.org/modeling/emft/updates/milestones/'/>
     <child location='http://download.eclipse.org/modeling/emft/mwe/updates/milestones/'/>
+    <child location='http://download.eclipse.org/modeling/emft/emfindex/updates/milestones/'/>
     <child location='http://download.eclipse.org/modeling/m2t/updates/milestones/'/>
     <child location='http://download.eclipse.org/modeling/m2t/xpand/updates/milestones/'/>
   </children>
