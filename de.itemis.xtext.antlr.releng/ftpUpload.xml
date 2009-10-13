@@ -1,0 +1,39 @@
+<project default="upload" name="ftpUpload.xml">
+	<target name="upload">
+
+		<property name="ftpServerRoot" value="/home/ftp/download" />
+		<property name="localRoot" value="." />
+		<echo>Local root: ${localRoot}</echo>
+		<echo>FTP server root: ${ftpServerRoot}</echo>
+		
+		<property name="zipsSource" value="${localRoot}/promote/downloads" />
+		<property name="updateSiteSource" value="${localRoot}/promote/updates/" />
+
+		<property name="zipsTarget" value="${ftpServerRoot}/antlr/" />
+		<property name="updateSiteTarget" value="${ftpServerRoot}/updates/nightly/site" />
+
+		<echo>Uploading zips from ${zipsSource} to ${zipsTarget}</echo>
+		<antcall target="uploadToItemisFtp">
+			<param name="sourceDir" value="${zipsSource}" />
+			<param name="targetDir" value="${zipsTarget}" />
+		</antcall>
+
+
+		<echo>Uploading updatesite from ${updateSiteSource} to ${updateSiteTarget}</echo>
+		<antcall target="uploadToItemisFtp">
+			<param name="sourceDir" value="${updateSiteSource}" />
+			<param name="targetDir" value="${updateSiteTarget}" />
+		</antcall>
+
+	</target>
+
+	<target name="uploadToItemisFtp">
+		<echo>
+		</echo>
+		<ftp verbose="true" server="ftp.itemis.de" port="21" remotedir="${targetDir}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
+			<fileset dir="${sourceDir}">
+				<include name="**/*" />
+			</fileset>
+		</ftp>
+	</target>
+</project>
