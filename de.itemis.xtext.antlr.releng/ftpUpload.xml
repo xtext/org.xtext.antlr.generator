@@ -2,7 +2,7 @@
 	<target name="upload">
 
 		<property name="ftpServerRoot" value="/home/ftp/download" />
-		<property name="localRoot" value="." />
+		<property name="localRoot" value="${workspace}" />
 		<echo>Local root: ${localRoot}</echo>
 		<echo>FTP server root: ${ftpServerRoot}</echo>
 		
