@@ -1,11 +1,12 @@
 <project default="upload" name="ftpUpload.xml">
 	<target name="ftpUpload">
 		<condition property="shouldUpload">
-			<istrue value="${env.FTPUpload}"/>
+			<istrue value="${env.FTPUpload}" />
 		</condition>
 	</target>
 
 	<target name="upload" depends="ftpUpload" if="shouldUpload">
+		<property file="${ftpProperties}" />
 
 		<property name="ftpServerRoot" value="/home/ftp/download" />
 		<property name="localRoot" value="${workspace}" />
