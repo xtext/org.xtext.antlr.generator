@@ -1,11 +1,17 @@
 <project default="upload" name="ftpUpload.xml">
-	<target name="upload">
+	<target name="ftpUpload">
+		<condition property="shouldUpload">
+			<istrue value="${env.FTPUpload}"/>
+		</condition>
+	</target>
+
+	<target name="upload" depends="ftpUpload" if="shouldUpload">
 
 		<property name="ftpServerRoot" value="/home/ftp/download" />
 		<property name="localRoot" value="${workspace}" />
 		<echo>Local root: ${localRoot}</echo>
 		<echo>FTP server root: ${ftpServerRoot}</echo>
-		
+
 		<property name="zipsSource" value="${localRoot}/promote/downloads" />
 		<property name="updateSiteSource" value="${localRoot}/promote/updates/" />
 
@@ -28,8 +34,6 @@
 	</target>
 
 	<target name="uploadToItemisFtp">
-		<echo>
-		</echo>
 		<ftp verbose="true" server="ftp.itemis.de" port="21" remotedir="${targetDir}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
 			<fileset dir="${sourceDir}">
 				<include name="**/*" />
