@@ -1,7 +1,7 @@
 <project default="upload" name="ftpUpload.xml">
 	<target name="ftpUpload">
 		<condition property="shouldUpload">
-			<istrue value="${env.FTPUpload}" />
+			<istrue value="${FTPUpload}" />
 		</condition>
 	</target>
 
