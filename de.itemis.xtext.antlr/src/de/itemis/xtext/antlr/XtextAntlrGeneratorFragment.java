@@ -68,7 +68,8 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 			.addTypeToType(IAntlrParser.class.getName(),getParserClassName(grammar))
 			.addTypeToType(ITokenToStringConverter.class.getName(),AntlrTokenToStringConverter.class.getName())
 			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getAntlrTokenFileProviderClassName(grammar))
-			.addTypeToProviderInstance(Lexer.class.getName(), "new org.eclipse.xtext.parser.antlr.LexerProvider(" + getLexerClassName(grammar) + ".class)")
+			.addTypeToType(Lexer.class.getName(), getLexerClassName(grammar))
+			.addTypeToProviderInstance(getLexerClassName(grammar), "org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getLexerClassName(grammar) + ".class)")
 			.addTypeToType(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName())
 			.getBindings();
 	}

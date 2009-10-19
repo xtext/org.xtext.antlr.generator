@@ -13,15 +13,15 @@
 
 «EXTENSION org::eclipse::xtext::generator::Naming»
 
-«DEFINE generate(de::itemis::xtext::antlr::AntlrOptions options) FOR Grammar»
-	«EXPAND IParser::parser»
-	«EXPAND LexerGrammar::grammar(options)»
-	«EXPAND ParserGrammar::grammar(options)»
-	«EXPAND de::itemis::xtext::antlr::AntlrTokenFileProvider::file FOR this»
+«DEFINE generate(de::itemis::xtext::antlr::AntlrOptions options, de::itemis::xtext::antlr::ex::common::AntlrFragmentHelper helper) FOR Grammar»
+	«EXPAND IParser::parser(helper)»
+	«EXPAND LexerGrammar::grammar(options, helper)»
+	«EXPAND ParserGrammar::grammar(options, helper)»
+	«EXPAND de::itemis::xtext::antlr::AntlrTokenFileProvider::file»
 «ENDDEFINE»
 
-«DEFINE addToPluginXmlRt(de::itemis::xtext::antlr::AntlrOptions options) FOR Grammar»«ENDDEFINE»
+«DEFINE addToPluginXmlRt(de::itemis::xtext::antlr::AntlrOptions options, de::itemis::xtext::antlr::ex::common::AntlrFragmentHelper helper) FOR Grammar»«ENDDEFINE»
 
-«DEFINE addToPluginXmlUi(de::itemis::xtext::antlr::AntlrOptions options) FOR Grammar»«ENDDEFINE»
+«DEFINE addToPluginXmlUi(de::itemis::xtext::antlr::AntlrOptions options, de::itemis::xtext::antlr::ex::common::AntlrFragmentHelper helper) FOR Grammar»«ENDDEFINE»
 
-«DEFINE addToStandaloneSetup(de::itemis::xtext::antlr::AntlrOptions options) FOR Grammar»«ENDDEFINE»
+«DEFINE addToStandaloneSetup(de::itemis::xtext::antlr::AntlrOptions options, de::itemis::xtext::antlr::ex::common::AntlrFragmentHelper helper) FOR Grammar»«ENDDEFINE»

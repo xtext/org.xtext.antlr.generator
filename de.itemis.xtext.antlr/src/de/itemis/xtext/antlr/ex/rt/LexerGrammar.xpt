@@ -14,13 +14,12 @@
 «IMPORT de::itemis::xtext::antlr::ex::common»
 
 «EXTENSION org::eclipse::xtext::generator::Naming»
-«EXTENSION de::itemis::xtext::antlr::ex::rt::FileAndClassNames»
 «EXTENSION org::eclipse::xtext::EcoreUtils»
 
 
-«DEFINE grammar(AntlrOptions options) FOR Grammar»
-«FILE getLexerGrammarFileName().asPath()+".g" SRC_GEN-»
-«EXPAND ParameterizedLexerGrammar::grammar(options, getLexerGrammarFileName(), "org.eclipse.xtext.parser.antlr.Lexer")»
+«DEFINE grammar(AntlrOptions options, AntlrFragmentHelper helper) FOR Grammar»
+«FILE helper.getLexerGrammarFileName(this).asPath()+".g" SRC_GEN-»
+«EXPAND ParameterizedLexerGrammar::grammar(options, helper, helper.getLexerGrammarFileName(this), helper.getLexerSuperClass(this))»
 «ENDFILE»
 «ENDDEFINE»
 

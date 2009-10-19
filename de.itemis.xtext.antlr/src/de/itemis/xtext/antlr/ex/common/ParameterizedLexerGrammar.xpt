@@ -10,6 +10,7 @@
 «ENDREM»
 
 «IMPORT org::eclipse::xtext»
+«IMPORT de::itemis::xtext::antlr::ex::common»
 
 «EXTENSION org::eclipse::xtext::generator::Naming»
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
@@ -17,11 +18,11 @@
 «EXTENSION org::eclipse::xtext::EcoreUtils»
 
 
-«DEFINE grammar(de::itemis::xtext::antlr::AntlrOptions options, String fileName, String superclass) FOR Grammar»
+«DEFINE grammar(de::itemis::xtext::antlr::AntlrOptions options, AntlrFragmentHelper helper, String lexerGrammarFileName, String superclass) FOR Grammar»
 /*
 «fileHeader()»
 */
-lexer grammar «fileName.toSimpleName()»;
+lexer grammar «lexerGrammarFileName.toSimpleName()»;
 
 «IF options.backtrackLexer-»
 options {
@@ -33,7 +34,7 @@ options {
 «ENDIF-»
 
 @header {
-package «fileName.toJavaPackage()»;
+package «lexerGrammarFileName.toJavaPackage()»;
 
 // Hack: Use our own Lexer superclass by means of import. 
 // Currently there is no other way to specify the superclass for the lexer.
@@ -41,15 +42,15 @@ import «superclass»;
 }
 
 «IF options.backtrackLexer-»
-«EXPAND backtrackingAntlrRules»
+«EXPAND backtrackingAntlrRules(helper)»
 «ELSE-»
-«EXPAND antlrRules»
+«EXPAND antlrRules(helper)»
 «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE antlrRules FOR Grammar»
+«DEFINE antlrRules(AntlrFragmentHelper helper) FOR Grammar»
 «EXPAND keywords»
-«EXPAND rule FOREACH allTerminalRules()»
+«EXPAND rule(helper) FOREACH allTerminalRules()»
 «ENDDEFINE»
 
 «DEFINE keywords FOR Grammar»
@@ -58,13 +59,17 @@ import «superclass»;
 «ENDFOREACH»
 «ENDDEFINE»
 
-«DEFINE rule FOR TerminalRule»
+«DEFINE rule(AntlrFragmentHelper helper) FOR TerminalRule»
+«IF !helper.isSyntheticTerminalRule(this)-»
 «ruleName()» : «toLexerBody()»;
+«ELSE-»
+fragment «ruleName()» : ;
+«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE backtrackingAntlrRules FOR Grammar»
+«DEFINE backtrackingAntlrRules(AntlrFragmentHelper helper) FOR Grammar»
 «EXPAND backtrackingKeywords»
-«EXPAND backtrackingRule FOREACH allTerminalRules()»
+«EXPAND backtrackingRule(helper) FOREACH allTerminalRules()»
 «ENDDEFINE»
 
 «DEFINE backtrackingKeywords FOR Grammar»
@@ -83,8 +88,10 @@ fragment FRAGMENT_«getKeywordRuleName(kw)» : '«kw.toAntlrString()»';
 «ENDFOREACH»
 «ENDDEFINE»
 
-«DEFINE backtrackingRule FOR TerminalRule»
+«DEFINE backtrackingRule(AntlrFragmentHelper helper) FOR TerminalRule»
 fragment «ruleName()» : ;
+«IF !helper.isSyntheticTerminalRule(this)-»
 fragment FRAGMENT_«ruleName()» : «toLexerBody()»;
+«ENDIF-»
 «ENDDEFINE»
 

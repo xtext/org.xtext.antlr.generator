@@ -30,8 +30,8 @@ import org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider;
 import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
 import org.eclipse.xtext.parser.antlr.Lexer;
 
-import de.itemis.xtext.antlr.AbstractAntlrGeneratorFragment;
 import de.itemis.xtext.antlr.AntlrToolRunner;
+import de.itemis.xtext.antlr.ex.common.AbstractAntlrGeneratorFragmentEx;
 import de.itemis.xtext.antlr.ex.common.KeywordHelper;
 import de.itemis.xtext.antlr.ex.common.MutableTokenDefProvider;
 
@@ -41,23 +41,23 @@ import de.itemis.xtext.antlr.ex.common.MutableTokenDefProvider;
  *  
  * @author Sebastian Zarnekow - Initial contribution and API
  */
-public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragment {
+public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 	
 	@Override
 	public void generate(final Grammar grammar, XpandExecutionContext ctx) {
 		KeywordHelper helper = new KeywordHelper(grammar);
 		super.generate(grammar, ctx);
 		final String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath();
-		String libPath = srcGenPath + "/" + getLexerGrammarFileName(grammar).replace('.', '/');
+		String libPath = srcGenPath + "/" + getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/');
 		libPath = libPath.substring(0, libPath.lastIndexOf('/'));
-		AntlrToolRunner.runWithParams(srcGenPath+"/"+getLexerGrammarFileName(grammar).replace('.', '/')+".g");
-		AntlrToolRunner.runWithParams(srcGenPath+"/"+getParserGrammarFileName(grammar).replace('.', '/')+".g", "-lib", libPath);
+		AntlrToolRunner.runWithParams(srcGenPath+"/"+getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/')+".g");
+		AntlrToolRunner.runWithParams(srcGenPath+"/"+getFragmentHelper().getParserGrammarFileName(grammar).replace('.', '/')+".g", "-lib", libPath);
 		
 		MutableTokenDefProvider provider = new MutableTokenDefProvider();
 		provider.setAntlrTokenFileProvider(new IAntlrTokenFileProvider() {
 			public InputStream getAntlrTokenFile() {
 				try {
-					return new FileInputStream(srcGenPath+"/"+getLexerGrammarFileName(grammar).replace('.', '/') + ".tokens");
+					return new FileInputStream(srcGenPath+"/"+getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/') + ".tokens");
 				}
 				catch (FileNotFoundException e) {
 					throw new RuntimeException();
@@ -71,7 +71,7 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragment {
 			}
 		}
 		try {
-			provider.writeTokenFile(new PrintWriter(new File(srcGenPath+"/"+getParserGrammarFileName(grammar).replace('.', '/') + ".tokens")));
+			provider.writeTokenFile(new PrintWriter(new File(srcGenPath+"/"+getFragmentHelper().getParserGrammarFileName(grammar).replace('.', '/') + ".tokens")));
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
@@ -96,10 +96,11 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragment {
 	@Override
 	public Set<Binding> getGuiceBindingsRt(Grammar grammar) {
 		return new BindFactory()
-			.addTypeToType(IAntlrParser.class.getName(),getParserClassName(grammar))
+			.addTypeToType(IAntlrParser.class.getName(),getFragmentHelper().getParserClassName(grammar))
 			.addTypeToType(ITokenToStringConverter.class.getName(),AntlrTokenToStringConverter.class.getName())
-			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getAntlrTokenFileProviderClassName(grammar))
-			.addTypeToProviderInstance(Lexer.class.getName(), "new org.eclipse.xtext.parser.antlr.LexerProvider(" + getLexerClassName(grammar) + ".class)")
+			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getFragmentHelper().getAntlrTokenFileProviderClassName(grammar))
+			.addTypeToType(Lexer.class.getName(), getFragmentHelper().getLexerClassName(grammar))
+			.addTypeToProviderInstance(getFragmentHelper().getLexerClassName(grammar), "org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getFragmentHelper().getLexerClassName(grammar) + ".class)")
 			.addTypeToType(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName())
 			.getBindings();
 	}
@@ -113,28 +114,4 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragment {
 			.getBindings();
 	}
 	
-	public static String getAntlrTokenFileProviderClassName(Grammar grammar) {
-		return GrammarUtil.getNamespace(grammar) + ".parser.antlr." + GrammarUtil.getName(grammar)	+ "AntlrTokenFileProvider";
-	}
-	
-	public static String getLexerClassName(Grammar g) {
-		return getLexerGrammarFileName(g) + "Lexer";
-	}
-
-	public static String getParserClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr." + GrammarUtil.getName(g) + "Parser";
-	}
-
-	public static String getInternalParserClassName(Grammar g) {
-		return getParserGrammarFileName(g) + "Parser";
-	}
-
-	public static String getLexerGrammarFileName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr.lexer.Internal" + GrammarUtil.getName(g);
-	}
-	
-	public static String getParserGrammarFileName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g);
-	}
-
 }

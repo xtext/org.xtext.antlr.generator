@@ -10,18 +10,18 @@
 «ENDREM»
 
 «IMPORT org::eclipse::xtext»
+«IMPORT de::itemis::xtext::antlr::ex::common»
 
 «EXTENSION org::eclipse::xtext::generator::Naming»
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
 «EXTENSION org::eclipse::xtext::generator::grammarAccess::GrammarAccess»
-«EXTENSION de::itemis::xtext::antlr::ex::ca::FileAndClassNames»
 
-«DEFINE parser FOR Grammar»
-«FILE getParserClassName().asPath()+".java" SRC_GEN_UI-»
+«DEFINE parser(AntlrFragmentHelper helper) FOR Grammar»
+«FILE helper.getContentAssistParserClassName(this).asPath()+".java" SRC_GEN_UI-»
 /*
 «fileHeader()»
 */
-package «getParserClassName().toJavaPackage()»;
+package «helper.getContentAssistParserClassName(this).toJavaPackage()»;
 
 import java.util.Collection;
 import java.util.Map;
@@ -38,7 +38,7 @@ import com.google.inject.Inject;
 
 import «gaFQName()»;
 
-public class «getParserClassName().toSimpleName()» extends AbstractContentAssistParser {
+public class «helper.getContentAssistParserClassName(this).toSimpleName()» extends AbstractContentAssistParser {
 	
 	@Inject
 	private «gaSimpleName()» grammarAccess;
@@ -46,13 +46,13 @@ public class «getParserClassName().toSimpleName()» extends AbstractContentAssist
 	private Map<AbstractElement, String> nameMappings;
 	
 	@Override
-	protected «getInternalLexerClassName()» createLexer(CharStream stream) {
-		return new «getInternalLexerClassName()»(stream);
+	protected «helper.getInternalContentAssistLexerClassName(this)» createLexer(CharStream stream) {
+		return new «helper.getInternalContentAssistLexerClassName(this)»(stream);
 	}
 	
 	@Override
-	protected «getInternalParserClassName()» createParser() {
-		«getInternalParserClassName()» result = new «getInternalParserClassName()»(null);
+	protected «helper.getInternalContentAssistParserClassName(this)» createParser() {
+		«helper.getInternalContentAssistParserClassName(this)» result = new «helper.getInternalContentAssistParserClassName(this)»(null);
 		result.setGrammarAccess(grammarAccess);
 		return result;
 	}
@@ -61,8 +61,9 @@ public class «getParserClassName().toSimpleName()» extends AbstractContentAssist
 	protected String getRuleName(AbstractElement element) {
 		if (nameMappings == null) {
 			nameMappings = new HashMap<AbstractElement, String>() {
+				private static final long serialVersionUID = 1L;
 				{
-«EXPAND ruleName FOREACH allAlternatives().union(allGroups()).union(allAssignments())-»
+«EXPAND ruleName FOREACH helper.getAllAlternatives(this).union(helper.getAllGroups(this)).union(helper.getAllAssignments(this)).typeSelect(AbstractElement)-»
 				}
 			};
 		}
@@ -72,7 +73,7 @@ public class «getParserClassName().toSimpleName()» extends AbstractContentAssist
 	@Override
 	protected Collection<FollowElement> getFollowElements(AbstractInternalContentAssistParser parser) {
 		try {
-			«getInternalParserClassName()» typedParser = («getInternalParserClassName()») parser;
+			«helper.getInternalContentAssistParserClassName(this)» typedParser = («helper.getInternalContentAssistParserClassName(this)») parser;
 			typedParser.«allParserRules().first().entryRuleName()»();
 			return typedParser.getFollowElements();
 		} catch(RecognitionException ex) {

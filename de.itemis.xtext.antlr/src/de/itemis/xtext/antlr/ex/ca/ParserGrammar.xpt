@@ -11,23 +11,23 @@
 
 «IMPORT org::eclipse::xtext»
 «IMPORT de::itemis::xtext::antlr»
+«IMPORT de::itemis::xtext::antlr::ex::common»
 «IMPORT org::eclipse::emf::ecore»
 
 «EXTENSION org::eclipse::xtext::generator::Naming»
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
-«EXTENSION de::itemis::xtext::antlr::ex::ca::FileAndClassNames»
 «EXTENSION de::itemis::xtext::antlr::ex::common::Common»
 «EXTENSION org::eclipse::xtext::EcoreUtils»
 
-«DEFINE grammar(AntlrOptions options) FOR Grammar»
-«FILE getParserGrammarFileName().asPath()+".g" SRC_GEN_UI-»
+«DEFINE grammar(AntlrOptions options, AntlrFragmentHelper helper) FOR Grammar»
+«FILE helper.getContentAssistParserGrammarFileName(this).asPath()+".g" SRC_GEN_UI-»
 /*
 «fileHeader()»
 */
-parser grammar «getParserGrammarFileName().toSimpleName()»;
+parser grammar «helper.getContentAssistParserGrammarFileName(this).toSimpleName()»;
 
 options {
-	tokenVocab=«getLexerGrammarFileName().toSimpleName()»;
+	tokenVocab=«helper.getContentAssistLexerGrammarFileName(this).toSimpleName()»;
 	superClass=AbstractInternalContentAssistParser;
 	«IF options.backtrack-»
 	backtrack=true;
@@ -41,7 +41,10 @@ options {
 }
 
 @header {
-package «getParserGrammarFileName().toJavaPackage()»; 
+package «helper.getContentAssistParserGrammarFileName(this).toJavaPackage()»; 
+
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.InputStream;
 import org.eclipse.xtext.*;
@@ -87,16 +90,16 @@ import «gaFQName()»;
     }
 }
 
-«EXPAND antlrRules»
+«EXPAND antlrRules(helper)»
 «ENDFILE»
 «ENDDEFINE»
 
-«DEFINE antlrRules FOR Grammar»
+«DEFINE antlrRules(AntlrFragmentHelper helper) FOR Grammar»
 «EXPAND rule(this) FOREACH allParserRules()»
 «EXPAND rule(this) FOREACH allEnumRules()»
-«EXPAND rule(this) FOREACH allAlternatives()»
-«EXPAND rule(this) FOREACH allGroups()»
-«EXPAND rule(this) FOREACH allAssignments()»
+«EXPAND rule(this) FOREACH helper.getAllAlternatives(this).typeSelect(Alternatives)»
+«EXPAND rule(this) FOREACH helper.getAllGroups(this).typeSelect(Group)»
+«EXPAND rule(this) FOREACH helper.getAllAssignments(this).typeSelect(Assignment)»
 «ENDDEFINE»
 
 «DEFINE rule(Grammar original) FOR ParserRule»

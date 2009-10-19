@@ -12,22 +12,22 @@
 «IMPORT org::eclipse::xtext»
 «IMPORT org::eclipse::emf::ecore»
 «IMPORT de::itemis::xtext::antlr»
+«IMPORT de::itemis::xtext::antlr::ex::common»
 
 «EXTENSION org::eclipse::xtext::generator::Naming»
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
-«EXTENSION de::itemis::xtext::antlr::ex::rt::FileAndClassNames»
 «EXTENSION de::itemis::xtext::antlr::ex::common::Common»
 «EXTENSION org::eclipse::xtext::EcoreUtils»
 
-«DEFINE grammar(AntlrOptions options) FOR Grammar»
-«FILE getParserGrammarFileName().asPath()+".g" SRC_GEN-»
+«DEFINE grammar(AntlrOptions options, AntlrFragmentHelper helper) FOR Grammar»
+«FILE helper.getParserGrammarFileName(this).asPath()+".g" SRC_GEN-»
 /*
 «fileHeader()»
 */
-parser grammar «getParserGrammarFileName().toSimpleName()»;
+parser grammar «helper.getParserGrammarFileName(this).toSimpleName()»;
 
 options {
-	tokenVocab=«getLexerGrammarFileName().toSimpleName()»;
+	tokenVocab=«helper.getLexerGrammarFileName(this).toSimpleName()»;
 	superClass=AbstractInternalAntlrParser;
 	«IF options.backtrack-»
 	backtrack=true;
@@ -41,7 +41,7 @@ options {
 }
 
 @header {
-package «getParserGrammarFileName().toJavaPackage()»; 
+package «helper.getParserGrammarFileName(this).toJavaPackage()»; 
 
 import java.io.InputStream;
 import org.eclipse.xtext.*;
@@ -66,7 +66,7 @@ import «gaFQName()»;
  
  	private «gaSimpleName()» grammarAccess;
  	
-    public «getInternalParserClassName().toSimpleName()»(TokenStream input, IAstFactory factory, «gaSimpleName()» grammarAccess) {
+    public «helper.getInternalParserClassName(this).toSimpleName()»(TokenStream input, IAstFactory factory, «gaSimpleName()» grammarAccess) {
         this(input);
         this.factory = factory;
         registerRules(grammarAccess.getGrammar());
@@ -76,7 +76,7 @@ import «gaFQName()»;
     @Override
     protected InputStream getTokenFile() {
     	ClassLoader classLoader = getClass().getClassLoader();
-    	return classLoader.getResourceAsStream("«getParserGrammarFileName().asPath()».tokens");
+    	return classLoader.getResourceAsStream("«helper.getParserGrammarFileName(this).asPath()».tokens");
     }
     
     @Override
