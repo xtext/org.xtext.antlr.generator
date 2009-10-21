@@ -25,27 +25,18 @@ package «helper.getParserClassName(this).toJavaPackage()»;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.TokenSource;
-import org.antlr.runtime.CharStream;
-import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.ParseException;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 import «gaFQName()»;
 
 public class «helper.getParserClassName(this).toSimpleName()» extends org.eclipse.xtext.parser.antlr.AbstractAntlrParser {
 	
-	@Inject 
-    protected ITokenDefProvider antlrTokenDefProvider;
-	
 	@Inject
 	private «gaSimpleName()» grammarAccess;
-	
-	@Inject
-	private Provider<«helper.getLexerClassName(this)»> lexerProvider;
 	
 	@Override
 	protected IParseResult parse(String ruleName, ANTLRInputStream in) {
@@ -53,7 +44,7 @@ public class «helper.getParserClassName(this).toSimpleName()» extends org.eclips
 		XtextTokenStream tokenStream = createTokenStream(tokenSource);
 		tokenStream.setInitialHiddenTokens(«FOREACH initialHiddenTokens() AS hidden SEPARATOR ", "»"«hidden»"«ENDFOREACH-»);
 		«helper.getInternalParserClassName(this)» parser = createParser(tokenStream);
-		parser.setTokenTypeMap(antlrTokenDefProvider.getTokenDefMap());
+		parser.setTokenTypeMap(getTokenDefProvider().getTokenDefMap());
 		try {
 			if(ruleName != null)
 				return parser.parse(ruleName);
@@ -61,16 +52,6 @@ public class «helper.getParserClassName(this).toSimpleName()» extends org.eclips
 		} catch (Exception re) {
 			throw new ParseException(re.getMessage(),re);
 		}
-	}
-	
-	protected TokenSource createLexer(CharStream stream) {
-		«helper.getLexerClassName(this)» lexer = lexerProvider.get();
-		lexer.setCharStream(stream);
-		return lexer;
-	}
-	
-	protected XtextTokenStream createTokenStream(TokenSource tokenSource) {
-		return new XtextTokenStream(tokenSource, antlrTokenDefProvider);
 	}
 	
 	protected «helper.getInternalParserClassName(this)» createParser(XtextTokenStream stream) {
@@ -90,13 +71,6 @@ public class «helper.getParserClassName(this).toSimpleName()» extends org.eclips
 		this.grammarAccess = grammarAccess;
 	}
 	
-	public Provider<«helper.getLexerClassName(this)»> getLexerProvider() {
-		return this.lexerProvider;
-	}
-	
-	public void setLexerProvider(Provider<«helper.getLexerClassName(this)»> lexerProvider) {
-		this.lexerProvider = lexerProvider;
-	}
 }
 «ENDFILE»
 «ENDDEFINE»

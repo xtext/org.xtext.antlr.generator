@@ -51,7 +51,8 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 	@Override
 	public String[] getExportedPackagesRt(Grammar grammar) {
 		return new String[]{
-				GrammarUtil.getNamespace(grammar) + ".parser.antlr"
+				GrammarUtil.getNamespace(grammar) + ".parser.antlr",
+				GrammarUtil.getNamespace(grammar) + ".parser.antlr.internal"
 		};
 	}
 	
@@ -70,6 +71,11 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getAntlrTokenFileProviderClassName(grammar))
 			.addTypeToType(Lexer.class.getName(), getLexerClassName(grammar))
 			.addTypeToProviderInstance(getLexerClassName(grammar), "org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getLexerClassName(grammar) + ".class)")
+			.addConfiguredBinding("RuntimeLexer", 
+					"binder.bind(" + Lexer.class.getName() + ".class)"+
+					".annotatedWith(com.google.inject.name.Names.named(" +
+					"org.eclipse.xtext.parser.antlr.LexerBindings.RUNTIME" +
+					")).to(" + getLexerClassName(grammar) +".class)")
 			.addTypeToType(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName())
 			.getBindings();
 	}
@@ -80,6 +86,11 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 			.addTypeToType("org.eclipse.jface.text.rules.ITokenScanner","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner")
 			.addTypeToType("org.eclipse.xtext.ui.common.editor.contentassist.IProposalConflictHelper", "org.eclipse.xtext.ui.common.editor.contentassist.antlr.AntlrProposalConflictHelper")
 			.addTypeToType("org.eclipse.xtext.ui.core.editor.IDamagerRepairer", "org.eclipse.xtext.ui.core.editor.XtextDamagerRepairer")
+			.addConfiguredBinding("HighlightingLexer", 
+					"binder.bind(" + Lexer.class.getName() + ".class)"+
+					".annotatedWith(com.google.inject.name.Names.named(" +
+					"org.eclipse.xtext.ui.core.LexerUIBindings.HIGHLIGHTING" +
+					")).to(" + getLexerClassName(grammar) +".class)")
 			.getBindings();
 	}
 	

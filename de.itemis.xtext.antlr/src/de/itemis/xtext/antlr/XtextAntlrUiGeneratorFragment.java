@@ -51,11 +51,22 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 	
 	@Override
 	public Set<Binding> getGuiceBindingsUi(Grammar grammar) {
-		return new BindFactory().addTypeToType(
-				"org.eclipse.xtext.ui.core.editor.contentassist.ContentAssistContext.Factory",
-				"org.eclipse.xtext.ui.common.editor.contentassist.antlr.ParserBasedContentAssistContextFactory")
-				.addTypeToType("org.eclipse.xtext.ui.common.editor.contentassist.antlr.IContentAssistParser",
-						getParserClassName(grammar)).getBindings();
+		return new BindFactory()
+			.addTypeToType(
+					"org.eclipse.xtext.ui.core.editor.contentassist.ContentAssistContext.Factory",
+					"org.eclipse.xtext.ui.common.editor.contentassist.antlr.ParserBasedContentAssistContextFactory")
+			.addTypeToType(
+					"org.eclipse.xtext.ui.common.editor.contentassist.antlr.IContentAssistParser",
+					getParserClassName(grammar))
+			.addConfiguredBinding("ContentAssistLexerProvider", 
+					"binder.bind(" + getInternalLexerClassName(grammar) +".class)"+
+					".toProvider(org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getInternalLexerClassName(grammar) + ".class))")
+			.addConfiguredBinding("ContentAssistLexer", 
+					"binder.bind(org.eclipse.xtext.ui.common.editor.contentassist.antlr.internal.Lexer.class)"+
+					".annotatedWith(com.google.inject.name.Names.named(" +
+					"org.eclipse.xtext.ui.core.LexerUIBindings.CONTENT_ASSIST" +
+					")).to(" + getInternalLexerClassName(grammar) +".class)")
+			.getBindings();
 	}
 
 	@Override
