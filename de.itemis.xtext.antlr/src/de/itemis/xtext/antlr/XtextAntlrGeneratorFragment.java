@@ -76,7 +76,7 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 					".annotatedWith(com.google.inject.name.Names.named(" +
 					"org.eclipse.xtext.parser.antlr.LexerBindings.RUNTIME" +
 					")).to(" + getLexerClassName(grammar) +".class)")
-			.addTypeToType(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName())
+			.addTypeToType(ITokenDefProvider.class.getName(), AntlrTokenDefProvider.class.getName())
 			.getBindings();
 	}
 
@@ -91,6 +91,11 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 					".annotatedWith(com.google.inject.name.Names.named(" +
 					"org.eclipse.xtext.ui.core.LexerUIBindings.HIGHLIGHTING" +
 					")).to(" + getLexerClassName(grammar) +".class)")
+			.addConfiguredBinding("HighlightingTokenDefProvider", 
+					"binder.bind(" + ITokenDefProvider.class.getName() + ".class)"+
+					".annotatedWith(com.google.inject.name.Names.named(" +
+					"org.eclipse.xtext.ui.core.LexerUIBindings.HIGHLIGHTING" +
+					")).to(" + AntlrTokenDefProvider.class.getName() +".class)")
 			.getBindings();
 	}
 	

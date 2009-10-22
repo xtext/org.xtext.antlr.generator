@@ -122,6 +122,11 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 					".annotatedWith(com.google.inject.name.Names.named(" +
 					"org.eclipse.xtext.ui.core.LexerUIBindings.HIGHLIGHTING" +
 					")).to(" + getFragmentHelper().getLexerClassName(grammar) +".class)")
+			.addConfiguredBinding("HighlightingTokenDefProvider", 
+					"binder.bind(" + ITokenDefProvider.class.getName() + ".class)"+
+					".annotatedWith(com.google.inject.name.Names.named(" +
+					"org.eclipse.xtext.ui.core.LexerUIBindings.HIGHLIGHTING" +
+					")).to(" + AntlrTokenDefProvider.class.getName() +".class)")
 			.getBindings();
 	}
 	
