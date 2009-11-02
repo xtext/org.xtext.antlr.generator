@@ -55,7 +55,7 @@ String toAntlrString(String this):
 	JAVA de.itemis.xtext.antlr.AntlrGrammarGenUtil.toAntlrString(java.lang.String);
 
 String toJavaStringImpl(String this):
-	JAVA org.eclipse.xtext.util.Strings.convertToJavaString(java.lang.String);
+	JAVA de.itemis.xtext.antlr.AntlrGrammarGenUtil.toStringInAntlrAction(java.lang.String);
 	
 toStringLiteral(RuleCall this) :
 	rule!=null ? '"'+this.rule.name+'"' :  "null";

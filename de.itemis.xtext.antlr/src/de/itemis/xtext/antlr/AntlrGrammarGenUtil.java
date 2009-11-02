@@ -20,6 +20,10 @@ public class AntlrGrammarGenUtil {
 	public static String toAntlrString(String string) {
 		return Strings.convertToJavaString(string).replace("\\\"", "\"");
 	}
+	
+	public static String toStringInAntlrAction(String string) {
+		return Strings.convertToJavaString(string).replace("%", "\\%");
+	}
 
 	public static String getClasspathURI(Grammar grammar, EObject object) {
 		String fragment = EcoreUtil.getURI(object).fragment();
