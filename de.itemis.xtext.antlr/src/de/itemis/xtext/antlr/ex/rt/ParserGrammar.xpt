@@ -91,17 +91,17 @@ import «gaFQName()»;
         appendSkippedTokens();
     } 
 }
-«EXPAND antlrRules»
+«EXPAND antlrRules(options)»
 «ENDFILE»
 «ENDDEFINE»
 
-«DEFINE antlrRules FOR Grammar»
-«EXPAND rule(this) FOREACH allParserRules()»
-«EXPAND rule(this) FOREACH allEnumRules()»
+«DEFINE antlrRules(AntlrOptions options) FOR Grammar»
+«EXPAND rule(this, options) FOREACH allParserRules()»
+«EXPAND rule(this, options) FOREACH allEnumRules()»
 «ENDDEFINE»
 
 
-«DEFINE rule(Grammar original) FOR ParserRule»
+«DEFINE rule(Grammar original, AntlrOptions options) FOR ParserRule»
 «IF isCalled(original,this)»
 «IF !isDatatypeRule()»
 // Entry rule «entryRuleName()»
@@ -125,7 +125,7 @@ import «gaFQName()»;
 		myHiddenTokenState.restore();
 «ENDIF-»
     }:
-    «EXPAND ebnf(original) FOR this.alternatives»;
+    «EXPAND ebnf(original, options) FOR this.alternatives»;
 «ELSE»
 // Entry rule «entryRuleName()»
 «entryRuleName()» returns [String current=null] :
@@ -154,7 +154,7 @@ import «gaFQName()»;
 «ENDIF»
 «ENDDEFINE»
 
-«DEFINE rule(Grammar original) FOR EnumRule»
+«DEFINE rule(Grammar original, AntlrOptions options) FOR EnumRule»
 «IF isCalled(original,this)»
 // Rule «name»
 «ruleName()» returns [Enumerator current=null] 
@@ -162,11 +162,11 @@ import «gaFQName()»;
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-    «EXPAND ebnf(original) FOR this.alternatives»;
+    «EXPAND ebnf(original, options) FOR this.alternatives»;
 «ENDIF»
 «ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR EnumLiteralDeclaration-»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR EnumLiteralDeclaration-»
     «grammar.getKeywordRuleName(literal.value)»
 	{
         $current = grammarAccess.«grammarElementAccess(this)».getEnumLiteral().getInstance();
@@ -174,8 +174,8 @@ import «gaFQName()»;
     }
 «ENDDEFINE»
 
-«DEFINE ebnf(Grammar grammar) FOR AbstractElement-»
-«IF mustBeParenthesized()»(«EXPAND ebnf2(grammar)»)«ELSE»«EXPAND ebnf2(grammar)»«ENDIF»«cardinality-»
+«DEFINE ebnf(Grammar grammar, AntlrOptions options) FOR AbstractElement-»
+«IF mustBeParenthesized()»(«EXPAND ebnf2(grammar, options)»)«ELSE»«EXPAND ebnf2(grammar, options)»«ENDIF»«cardinality-»
 «ENDDEFINE»
 
 «DEFINE dataTypeEbnf(Grammar grammar) FOR AbstractElement-»
@@ -218,11 +218,11 @@ import «gaFQName()»;
 «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR Alternatives-»«EXPAND ebnf(grammar) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Alternatives-»«EXPAND ebnf(grammar, options) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR Group»«EXPAND ebnf(grammar) FOREACH tokens»«ENDDEFINE»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Group»«EXPAND ebnf(grammar, options) FOREACH tokens»«ENDDEFINE»
 
 «DEFINE crossrefEbnf(Grammar grammar, CrossReference ref) FOR AbstractElement-»
 «ERROR "crossrefEbnf is not supported for AbstractElement"»
@@ -271,8 +271,8 @@ import «gaFQName()»;
 	}
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment) FOR AbstractElement-»
-		«assignment.localVar(this)»=«EXPAND ebnf(grammar)» 
+«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment, AntlrOptions options) FOR AbstractElement-»
+		«assignment.localVar(this)»=«EXPAND ebnf(grammar, options)» 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.«assignment.containingParserRule().grammarElementAccess()».getType().getClassifier());
@@ -290,25 +290,25 @@ import «gaFQName()»;
 	    }
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment) FOR Group-»
+«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment, AntlrOptions options) FOR Group-»
 «ERROR "assignmentEbnf is not supported for Group"»
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment) FOR Assignment-»
+«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment, AntlrOptions options) FOR Assignment-»
 «ERROR "assignmentEbnf is not supported for Assignment"»
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment) FOR Action-»
+«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment, AntlrOptions options) FOR Action-»
 «ERROR "assignmentEbnf is not supported for Action"»
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment) FOR Alternatives-»
+«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment, AntlrOptions options) FOR Alternatives-»
 (
-«EXPAND assignmentEbnf(grammar, assignment) FOREACH groups SEPARATOR '\n    |'»
+«EXPAND assignmentEbnf(grammar, assignment, options) FOREACH groups SEPARATOR '\n    |'»
 )
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment) FOR RuleCall-»
+«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment, AntlrOptions options) FOR RuleCall-»
 «EXPAND assignmentEbnf(assignment, this) FOR rule-»
 «ENDDEFINE»
 
@@ -387,7 +387,15 @@ import «gaFQName()»;
 	    }
 «ENDDEFINE»
 
-«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment) FOR CrossReference-»
+«DEFINE assignmentEbnf(Grammar grammar, Assignment assignment, AntlrOptions options) FOR CrossReference-»
+«IF options.backtrack-»
+		{ 
+		  /* 
+		  dummy action to prevent antlr bug: if backtracking is enabled, antlr will
+		  create synpreds that cannot be compiled in some rare cases
+		  */ 
+		}
+«ENDIF-»
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.«assignment.containingParserRule().grammarElementAccess()».getType().getClassifier());
@@ -397,17 +405,17 @@ import «gaFQName()»;
 		«EXPAND crossrefEbnf(grammar, this) FOR terminal-»
 «ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR Assignment»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Assignment»
 (
-«EXPAND assignmentEbnf(grammar, this) FOR terminal»
+«EXPAND assignmentEbnf(grammar, this, options) FOR terminal»
 )
 «ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR CrossReference»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR CrossReference»
 «ERROR "ebnf2(Grammar grammar) is not supported for CrossReference"»
 «ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR Action»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Action»
     { 
         temp=factory.create(grammarAccess.«grammarElementAccess()».getType().getClassifier());
 «IF feature != null-»
@@ -424,14 +432,14 @@ import «gaFQName()»;
     }
 «ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR Keyword»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Keyword»
 	«grammar.getKeywordRuleName(value)» 
     {
         «EXPAND createLeafNode» 
     }
 «ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar) FOR RuleCall-»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR RuleCall-»
 «IF (ParserRule.isInstance(rule) && !isDatatypeRule((ParserRule)rule) || EnumRule.isInstance(rule)) && !isAssigned()»
     { 
         currentNode=«EXPAND createCompositeNode» 

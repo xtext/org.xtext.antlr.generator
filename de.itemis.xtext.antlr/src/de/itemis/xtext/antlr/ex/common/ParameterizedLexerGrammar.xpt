@@ -26,10 +26,8 @@ lexer grammar «lexerGrammarFileName.toSimpleName()»;
 
 «IF options.backtrackLexer-»
 options {
-	«IF options.backtrackLexer-»
 	backtrack=true;
 	memoize=true;
-	«ENDIF-»
 }
 «ENDIF-»
 
