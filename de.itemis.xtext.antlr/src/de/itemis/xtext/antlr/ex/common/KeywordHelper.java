@@ -10,6 +10,7 @@ package de.itemis.xtext.antlr.ex.common;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -25,18 +26,23 @@ import org.eclipse.xtext.ParserRule;
 
 import com.google.common.base.Function;
 import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
+ * @author Heiko Behrens
  */
 public class KeywordHelper implements Adapter {
 
-	private BiMap<String, String> keywordValueToToken;
+	private BiMap<CharSequence, String> keywordValueToToken;
+	private boolean ignoreCase;
 	
-	public KeywordHelper(Grammar grammar) {
+	public KeywordHelper(Grammar grammar, boolean ignoreCase) {
+		this.ignoreCase = ignoreCase;
 		keywordValueToToken = createKeywordMap(grammar);
 		grammar.eResource().getResourceSet().eAdapters().add(this);
 	}
@@ -54,18 +60,26 @@ public class KeywordHelper implements Adapter {
 	}
 	
 	public String getRuleName(String keywordValue) {
-		return keywordValueToToken.get(keywordValue);
+		return keywordValueToToken.get(createKey(keywordValue));
 	}
 	
 	public String getKeywordValue(String ruleName) {
-		return keywordValueToToken.inverse().get(ruleName);
+		return keywordValueToToken.inverse().get(ruleName).toString();
 	}
 	
 	public boolean isKeywordRule(String ruleName) {
 		return keywordValueToToken.containsValue(ruleName);
 	}
 	
-	private BiMap<String, String> createKeywordMap(Grammar grammar) {
+	public Set<String> getAllKeywords() {
+		return ImmutableSet.copyOf(Iterables.transform(keywordValueToToken.keySet(), new Function<CharSequence, String>() {
+			public String apply(CharSequence from) {
+				return from.toString();
+			}
+		}));
+	}
+	
+	private BiMap<CharSequence, String> createKeywordMap(Grammar grammar) {
 		List<ParserRule> parserRules = GrammarUtil.allParserRules(grammar);
 		List<EnumRule> enumRules = GrammarUtil.allEnumRules(grammar);
 		Iterator<EObject> iter = Iterators.concat(
@@ -83,15 +97,23 @@ public class KeywordHelper implements Adapter {
 				return new Integer(o1.length()).compareTo(new Integer(o2.length()));
 			}
 		}, transformed);
-		BiMap<String, String> result = Maps.newHashBiMap();
+		BiMap<CharSequence, String> result = Maps.newHashBiMap();
 		int i = 1;
 		for(String s: treeSet) {
-			if (!result.containsKey(s)) {
-				result.put(s, "KEYWORD_" + i);
+			CharSequence key = createKey(s);
+			if (!result.containsKey(key)) {
+				result.put(key, "KEYWORD_" + i);
 				i++;
 			}
 		}
 		return result;
+	}
+
+	private CharSequence createKey(String s) {
+		if(ignoreCase)
+			return new IgnoreCaseString(s);
+		else
+			return s;
 	}
 
 	public Notifier getTarget() {

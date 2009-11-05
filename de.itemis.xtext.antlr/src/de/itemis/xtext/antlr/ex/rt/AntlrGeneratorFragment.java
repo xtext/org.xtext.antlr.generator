@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.emf.mwe.core.issues.Issues;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
@@ -45,7 +46,7 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 	
 	@Override
 	public void generate(final Grammar grammar, XpandExecutionContext ctx) {
-		KeywordHelper helper = new KeywordHelper(grammar);
+		KeywordHelper helper = new KeywordHelper(grammar, getOptions().isIgnoreCase());
 		super.generate(grammar, ctx);
 		final String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath();
 		String libPath = srcGenPath + "/" + getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/');
@@ -128,6 +129,13 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 					"org.eclipse.xtext.ui.core.LexerUIBindings.HIGHLIGHTING" +
 					")).to(" + AntlrTokenDefProvider.class.getName() +".class)")
 			.getBindings();
+	}
+	
+	@Override
+	public void checkConfiguration(Issues issues) {
+		super.checkConfiguration(issues);
+		if(getOptions().isBacktrackLexer() && getOptions().isIgnoreCase())
+			issues.addError("Backtracking lexer and ignorecase cannot be combined for now.");
 	}
 	
 }

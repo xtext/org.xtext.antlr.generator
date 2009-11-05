@@ -29,7 +29,7 @@ public class ContentAssistParserGeneratorFragment extends AbstractAntlrGenerator
 
 	@Override
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
-		KeywordHelper helper = new KeywordHelper(grammar);
+		KeywordHelper helper = new KeywordHelper(grammar, getOptions().isIgnoreCase());
 		super.generate(grammar, ctx);
 		final String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN_UI).getPath();
 		String libPath = srcGenPath + "/" + getFragmentHelper().getContentAssistLexerGrammarFileName(grammar).replace('.', '/');

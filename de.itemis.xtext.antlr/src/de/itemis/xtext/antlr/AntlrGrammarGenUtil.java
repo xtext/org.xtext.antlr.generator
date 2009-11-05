@@ -14,15 +14,37 @@ import org.eclipse.xtext.util.Strings;
 
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
+ * @author Heiko Behrens
  */
 public class AntlrGrammarGenUtil {
 
 	public static String toAntlrString(String string) {
 		return Strings.convertToJavaString(string).replace("\\\"", "\"");
 	}
-	
+
 	public static String toStringInAntlrAction(String string) {
 		return Strings.convertToJavaString(string).replace("%", "\\%");
+	}
+
+	public static String toAntlrStringIgnoreCase(String string) {
+		StringBuilder sb = new StringBuilder();
+		
+		for(int i = 0; i < string.length() ; i++) {
+			final char upperCase = Character.toUpperCase(string.charAt(i));
+			final char lowerCase = Character.toLowerCase(string.charAt(i));
+			if(upperCase == lowerCase) {
+				sb.append("'");
+				sb.append(toAntlrString(String.valueOf(upperCase)));
+				sb.append("'");
+			} else {
+				sb.append("('");
+				sb.append(toAntlrString(String.valueOf(upperCase)));
+				sb.append("'|'");
+				sb.append(toAntlrString(String.valueOf(lowerCase)));
+				sb.append("')");
+			}
+		}
+		return sb.toString();
 	}
 
 	public static String getClasspathURI(Grammar grammar, EObject object) {

@@ -10,6 +10,10 @@ import org::eclipse::xtext;
 import org::eclipse::emf::ecore;
 import de::itemis::xtext::antlr::ex::common;
 
+extension org::eclipse::xtext::GrammarUtil;
+extension org::eclipse::xtext::EcoreUtils;
+extension de::itemis::xtext::antlr::AntlrGrammar;
+
 // These are candidates for genParameters of the parser's GenService 
 
 String getKeywordRuleName(EObject ctx, String keyword):
@@ -17,3 +21,15 @@ String getKeywordRuleName(EObject ctx, String keyword):
 	
 KeywordHelper getHelper(EObject ctx):
 	JAVA de.itemis.xtext.antlr.ex.common.KeywordHelper.getHelper(org.eclipse.emf.ecore.EObject);
+
+private String toAntlrTerminalCaseSenstive(String this):
+	"'" + toAntlrString() + "'"; //de::itemis::xtext::antlr::AntlrGrammar
+	
+private String toAntlrTerminalIgnoreCase(String this):
+	JAVA de.itemis.xtext.antlr.AntlrGrammarGenUtil.toAntlrStringIgnoreCase(java.lang.String);
+	
+String toAntlrKeywordRule(String this, de::itemis::xtext::antlr::AntlrOptions options):
+	options.ignoreCase? toAntlrTerminalIgnoreCase() : toAntlrTerminalCaseSenstive();
+
+allKeywords(Grammar this):
+	getHelper().allKeywords;

@@ -16,6 +16,8 @@ public class AntlrOptions {
 	private boolean backtrackLexer = false;
 	private boolean memoize = false;
 	private int k = -1;
+	private boolean ignoreCase = false;
+	
 	public boolean isBacktrack() {
 		return backtrack;
 	}
@@ -39,6 +41,12 @@ public class AntlrOptions {
 	}
 	public boolean isBacktrackLexer() {
 		return backtrackLexer;
+	}
+	public void setIgnoreCase(boolean ignoreCase) {
+		this.ignoreCase = ignoreCase;
+	}
+	public boolean isIgnoreCase() {
+		return ignoreCase;
 	}
 	
 }

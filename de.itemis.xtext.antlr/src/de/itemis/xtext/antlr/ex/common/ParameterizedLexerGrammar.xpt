@@ -42,18 +42,18 @@ import «superclass»;
 «IF options.backtrackLexer-»
 «EXPAND backtrackingAntlrRules(helper)»
 «ELSE-»
-«EXPAND antlrRules(helper)»
+«EXPAND antlrRules(options, helper)»
 «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE antlrRules(AntlrFragmentHelper helper) FOR Grammar»
-«EXPAND keywords»
+«DEFINE antlrRules(de::itemis::xtext::antlr::AntlrOptions options, AntlrFragmentHelper helper) FOR Grammar»
+«EXPAND keywords(options)»
 «EXPAND rule(helper) FOREACH allTerminalRules()»
 «ENDDEFINE»
 
-«DEFINE keywords FOR Grammar»
-«FOREACH allParserRules().select(e|isCalled(this,e)).union(allEnumRules().select(e|isCalled(this,e))).allContents().typeSelect(Keyword).collect(e|e.value).toSet().sortBy(e|e).sortBy(e|e.length*-1) AS kw»
-«getKeywordRuleName(kw)» : '«kw.toAntlrString()»';
+«DEFINE keywords(de::itemis::xtext::antlr::AntlrOptions options) FOR Grammar»
+«FOREACH allKeywords() AS kw»
+«getKeywordRuleName(kw)» : «kw.toAntlrKeywordRule(options)»;
 «ENDFOREACH»
 «ENDDEFINE»
 
