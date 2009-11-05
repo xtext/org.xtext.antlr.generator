@@ -9,3 +9,5 @@ Require-Bundle: org.junit;bundle-version="3.8.2",
  org.eclipse.xtext.junit,
  org.eclipse.xtext,
  de.itemis.xtext.antlr
+Export-Package: de.itemis.xtext.antlr,
+ de.itemis.xtext.antlr.tests
