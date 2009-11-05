@@ -7,6 +7,7 @@
  *******************************************************************************/
 package de.itemis.xtext.antlr.ex.common;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -26,8 +27,6 @@ import org.eclipse.xtext.ParserRule;
 
 import com.google.common.base.Function;
 import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -71,12 +70,21 @@ public class KeywordHelper implements Adapter {
 		return keywordValueToToken.containsValue(ruleName);
 	}
 	
+	public final static Comparator<String> keywordComparator = new Comparator<String>() {
+
+		public int compare(String s1, String s2) {
+			// sortBy(e|e).sortBy(e|e.length*-1)
+			int result = s2.length() - s1.length();
+			return result != 0 ? result : s1.compareTo(s2);
+		}
+	}; 
+	
 	public Set<String> getAllKeywords() {
-		return ImmutableSet.copyOf(Iterables.transform(keywordValueToToken.keySet(), new Function<CharSequence, String>() {
-			public String apply(CharSequence from) {
-				return from.toString();
-			}
-		}));
+		Set<String> result = new TreeSet<String>(keywordComparator);
+		for(CharSequence cs : keywordValueToToken.keySet())
+			result.add(cs.toString());
+		
+		return Collections.unmodifiableSet(result);
 	}
 	
 	private BiMap<CharSequence, String> createKeywordMap(Grammar grammar) {

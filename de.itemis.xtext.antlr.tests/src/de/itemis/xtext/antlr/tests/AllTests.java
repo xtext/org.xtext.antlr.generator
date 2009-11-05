@@ -11,6 +11,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import de.itemis.xtext.antlr.AntlrGrammarGenUtilTest;
 import de.itemis.xtext.antlr.TerminalRuleToLexerBodyTest;
+import de.itemis.xtext.antlr.ex.common.KeywordHelperTest;
 
 /**
  * @author huebner - Initial contribution and API
@@ -20,6 +21,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite("Tests for org.eclipse.emf.emfindex.tests");
 		suite.addTestSuite(AntlrGrammarGenUtilTest.class);
 		suite.addTestSuite(TerminalRuleToLexerBodyTest.class);
+		suite.addTestSuite(KeywordHelperTest.class);
 		return suite;
 	}
 }

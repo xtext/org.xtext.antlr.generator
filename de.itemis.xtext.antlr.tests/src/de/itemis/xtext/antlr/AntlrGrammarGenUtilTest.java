@@ -1,7 +1,3 @@
-package de.itemis.xtext.antlr;
-import de.itemis.xtext.antlr.AntlrGrammarGenUtil;
-import junit.framework.TestCase;
-
 /*******************************************************************************
  * Copyright (c) 2009 itemis AG (http://www.itemis.eu) and others.
  * All rights reserved. This program and the accompanying materials
@@ -9,6 +5,11 @@ import junit.framework.TestCase;
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
+package de.itemis.xtext.antlr;
+
+import de.itemis.xtext.antlr.AntlrGrammarGenUtil;
+import junit.framework.TestCase;
+
 
 /**
  * @author Heiko Behrens - Initial contribution and API
