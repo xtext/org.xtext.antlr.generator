@@ -18,7 +18,7 @@ import de.itemis.xtext.antlr.ex.common.KeywordHelperTest;
  */
 public class AllTests {
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Tests for org.eclipse.emf.emfindex.tests");
+		TestSuite suite = new TestSuite("Tests for de.itemis.xtext.antlr.tests");
 		suite.addTestSuite(AntlrGrammarGenUtilTest.class);
 		suite.addTestSuite(TerminalRuleToLexerBodyTest.class);
 		suite.addTestSuite(KeywordHelperTest.class);
