@@ -23,6 +23,9 @@ import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.TerminalRule;
 
 /**
+ * The fragment helper will be passed to the extended Antlr grammar template and allows to
+ * override certain aspects. This is an attempt to circumvent the limitations of static java
+ * extensions. 
  * @author Sebastian Zarnekow - Initial contribution and API
  */
 public class AntlrFragmentHelper {
@@ -91,6 +94,12 @@ public class AntlrFragmentHelper {
 		return getAllElementsByType(g, Assignment.class);
 	}
 	
+	/**
+	 * Synthetic terminal rules are rules which will not lead to a real terminal 
+	 * rule in the generated lexer grammar but only provide the respective token types 
+	 * instead.
+	 * @return <code>true</code> if this rule should not get an own lexer body.
+	 */
 	public boolean isSyntheticTerminalRule(TerminalRule rule) {
 		return false;
 	}
