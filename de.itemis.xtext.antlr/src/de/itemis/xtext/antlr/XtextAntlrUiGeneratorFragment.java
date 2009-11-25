@@ -47,6 +47,9 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 		if (getOptions().isBacktrackLexer()) {
 			issues.addError("This fragment does not support the option 'backtracking' for the lexer. Use 'de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment' instead");
 		}
+		if (getOptions().isIgnoreCase()) {
+			issues.addError("This fragment does not support the option 'ignoreCase'. Use 'de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment' instead");
+		}
 	}
 	
 	@Override
