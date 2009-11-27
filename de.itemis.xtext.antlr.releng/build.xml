@@ -22,9 +22,10 @@
 			
 				http://downloads.sourceforge.net/svn-pde-build/org.eclipse.pde.build.svn-1.0.1RC2.zip
 		-->
-
 		<!-- load properties and set timestamp for the build -->
-		<property file="build.properties" />
+		<property name="buildPropertiesFile" value="build.properties" />
+		<property file="${buildPropertiesFile}" />
+		<echo>Using ${buildPropertiesFile} file...</echo>
 		<tstamp>
 			<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
 		</tstamp>
