@@ -28,7 +28,7 @@
 			${relengBuilderDir}/build
 		-->
 		<property name="writableBuildRoot" value="/build" />
-
+		<property name="downloadsDir" value="${writableBuildRoot}/downloads" />
 		<!-- 
 			can be simple path, eg., 
 			${writableBuildRoot}/${buildType}${buildTimestamp} or longer, eg.,
@@ -39,6 +39,23 @@
 
 		<!-- invoke common promotion script -->
 		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
+		<antcall target="get.ant-contrib"/>
 		<ant antfile="${relengCommonBuilderDir}/promote.xml" dir="${relengCommonBuilderDir}" />
+	</target>
+	
+	<target name="get.ant-contrib">
+		<get src="http://downloads.sourceforge.net/ant-contrib/ant-contrib-1.0b2-bin.zip"
+		     dest="${downloadsDir}/ant-contrib-1.0b2-bin.zip"
+		     usetimestamp="true"
+		/>
+		<touch file="${downloadsDir}/ant-contrib-1.0b2-bin.zip" />
+		<mkdir dir="/tmp/ant-contrib-1.0b2-bin.zip_" />
+		<unzip src="${downloadsDir}/ant-contrib-1.0b2-bin.zip" dest="/tmp/ant-contrib-1.0b2-bin.zip_" overwrite="true" />
+		<mkdir dir="${relengBuilderDir}/lib" />
+		<copy file="/tmp/ant-contrib-1.0b2-bin.zip_/ant-contrib/lib/ant-contrib.jar"
+		      tofile="${relengBuilderDir}/lib/ant-contrib.jar"
+		      failonerror="true"
+		/>
+		<delete dir="/tmp/ant-contrib-1.0b2-bin.zip_" includeemptydirs="true" quiet="true" />
 	</target>
 </project>
