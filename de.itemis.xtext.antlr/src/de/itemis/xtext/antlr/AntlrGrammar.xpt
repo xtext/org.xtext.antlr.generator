@@ -68,7 +68,14 @@ import «gaFQName()»;
 }
 
 @parser::members {
+
+«IF options.backtrack-»
+/*
+  This grammar contains a lot of empty actions to work around a bug in ANTLR.
+  Otherwise the ANTLR tool will create synpreds that cannot be compiled in some rare cases.
+*/
  
+«ENDIF-»
  	private «gaSimpleName()» grammarAccess;
  	
     public «getInternalParserClassName().toSimpleName()»(TokenStream input, IAstFactory factory, «gaSimpleName()» grammarAccess) {
@@ -400,10 +407,7 @@ import «gaFQName()»;
 «DEFINE assignmentEbnf(Assignment assignment, AntlrOptions options) FOR CrossReference-»
 «IF options.backtrack-»
 		{ 
-		  /* 
-		  dummy action to prevent antlr bug: if backtracking is enabled, antlr will
-		  create synpreds that cannot be compiled in some rare cases
-		  */ 
+		  /* */ 
 		}
 «ENDIF-»
 		{
@@ -426,6 +430,11 @@ import «gaFQName()»;
 «ENDDEFINE»
 
 «DEFINE ebnf2(AntlrOptions options) FOR Action»
+«IF options.backtrack-»
+	{ 
+	  /* */ 
+	}
+«ENDIF-»
     { 
         temp=factory.create(grammarAccess.«grammarElementAccess()».getType().getClassifier());
 «IF feature != null-»
@@ -442,7 +451,8 @@ import «gaFQName()»;
     }
 «ENDDEFINE»
 
-«DEFINE ebnf2(AntlrOptions options) FOR Keyword»'«value.toAntlrString()»' 
+«DEFINE ebnf2(AntlrOptions options) FOR Keyword-»
+	'«value.toAntlrString()»' 
     {
         «EXPAND createLeafNode» 
     }
@@ -450,6 +460,11 @@ import «gaFQName()»;
 
 «DEFINE ebnf2(AntlrOptions options) FOR RuleCall-»
 «IF (ParserRule.isInstance(rule) && !isDatatypeRule((ParserRule)rule) || EnumRule.isInstance(rule)) && !isAssigned()»
+«IF options.backtrack-»
+	{ 
+	  /* */ 
+	}
+«ENDIF-»
     { 
         currentNode=«EXPAND createCompositeNode» 
     }
