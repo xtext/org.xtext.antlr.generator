@@ -78,7 +78,7 @@ public class AntlrParserSplitter {
 		return result.toString();
 	}
 	
-	List<ExtractedClass> getExtractedClasses() {
+	public List<ExtractedClass> getExtractedClasses() {
 		return Collections.unmodifiableList(extractedClasses);
 	}
 	

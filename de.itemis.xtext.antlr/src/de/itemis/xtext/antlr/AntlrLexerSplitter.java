@@ -8,6 +8,7 @@
 package de.itemis.xtext.antlr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -31,9 +32,14 @@ public class AntlrLexerSplitter {
 	public static final Pattern OUTER_SWITCH_PATTERN = Pattern.compile("^\\s{8}switch", 0);
 	public static final Pattern OUTER_IF_PATTERN = Pattern.compile("^\\s{8}if", 0);
 	
-	List<ExtractedMethod> extractedMethods = new ArrayList<ExtractedMethod>();
+	private List<ExtractedMethod> extractedMethods = new ArrayList<ExtractedMethod>();
+	
+	public List<ExtractedMethod> getExtractedMethods() {
+		return Collections.unmodifiableList(extractedMethods);
+	}
+
 	private StringBuilder stringBuilder;
-	final Scanner scanner;
+	private final Scanner scanner;
 
 	public AntlrLexerSplitter(String content) {
 		scanner = new Scanner(content);
@@ -176,7 +182,7 @@ public class AntlrLexerSplitter {
 		}
 	}
 
-	static String getVarnameFromDecl(String varDecl) {
+	private static String getVarnameFromDecl(String varDecl) {
 		Matcher m = ASSIGNMENT_PATTERN.matcher(varDecl);
 		if(!m.find())
 			return null;
