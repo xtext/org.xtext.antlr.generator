@@ -17,6 +17,7 @@ public class AntlrOptions {
 	private boolean memoize = false;
 	private int k = -1;
 	private boolean ignoreCase = false;
+	private boolean noClassSplitting = false;
 	
 	public boolean isBacktrack() {
 		return backtrack;
@@ -47,6 +48,12 @@ public class AntlrOptions {
 	}
 	public boolean isIgnoreCase() {
 		return ignoreCase;
+	}
+	public boolean isNoClassSplitting() {
+		return noClassSplitting;
+	}
+	public void setNoClassSplitting(boolean noClassSplitting) {
+		this.noClassSplitting = noClassSplitting;
 	}
 	
 }

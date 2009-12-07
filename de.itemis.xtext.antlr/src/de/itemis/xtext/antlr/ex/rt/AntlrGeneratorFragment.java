@@ -51,8 +51,11 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 		final String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath();
 		String libPath = srcGenPath + "/" + getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/');
 		libPath = libPath.substring(0, libPath.lastIndexOf('/'));
-		AntlrToolRunner.runWithParams(srcGenPath+"/"+getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/')+".g");
-		AntlrToolRunner.runWithParams(srcGenPath+"/"+getFragmentHelper().getParserGrammarFileName(grammar).replace('.', '/')+".g", "-lib", libPath);
+		String absoluteLexerFileName = srcGenPath+"/"+getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/')+".g";
+		String absoluteParserFileName = srcGenPath+"/"+getFragmentHelper().getParserGrammarFileName(grammar).replace('.', '/')+".g";
+		AntlrToolRunner.runWithParams(absoluteLexerFileName);
+		AntlrToolRunner.runWithParams(absoluteParserFileName, "-lib", libPath);
+		splitParserAndLexerIfEnabled(absoluteLexerFileName, absoluteParserFileName);
 		
 		MutableTokenDefProvider provider = new MutableTokenDefProvider();
 		provider.setAntlrTokenFileProvider(new IAntlrTokenFileProvider() {
