@@ -118,35 +118,60 @@ import «gaFQName()»;
 «IF isCalled(original,this)»
 «IF !isDatatypeRule()»
 // Entry rule «entryRuleName()»
-«entryRuleName()» returns [EObject current=null] :
+«entryRuleName()» returns [EObject current=null] 
+«IF definesHiddenTokens-»
+	@init { 
+		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
+	}
+«ENDIF-»
+	:
 	{ currentNode = «EXPAND createCompositeNode» }
 	 iv_«ruleName()»=«ruleName()» 
 	 { $current=$iv_«ruleName()».current; } 
 	 EOF 
 ;
+«IF definesHiddenTokens-»
+finally {
+	myHiddenTokenState.restore();
+}
+«ENDIF-»
 
 // Rule «name»
 «ruleName()» returns [EObject current=null] 
     @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
-«ENDIF-»    
+«ENDIF-» 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
-«IF definesHiddenTokens-»
-		myHiddenTokenState.restore();
-«ENDIF-»
     }:
-    «EXPAND ebnf(options) FOR this.alternatives»;
+    «EXPAND ebnf(options) FOR this.alternatives»
+;
+«IF definesHiddenTokens-»
+finally {
+	myHiddenTokenState.restore();
+}
+«ENDIF-»
 «ELSE»
 // Entry rule «entryRuleName()»
-«entryRuleName()» returns [String current=null] :
+«entryRuleName()» returns [String current=null] 
+«IF definesHiddenTokens-»
+	@init { 
+		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
+	}
+«ENDIF-»
+	:
 	{ currentNode = «EXPAND createCompositeNode» } 
 	 iv_«ruleName()»=«ruleName()» 
 	 { $current=$iv_«ruleName()».current.getText(); }  
 	 EOF 
 ;
+«IF definesHiddenTokens-»
+finally {
+	myHiddenTokenState.restore();
+}
+«ENDIF-»
 
 // Rule «name»
 «ruleName()» returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
@@ -157,12 +182,14 @@ import «gaFQName()»;
     }
     @after { resetLookahead(); 
 	    lastConsumedNode = currentNode;
-«IF definesHiddenTokens-»
-		myHiddenTokenState.restore();
-«ENDIF-» 
     }:
    «EXPAND dataTypeEbnf FOR this.alternatives»
     ;
+«IF definesHiddenTokens-»
+finally {
+	myHiddenTokenState.restore();
+}
+«ENDIF-» 
 «ENDIF»
 «ENDIF»
 «ENDDEFINE»

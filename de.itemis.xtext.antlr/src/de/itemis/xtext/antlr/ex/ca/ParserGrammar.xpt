@@ -105,30 +105,40 @@ import «gaFQName()»;
 «DEFINE rule(Grammar original) FOR ParserRule»
 «IF isCalled(original,this)»
 // Entry rule «entryRuleName()»
-«entryRuleName()» :
+«entryRuleName()» 
+«IF definesHiddenTokens-»
+@init {
+	HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
+}
+«ENDIF-»
+:
 { before(grammarAccess.«grammarElementAccess(this)»); }
 	 «ruleName()»
 { after(grammarAccess.«grammarElementAccess(this)»); } 
 	 EOF 
 ;
+«IF definesHiddenTokens-»
+finally {
+	myHiddenTokenState.restore();
+}
+«ENDIF-»
 
 // Rule «name»
 «ruleName()» 
     @init {
 «IF definesHiddenTokens-»  
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
-«ENDIF-»		
+«ENDIF-»
 		int stackSize = keepStackSize();
     }
-«IF definesHiddenTokens-»
-    @after {
-		myHiddenTokenState.restore();
-    }  
-«ENDIF-» :
+    :
     «EXPAND ebnf FOR this.alternatives»
 ;
 finally {
 	restoreStackSize(stackSize);
+«IF definesHiddenTokens-»
+	myHiddenTokenState.restore();
+«ENDIF-» 
 }
 «ENDIF»
 «ENDDEFINE»
