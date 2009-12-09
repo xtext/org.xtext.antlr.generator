@@ -31,6 +31,7 @@ public class AntlrLexerSplitter {
 	public static final Pattern BREAK_LINE_PATTERN = Pattern.compile("^\\s{12}\\s*break;", 0);
 	public static final Pattern OUTER_SWITCH_PATTERN = Pattern.compile("^\\s{8}switch", 0);
 	public static final Pattern OUTER_IF_PATTERN = Pattern.compile("^\\s{8}if", 0);
+	public static final Pattern OUTER_BRACE_IN_IF_CASCADE_PATTERN = Pattern.compile("^(\\s{12}[^\\s]+.*)}\\s*$", 0);
 	
 	private List<ExtractedMethod> extractedMethods = new ArrayList<ExtractedMethod>();
 	
@@ -161,25 +162,37 @@ public class AntlrLexerSplitter {
 				
 		}
 	}
-
+	
 	static void extractMethod(StringBuilder sb, Scanner scanner, String varName, ExtractedMethod method, String firstLine) {
-		method.addLine(firstLine);
-		while(scanner.hasNextLine()) {
-			String line = scanner.nextLine();
-			if(INDENT_LEVEL_PATTERN.matcher(line).find() || "".equals(line)) {
-				method.addLine(line);
-			} else {
+		boolean addBrace = method.addLine(firstLine) == ExtractedMethod.ExtractedMethodLineState.ignoredClosingBrace;
+		boolean simplyEndOfMethod = false;
+		String line = null;
+		do {
+			if(addBrace || simplyEndOfMethod) {
 				sb.append(INDENT2);
 				sb.append(INDENT);
 				sb.append(varName);
 				sb.append(" = ");
 				sb.append(method.getName());
-				sb.append("();\n");
-				sb.append(line);
+				sb.append("();");
+				if(addBrace)
+					sb.append("}");
 				sb.append("\n");
+				if(line != null) {
+					sb.append(line);
+					sb.append("\n");
+				}
 				break;
 			}
-		}
+			
+			if(scanner.hasNextLine()) {
+				line = scanner.nextLine();
+				if(INDENT_LEVEL_PATTERN.matcher(line).find() || "".equals(line))
+					addBrace = method.addLine(line) == ExtractedMethod.ExtractedMethodLineState.ignoredClosingBrace;
+				else
+					simplyEndOfMethod = true;
+			}
+		} while (scanner.hasNextLine());
 	}
 
 	private static String getVarnameFromDecl(String varDecl) {
@@ -207,10 +220,21 @@ public class AntlrLexerSplitter {
 			this.index = index;
 			this.assignmentPattern = Pattern.compile(resultVar+"=(\\d+);", 0);
 		}
+		
+		private enum ExtractedMethodLineState {added, ignored, ignoredClosingBrace};
 	
-		public void addLine(String line) {
-			if(!BREAK_LINE_PATTERN.matcher(line).find())
-				lines.add(line);
+		public ExtractedMethodLineState addLine(String line) {
+			if(BREAK_LINE_PATTERN.matcher(line).find())
+				return ExtractedMethodLineState.ignored;
+			
+			Matcher m = OUTER_BRACE_IN_IF_CASCADE_PATTERN.matcher(line);
+			if(m.find()) {
+				lines.add(m.group(1));
+				return ExtractedMethodLineState.ignoredClosingBrace;
+			}
+				
+			lines.add(line);
+			return ExtractedMethodLineState.added;
 		}
 	
 		public Object getName() {

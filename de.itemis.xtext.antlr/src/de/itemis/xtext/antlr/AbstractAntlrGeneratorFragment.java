@@ -89,7 +89,7 @@ public abstract class AbstractAntlrGeneratorFragment extends AbstractGeneratorFr
 	protected void splitParserAndLexerIfEnabled(String absoluteLexerGrammarFileName,
 			String absoluteParserGrammarFileName) {
 		
-		if(!getOptions().isNoClassSplitting()) {
+		if(getOptions().isClassSplitting()) {
 			try {
 				splitLexerClassFile(absoluteLexerGrammarFileName.replaceAll("\\.g$", "Lexer.java"));
 				splitParserClassFile(absoluteParserGrammarFileName.replaceAll("\\.g$", "Parser.java"));

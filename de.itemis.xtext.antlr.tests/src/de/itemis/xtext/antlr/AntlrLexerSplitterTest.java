@@ -11,7 +11,6 @@ package de.itemis.xtext.antlr;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import de.itemis.xtext.antlr.AntlrLexerSplitter.ExtractedMethod;
 
 /**
@@ -49,6 +48,7 @@ public class AntlrLexerSplitterTest extends AbstractAntlrSplitterTest {
 		AntlrLexerSplitter splitter = new AntlrLexerSplitter(content);
 		String actual = splitter.transform();
 		assertNotNull(actual);
+		System.out.println(actual);
 		assertTrue(!actual.equals(content));
 	}
 	
@@ -64,6 +64,39 @@ public class AntlrLexerSplitterTest extends AbstractAntlrSplitterTest {
 		String actual = splitter.transform();
 		assertNotNull(actual);
 		assertTrue(actual.equals(content));
+	}
+	
+	public void testOuterBraceInIfCascadePattern() throws Exception {
+		Pattern p = AntlrLexerSplitter.OUTER_BRACE_IN_IF_CASCADE_PATTERN;
+		Matcher m = p.matcher("            alt13=62;}  ");
+		assertTrue(m.find());
+		assertEquals("            alt13=62;", m.group(1));
+		assertFalse(p.matcher("            alt13=62; ").find());
+		assertFalse(p.matcher("            } ").find());
+	}
+	public void testIfCascadeWithOneLineElse() throws Exception {
+		String content = 
+		    "    public void mTokens() throws RecognitionException {\n" +
+		    "        // ../org.eclipse.xtext.example.domainmodel.ui/src-gen/org/eclipse/xtext/example/contentassist/antlr/internal/InternalDomainmodel.g:1:8: ( T11 | T12 | T13 | T14 | T15 | T16 | T17 | T18 | T19 | T20 | T21 | T22 | T23 | T24 | T25 | T26 | T27 | T28 | T29 | T30 | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )\n" +
+		    "        int alt13=27;\n" +
+		    "        int LA12_0 = input.LA(1);\n" +
+			"        \n" +
+		    "        if ( ((LA13_0>='\u0000' && LA13_0<='\b')||(LA13_0>='\u000B' && LA13_0<='\f')||(LA13_0>='\u000E' && LA13_0<='\u001F')||LA13_0=='!'||(LA13_0>='#' && LA13_0<='&')||(LA13_0>='*' && LA13_0<='+')||LA13_0==':'||(LA13_0>='<' && LA13_0<='@')||(LA13_0>='[' && LA13_0<=']')||LA13_0=='`'||LA13_0=='|'||(LA13_0>='~' && LA13_0<='\uFFFE')) ) {\n" +
+	        "            alt13=67;\n" +
+	        "        }\n" +
+	        "        else {\n" +
+	        "            alt13=62;}\n" +
+	        "        switch (alt13) {\n" +
+	        "            case 1 :\n" + 
+	        "                {\n" + 
+	        "                foo();\n" +
+	        "                break;\n" +
+	        "                }\n" + 
+	        "        }\n" + 
+	        "    }\n";
+		AntlrLexerSplitter splitter = new AntlrLexerSplitter(content);
+		String actual = splitter.transform();
+		assertNotNull(actual);
 	}
 
 	public void testExtractedLine() throws Exception {
