@@ -221,7 +221,7 @@ public class AntlrLexerSplitter {
 			this.assignmentPattern = Pattern.compile(resultVar+"=(\\d+);", 0);
 		}
 		
-		private enum ExtractedMethodLineState {added, ignored, ignoredClosingBrace};
+		private enum ExtractedMethodLineState {added, ignored, ignoredClosingBrace}
 	
 		public ExtractedMethodLineState addLine(String line) {
 			if(BREAK_LINE_PATTERN.matcher(line).find())
