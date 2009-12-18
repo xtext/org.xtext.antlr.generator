@@ -6,6 +6,7 @@ fragment@org.eclipse.ant.optional.junit=v20050226,:pserver:anonymous@dev.eclipse
 
 
 !*** Antlr Features
+feature@de.itemis.xtext.antlr.sdk=HEAD,:pserver:anonymous@architecturware.cvs.sourceforge.net:/cvsroot/architecturware,,xtext_external/de.itemis.xtext.antlr.sdk.feature
 feature@de.itemis.xtext.antlr.feature=HEAD,:pserver:anonymous@architecturware.cvs.sourceforge.net:/cvsroot/architecturware,,xtext_external/de.itemis.xtext.antlr.feature
 feature@de.itemis.xtext.antlr.tests=HEAD,:pserver:anonymous@architecturware.cvs.sourceforge.net:/cvsroot/architecturware,,xtext_external/de.itemis.xtext.antlr.tests.feature
 
