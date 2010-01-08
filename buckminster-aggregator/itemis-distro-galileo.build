@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<aggregator:Aggregator xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:aggregator="http://www.eclipse.org/buckminster/2009/aggregator" description="Itemis Xtext Distro" label="Helios+Xtext itemis Distro">
+<aggregator:Aggregator xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:aggregator="http://www.eclipse.org/buckminster/2009/aggregator" description="Itemis Xtext Distro" label="Galileo+Xtext itemis Distro">
   <configurations operatingSystem="macosx" windowSystem="cocoa"/>
   <contributions label="Galileo 3.5">
     <repositories location="http://download.eclipse.org/releases/galileo/" mirrorArtifacts="false">
@@ -7,7 +7,9 @@
     </repositories>
   </contributions>
   <contributions label="Xtext&amp;Co.">
-    <repositories location="http://download.eclipse.org/modeling/tmf/updates/milestones/"/>
+    <repositories location="http://download.eclipse.org/modeling/tmf/updates/milestones/">
+    	<metadataRepository href="p2:http://download.eclipse.org/modeling/tmf/updates/milestones#//@metadataRepository"/>
+    </repositories>
     <repositories location="http://download.eclipse.org/modeling/m2t/xpand/updates/milestones/">
       <metadataRepository href="p2:http://download.eclipse.org/modeling/m2t/xpand/updates/milestones#//@metadataRepository"/>
     </repositories>
