@@ -3,7 +3,6 @@
   <configurations operatingSystem="linux" windowSystem="gtk"/>
   <configurations operatingSystem="macosx" windowSystem="cocoa"/>
   <configurations/>
-  <configurations operatingSystem="macosx" windowSystem="carbon"/>
   <contributions label="Galileo 3.5">
     <repositories location="http://download.eclipse.org/releases/galileo/" mirrorArtifacts="false">
       <metadataRepository href="p2:http://download.eclipse.org/releases/galileo#//@metadataRepository"/>
