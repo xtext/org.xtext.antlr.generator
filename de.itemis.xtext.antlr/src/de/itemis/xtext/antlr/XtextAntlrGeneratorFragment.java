@@ -88,18 +88,18 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 	@Override
 	public Set<Binding> getGuiceBindingsUi(Grammar grammar) {
 		return new BindFactory()
-			.addTypeToType("org.eclipse.jface.text.rules.ITokenScanner","org.eclipse.xtext.ui.common.editor.syntaxcoloring.antlr.AntlrTokenScanner")
-			.addTypeToType("org.eclipse.xtext.ui.common.editor.contentassist.IProposalConflictHelper", "org.eclipse.xtext.ui.common.editor.contentassist.antlr.AntlrProposalConflictHelper")
-			.addTypeToType("org.eclipse.xtext.ui.core.editor.IDamagerRepairer", "org.eclipse.xtext.ui.core.editor.XtextDamagerRepairer")
+			.addTypeToType("org.eclipse.jface.text.rules.ITokenScanner","org.eclipse.xtext.ui.editor.syntaxcoloring.antlr.AntlrTokenScanner")
+			.addTypeToType("org.eclipse.xtext.ui.editor.contentassist.IProposalConflictHelper", "org.eclipse.xtext.ui.editor.contentassist.antlr.AntlrProposalConflictHelper")
+			.addTypeToType("org.eclipse.xtext.ui.editor.IDamagerRepairer", "org.eclipse.xtext.ui.editor.XtextDamagerRepairer")
 			.addConfiguredBinding("HighlightingLexer", 
 					"binder.bind(" + Lexer.class.getName() + ".class)"+
 					".annotatedWith(com.google.inject.name.Names.named(" +
-					"org.eclipse.xtext.ui.core.LexerUIBindings.HIGHLIGHTING" +
+					"org.eclipse.xtext.ui.LexerUIBindings.HIGHLIGHTING" +
 					")).to(" + getLexerClassName(grammar) +".class)")
 			.addConfiguredBinding("HighlightingTokenDefProvider", 
 					"binder.bind(" + ITokenDefProvider.class.getName() + ".class)"+
 					".annotatedWith(com.google.inject.name.Names.named(" +
-					"org.eclipse.xtext.ui.core.LexerUIBindings.HIGHLIGHTING" +
+					"org.eclipse.xtext.ui.LexerUIBindings.HIGHLIGHTING" +
 					")).to(" + AntlrTokenDefProvider.class.getName() +".class)")
 			.getBindings();
 	}

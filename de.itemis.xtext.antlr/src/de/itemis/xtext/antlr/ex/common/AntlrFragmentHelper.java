@@ -67,7 +67,7 @@ public class AntlrFragmentHelper {
 	}
 	
 	public String getContentAssistLexerSuperClass(Grammar g) {
-		return "org.eclipse.xtext.ui.common.editor.contentassist.antlr.internal.Lexer";
+		return "org.eclipse.xtext.ui.editor.contentassist.antlr.internal.Lexer";
 	}
 
 	public String getInternalContentAssistParserClassName(Grammar g) {
