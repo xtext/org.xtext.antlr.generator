@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.Grammar;
-import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
@@ -65,11 +64,6 @@ public class ContentAssistParserGeneratorFragment extends AbstractAntlrGenerator
 	@Override
 	public String[] getRequiredBundlesUi(Grammar grammar) {
 		return new String[] { "org.antlr.runtime" };
-	}
-
-	@Override
-	public String[] getExportedPackagesUi(Grammar grammar) {
-		return new String[] { GrammarUtil.getNamespace(grammar) + ".contentassist.antlr" };
 	}
 
 }
