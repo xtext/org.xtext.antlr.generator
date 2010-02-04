@@ -12,7 +12,6 @@
 «IMPORT org::eclipse::xtext»
 
 «EXTENSION de::itemis::xtext::antlr::AntlrGrammar»
-«EXTENSION org::eclipse::xtext::Extensions»
 «EXTENSION de::itemis::xtext::antlr::Parser»
 «EXTENSION org::eclipse::xtext::generator::Naming»
 
