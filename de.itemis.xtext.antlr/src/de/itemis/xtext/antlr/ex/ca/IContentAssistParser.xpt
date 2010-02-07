@@ -57,7 +57,7 @@ public class «helper.getContentAssistParserClassName(this).toSimpleName()» exten
 			nameMappings = new HashMap<AbstractElement, String>() {
 				private static final long serialVersionUID = 1L;
 				{
-«EXPAND ruleName FOREACH helper.getAllAlternatives(this).union(helper.getAllGroups(this)).union(helper.getAllAssignments(this)).typeSelect(AbstractElement)-»
+«EXPAND ruleName FOREACH helper.getAllAlternatives(this).union(helper.getAllGroups(this)).union(helper.getAllAssignments(this)).union(helper.getAllUnorderedGroups(this)).typeSelect(AbstractElement)-»
 				}
 			};
 		}
@@ -105,4 +105,8 @@ public class «helper.getContentAssistParserClassName(this).toSimpleName()» exten
 
 «DEFINE ruleName FOR Group-»
 					put(grammarAccess.«grammarElementAccess()», "rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__0");
+«ENDDEFINE»
+
+«DEFINE ruleName FOR UnorderedGroup-»
+					put(grammarAccess.«grammarElementAccess()», "rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»");
 «ENDDEFINE»

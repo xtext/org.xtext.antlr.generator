@@ -142,6 +142,7 @@ finally {
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-» 
+«EXPAND localVariables FOR alternatives»
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -179,6 +180,7 @@ finally {
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-» 
+«EXPAND localVariables FOR alternatives»
     }
     @after { resetLookahead(); 
 	    lastConsumedNode = currentNode;
@@ -222,6 +224,22 @@ finally {
 «IF mustBeParenthesized()»(«EXPAND ebnf2(options)»)«ELSE»«EXPAND ebnf2(options)»«ENDIF»«cardinality-»
 «ENDDEFINE»
 
+«DEFINE localVariables FOR AbstractElement-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR Group-»
+«EXPAND localVariables FOREACH tokens-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR Alternatives-»
+«EXPAND localVariables FOREACH groups-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR UnorderedGroup-»
+	  boolean[] «localVar()» = new boolean[«elements.size»];
+«EXPAND localVariables FOREACH elements-»
+«ENDDEFINE»
+
 «DEFINE dataTypeEbnf FOR AbstractElement-»
 «IF mustBeParenthesized()»(«EXPAND dataTypeEbnf2»)«ELSE»«EXPAND dataTypeEbnf2»«ENDIF»«cardinality-»
 «ENDDEFINE»
@@ -231,6 +249,38 @@ finally {
 «DEFINE dataTypeEbnf2 FOR Alternatives-»«EXPAND dataTypeEbnf FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2 FOR Group»«EXPAND dataTypeEbnf FOREACH tokens»«ENDDEFINE»
+
+«DEFINE dataTypeEbnf2 FOR UnorderedGroup»
+«LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
+(
+	{ 
+	  «localVar()» = new boolean[«elements.size»];
+«IF mandatoryContent != 0-»
+	  int remaining_«localVar()» = «mandatoryContent»;
+«ENDIF-»
+	}
+	(
+		(
+«FOREACH elements AS element ITERATOR it»
+			( 
+				{!«localVar()»[«it.counter0»]}?=>(
+					{ 
+	 				  «localVar()»[«it.counter0»] = true;
+	 				  «IF !element.isOptionalCardinality()»remaining_«localVar()»--;«ENDIF»
+	 				}
+					(«EXPAND dataTypeEbnf2 FOR element»)«IF element.isMultipleCardinality()»+«ENDIF»
+ 				)
+			)  «IF !it.lastIteration»|«ENDIF»
+«ENDFOREACH»
+		)«IF mandatoryContent != 0-»+
+	  	{remaining_«localVar()»==0}?«ELSE»*«ENDIF»	
+	)
+)
+	{ 
+	  «localVar()» = new boolean[«elements.size»];
+	}
+«ENDLET»
+«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2 FOR Keyword»
 	kw='«value.toAntlrString()»' 
@@ -267,6 +317,38 @@ finally {
 «DEFINE ebnf2(AntlrOptions options) FOR Alternatives-»«EXPAND ebnf(options) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
 
 «DEFINE ebnf2(AntlrOptions options) FOR Group»«EXPAND ebnf(options) FOREACH tokens»«ENDDEFINE»
+
+«DEFINE ebnf2(AntlrOptions options) FOR UnorderedGroup»
+«LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
+(
+	{ 
+	  «localVar()» = new boolean[«elements.size»];
+«IF mandatoryContent != 0-»
+	  int remaining_«localVar()» = «mandatoryContent»;
+«ENDIF-»
+	}
+	(
+		(
+«FOREACH elements AS element ITERATOR it»
+			( 
+				{!«localVar()»[«it.counter0»]}?=>(
+					{ 
+	 				  «localVar()»[«it.counter0»] = true;
+	 				  «IF !element.isOptionalCardinality()»remaining_«localVar()»--;«ENDIF»
+	 				}
+					(«EXPAND ebnf2(options) FOR element»)«IF element.isMultipleCardinality()»+«ENDIF»
+ 				)
+			)  «IF !it.lastIteration»|«ENDIF»
+«ENDFOREACH»
+		)«IF mandatoryContent != 0-»+
+	  	{remaining_«localVar()»==0}?«ELSE»*«ENDIF»	
+	)
+)
+	{ 
+	  «localVar()» = new boolean[«elements.size»];
+	}
+«ENDLET»
+«ENDDEFINE»
 
 «DEFINE crossrefEbnf(CrossReference ref) FOR AbstractElement-»
 «ERROR "crossrefEbnf is not supported for AbstractElement"»

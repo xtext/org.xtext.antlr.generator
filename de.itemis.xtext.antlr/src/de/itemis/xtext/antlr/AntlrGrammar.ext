@@ -34,7 +34,10 @@ isCalled(Grammar grammar, AbstractRule this) :
 
 localVar(Assignment this, AbstractElement terminal) : 
 	'lv_'+feature + '_' + containingParserRule().contentsAsList().indexOf(this) + '_' + this.allContents().indexOf(terminal);
+	
 localVar(RuleCall this) : 'this_'+rule.name + '_' + containingParserRule().contentsAsList().indexOf(this);
+
+localVar(UnorderedGroup this) : 'pred_' + containingParserRule().contentsAsList().indexOf(this);
 
 List[AbstractElement] contentsAsList(ParserRule this):
 	alternatives.contentsAsList();
@@ -47,6 +50,9 @@ List[AbstractElement] contentsAsList(Alternatives this):
 
 List[AbstractElement] contentsAsList(Group this):
 	this.tokens.contentsAsList();
+
+List[AbstractElement] contentsAsList(UnorderedGroup this):
+	{this}.addAll(this.elements.contentsAsList());
 	
 toStringLiteral(AbstractElement this) :
 	"null";
@@ -71,6 +77,7 @@ String objectURI(Grammar grammar, EObject object) :
 
 mustBeParenthesized(AbstractElement this) : true;
 mustBeParenthesized(Group this) : true;
+mustBeParenthesized(UnorderedGroup this) : true;
 mustBeParenthesized(Alternatives this) : true;
 mustBeParenthesized(EnumLiteralDeclaration this) : true;
 mustBeParenthesized(Keyword this) : cardinality!=null;

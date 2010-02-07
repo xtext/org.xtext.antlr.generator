@@ -21,6 +21,7 @@ import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.Group;
 import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.TerminalRule;
+import org.eclipse.xtext.UnorderedGroup;
 
 /**
  * The fragment helper will be passed to the extended Antlr grammar template and allows to
@@ -88,6 +89,10 @@ public class AntlrFragmentHelper {
 
 	public Collection<? extends AbstractElement> getAllGroups(Grammar g) {
 		return getAllElementsByType(g, Group.class);
+	}
+	
+	public Collection<? extends AbstractElement> getAllUnorderedGroups(Grammar g) {
+		return getAllElementsByType(g, UnorderedGroup.class);
 	}
 	
 	public Collection<? extends AbstractElement> getAllAssignments(Grammar g) {

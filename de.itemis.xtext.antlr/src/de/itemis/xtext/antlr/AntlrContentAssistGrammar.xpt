@@ -91,6 +91,7 @@ import «gaFQName()»;
 «EXPAND rule(this) FOREACH allEnumRules()»
 «EXPAND rule(this) FOREACH allAlternatives()»
 «EXPAND rule(this) FOREACH allGroups()»
+«EXPAND rule(this) FOREACH allUnorderedGroups()»
 «EXPAND rule(this) FOREACH allAssignments()»
 «EXPAND rule FOREACH allTerminalRules()»
 «ENDDEFINE»
@@ -167,6 +168,43 @@ finally {
 «ENDIF-»
 «ENDDEFINE»
 
+«DEFINE rule(Grammar original) FOR UnorderedGroup»
+«IF isCalled(original, containingRule())-»
+«LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
+rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
+    @init {
+		int stackSize = keepStackSize();
+		boolean[] «localVar()» = new boolean[«elements.size»];
+«IF mandatoryContent != 0-»
+	  int remaining_«localVar()» = «mandatoryContent»;
+«ENDIF-»
+    }
+:
+	(
+		(
+«FOREACH elements AS element ITERATOR it»
+			( 
+				{!«localVar()»[«it.counter0»]}?=>(
+					{ 
+	 				  «localVar()»[«it.counter0»] = true;
+	 				  «IF !element.isOptionalCardinality()»remaining_«localVar()»--;«ENDIF»
+	 				}
+					(«EXPAND ebnf2 FOR element»)«IF element.isMultipleCardinality()»+«ENDIF»
+ 				)
+			)  «IF !it.lastIteration»|«ENDIF»
+«ENDFOREACH»
+		)«IF mandatoryContent != 0-»+
+	  	{remaining_«localVar()»==0}?«ELSE»*«ENDIF»	
+	)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+«ENDLET»
+«ENDIF-»
+«ENDDEFINE»
+
+
 «DEFINE rule(Grammar original) FOR Assignment»
 «IF isCalled(original, containingRule())-»
 rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
@@ -242,6 +280,8 @@ finally {
 «DEFINE ebnf2 FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
 
 «DEFINE ebnf2 FOR Alternatives-»rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»«ENDDEFINE»
+
+«DEFINE ebnf2 FOR UnorderedGroup-»rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»«ENDDEFINE»
 
 «DEFINE ebnf2 FOR Assignment-»rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»«ENDDEFINE»
 

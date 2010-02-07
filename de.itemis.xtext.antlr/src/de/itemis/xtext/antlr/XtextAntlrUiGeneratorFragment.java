@@ -23,6 +23,7 @@ import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.Group;
 import org.eclipse.xtext.ParserRule;
+import org.eclipse.xtext.UnorderedGroup;
 import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
@@ -104,6 +105,10 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 
 	public static Collection<Alternatives> getAllAlternatives(Grammar g) {
 		return getAllElementsByType(g, Alternatives.class);
+	}
+	
+	public static Collection<UnorderedGroup> getAllUnorderedGroups(Grammar g) {
+		return getAllElementsByType(g, UnorderedGroup.class);
 	}
 
 	public static Collection<Group> getAllGroups(Grammar g) {

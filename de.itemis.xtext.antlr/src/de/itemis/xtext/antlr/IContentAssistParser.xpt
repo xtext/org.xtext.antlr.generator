@@ -57,7 +57,7 @@ public class «getParserClassName().toSimpleName()» extends AbstractContentAssist
 			nameMappings = new HashMap<AbstractElement, String>() {
 				private static final long serialVersionUID = 1L;
 				{
-«EXPAND ruleName FOREACH allAlternatives().union(allGroups()).union(allAssignments())-»
+«EXPAND ruleName FOREACH allAlternatives().union(allGroups()).union(allAssignments()).union(allUnorderedGroups())-»
 				}
 			};
 		}
@@ -105,4 +105,8 @@ public class «getParserClassName().toSimpleName()» extends AbstractContentAssist
 
 «DEFINE ruleName FOR Group-»
 					put(grammarAccess.«grammarElementAccess()», "rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__0");
+«ENDDEFINE»
+
+«DEFINE ruleName FOR UnorderedGroup-»
+					put(grammarAccess.«grammarElementAccess()», "rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»");
 «ENDDEFINE»

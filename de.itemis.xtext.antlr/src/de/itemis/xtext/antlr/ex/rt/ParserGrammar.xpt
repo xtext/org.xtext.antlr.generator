@@ -135,7 +135,8 @@ finally {
     @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
-«ENDIF-»    
+«ENDIF-»
+«EXPAND localVariables FOR alternatives»
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -173,6 +174,7 @@ finally {
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-» 
+«EXPAND localVariables FOR alternatives»
     }
     @after { resetLookahead(); 
 	    lastConsumedNode = currentNode;
@@ -208,6 +210,22 @@ finally {
     }
 «ENDDEFINE»
 
+«DEFINE localVariables FOR AbstractElement-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR Group-»
+«EXPAND localVariables FOREACH tokens-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR Alternatives-»
+«EXPAND localVariables FOREACH groups-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR UnorderedGroup-»
+	  boolean[] «localVar()» = new boolean[«elements.size»];
+«EXPAND localVariables FOREACH elements-»
+«ENDDEFINE»
+
 «DEFINE ebnf(Grammar grammar, AntlrOptions options) FOR AbstractElement-»
 «IF mustBeParenthesized()»(«EXPAND ebnf2(grammar, options)»)«ELSE»«EXPAND ebnf2(grammar, options)»«ENDIF»«cardinality-»
 «ENDDEFINE»
@@ -221,6 +239,38 @@ finally {
 «DEFINE dataTypeEbnf2(Grammar grammar) FOR Alternatives-»«EXPAND dataTypeEbnf(grammar) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2(Grammar grammar) FOR Group»«EXPAND dataTypeEbnf(grammar) FOREACH tokens»«ENDDEFINE»
+
+«DEFINE dataTypeEbnf2(Grammar grammar) FOR UnorderedGroup»
+«LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
+(
+	{ 
+	  «localVar()» = new boolean[«elements.size»];
+«IF mandatoryContent != 0-»
+	  int remaining_«localVar()» = «mandatoryContent»;
+«ENDIF-»
+	}
+	(
+		(
+«FOREACH elements AS element ITERATOR it»
+			( 
+				{!«localVar()»[«it.counter0»]}?=>(
+					{ 
+	 				  «localVar()»[«it.counter0»] = true;
+	 				  «IF !element.isOptionalCardinality()»remaining_«localVar()»--;«ENDIF»
+	 				}
+					(«EXPAND dataTypeEbnf2(grammar) FOR element»)«IF element.isMultipleCardinality()»+«ENDIF»
+ 				)
+			)  «IF !it.lastIteration»|«ENDIF»
+«ENDFOREACH»
+		)«IF mandatoryContent != 0-»+
+	  	{remaining_«localVar()»==0}?«ELSE»*«ENDIF»	
+	)
+)
+	{ 
+	  «localVar()» = new boolean[«elements.size»];
+	}
+«ENDLET»
+«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2(Grammar grammar) FOR Keyword»
 	kw=«grammar.getKeywordRuleName(value)» 
@@ -257,6 +307,38 @@ finally {
 «DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Alternatives-»«EXPAND ebnf(grammar, options) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
 
 «DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Group»«EXPAND ebnf(grammar, options) FOREACH tokens»«ENDDEFINE»
+
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR UnorderedGroup»
+«LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
+(
+	{ 
+	  «localVar()» = new boolean[«elements.size»];
+«IF mandatoryContent != 0-»
+	  int remaining_«localVar()» = «mandatoryContent»;
+«ENDIF-»
+	}
+	(
+		(
+«FOREACH elements AS element ITERATOR it»
+			( 
+				{!«localVar()»[«it.counter0»]}?=>(
+					{ 
+	 				  «localVar()»[«it.counter0»] = true;
+	 				  «IF !element.isOptionalCardinality()»remaining_«localVar()»--;«ENDIF»
+	 				}
+					(«EXPAND ebnf2(grammar, options) FOR element»)«IF element.isMultipleCardinality()»+«ENDIF»
+ 				)
+			)  «IF !it.lastIteration»|«ENDIF»
+«ENDFOREACH»
+		)«IF mandatoryContent != 0-»+
+	  	{remaining_«localVar()»==0}?«ELSE»*«ENDIF»	
+	)
+)
+	{ 
+	  «localVar()» = new boolean[«elements.size»];
+	}
+«ENDLET»
+«ENDDEFINE»
 
 «DEFINE crossrefEbnf(Grammar grammar, CrossReference ref) FOR AbstractElement-»
 «ERROR "crossrefEbnf is not supported for AbstractElement"»
