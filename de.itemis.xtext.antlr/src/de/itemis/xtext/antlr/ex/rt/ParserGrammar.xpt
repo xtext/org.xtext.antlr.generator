@@ -136,7 +136,7 @@ finally {
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-»
-«EXPAND localVariables FOR alternatives»
+«EXPAND localVariables FOR alternatives-»
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -174,7 +174,7 @@ finally {
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-» 
-«EXPAND localVariables FOR alternatives»
+«EXPAND localVariables FOR alternatives-»
     }
     @after { resetLookahead(); 
 	    lastConsumedNode = currentNode;
