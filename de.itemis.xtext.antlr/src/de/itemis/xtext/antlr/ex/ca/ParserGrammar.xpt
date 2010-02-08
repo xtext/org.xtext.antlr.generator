@@ -126,11 +126,17 @@ finally {
 
 // Rule «name»
 «ruleName()» 
+«IF !alternatives.allContents().typeSelect(UnorderedGroup).isEmpty-»
+	scope {
+«EXPAND localVariableDeclarations FOR alternatives-»
+	} 
+«ENDIF-»
     @init {
 «IF definesHiddenTokens-»  
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-»
 		int stackSize = keepStackSize();
+		«EXPAND localVariables FOR alternatives-»
     }
     :
     «EXPAND ebnf FOR this.alternatives»
@@ -196,9 +202,8 @@ finally {
 rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
     @init {
 		int stackSize = keepStackSize();
-		boolean[] «localVar()» = new boolean[«elements.size»];
 «IF mandatoryContent != 0-»
-	  int remaining_«localVar()» = «mandatoryContent»;
+		int remaining_«localVar()» = «mandatoryContent»;
 «ENDIF-»
     }
 :
@@ -206,12 +211,24 @@ rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
 		(
 «FOREACH elements AS element ITERATOR it»
 			( 
-				{!«localVar()»[«it.counter0»]}?=>(
+				{! $«containingRule().ruleName()»::«localVar()»[«it.counter0»] }?=>(
 					{ 
-	 				  «localVar()»[«it.counter0»] = true;
+	 				  $«containingRule().ruleName()»::«localVar()»[«it.counter0»] = true;
 	 				  «IF !element.isOptionalCardinality()»remaining_«localVar()»--;«ENDIF»
 	 				}
-					(«EXPAND ebnf2 FOR element»)«IF element.isMultipleCardinality()»+«ENDIF»
+					(«IF element.isMultipleCardinality()-»
+					(«ENDIF»
+						{ before(grammarAccess.«grammarElementAccess(element)»); }
+						(«EXPAND ebnf2 FOR element»)
+						{ after(grammarAccess.«grammarElementAccess(element)»); }
+					«IF element.isMultipleCardinality()-»
+					)
+					(
+						{ before(grammarAccess.«grammarElementAccess(element)»); }
+						(«EXPAND ebnf2 FOR element»)*
+						{ after(grammarAccess.«grammarElementAccess(element)»); }
+					)«ENDIF-»
+					)
  				)
 			)  «IF !it.lastIteration»|«ENDIF»
 «ENDFOREACH»
@@ -220,6 +237,7 @@ rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
 	)
 ;
 finally {
+	$«containingRule().ruleName()»::«localVar()» = new boolean[«elements.size»];
 	restoreStackSize(stackSize);
 }
 «ENDLET»
@@ -251,6 +269,38 @@ finally {
 «IF size > 1-»
 «EXPAND ruleImpl(group, index+1) FOR withoutFirst()»
 «ENDIF»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR AbstractElement-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR Group-»
+«EXPAND localVariables FOREACH tokens-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR Alternatives-»
+«EXPAND localVariables FOREACH groups-»
+«ENDDEFINE»
+
+«DEFINE localVariables FOR UnorderedGroup-»
+	  $«containingRule().ruleName()»::«localVar()» = new boolean[«elements.size»];
+«EXPAND localVariables FOREACH elements-»
+«ENDDEFINE»
+
+«DEFINE localVariableDeclarations FOR AbstractElement-»
+«ENDDEFINE»
+
+«DEFINE localVariableDeclarations FOR Group-»
+«EXPAND localVariableDeclarations FOREACH tokens-»
+«ENDDEFINE»
+
+«DEFINE localVariableDeclarations FOR Alternatives-»
+«EXPAND localVariableDeclarations FOREACH groups-»
+«ENDDEFINE»
+
+«DEFINE localVariableDeclarations FOR UnorderedGroup-»
+	  boolean[] «localVar()»;
+«EXPAND localVariableDeclarations FOREACH elements-»
 «ENDDEFINE»
 
 «DEFINE ebnf2 FOR EnumLiteralDeclaration-»
