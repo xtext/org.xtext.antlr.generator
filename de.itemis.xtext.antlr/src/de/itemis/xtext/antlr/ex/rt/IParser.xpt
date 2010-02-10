@@ -45,6 +45,7 @@ public class «helper.getParserClassName(this).toSimpleName()» extends org.eclips
 		tokenStream.setInitialHiddenTokens(«FOREACH initialHiddenTokens() AS hidden SEPARATOR ", "»"«hidden»"«ENDFOREACH-»);
 		«helper.getInternalParserClassName(this)» parser = createParser(tokenStream);
 		parser.setTokenTypeMap(getTokenDefProvider().getTokenDefMap());
+		parser.setSyntaxErrorProvider(getSyntaxErrorProvider());
 		try {
 			if(ruleName != null)
 				return parser.parse(ruleName);
