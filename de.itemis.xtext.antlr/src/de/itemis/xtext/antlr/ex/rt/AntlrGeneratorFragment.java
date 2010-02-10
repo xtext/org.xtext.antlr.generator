@@ -31,6 +31,7 @@ import org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider;
 import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
 import org.eclipse.xtext.parser.antlr.Lexer;
 
+import de.itemis.xtext.antlr.AntlrGrammarGenUtil;
 import de.itemis.xtext.antlr.AntlrToolRunner;
 import de.itemis.xtext.antlr.ex.common.AbstractAntlrGeneratorFragmentEx;
 import de.itemis.xtext.antlr.ex.common.KeywordHelper;
@@ -71,7 +72,11 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 		for(Map.Entry<Integer, String> entry: provider.getTokenDefMap().entrySet()) {
 			String value = entry.getValue();
 			if(helper.isKeywordRule(value)) {
-				entry.setValue("'" + helper.getKeywordValue(value) + "'");
+				String keywordAsAntlrString = AntlrGrammarGenUtil.toAntlrString(helper.getKeywordValue(value));
+				entry.setValue("'" + keywordAsAntlrString + "'");
+			} else if (value.startsWith("'")) {
+				value = AntlrGrammarGenUtil.toAntlrString(value);
+				entry.setValue("'" + value + "'");
 			}
 		}
 		try {
