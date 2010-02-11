@@ -16,6 +16,7 @@ import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
+import org.eclipse.xtext.generator.Naming;
 import org.eclipse.xtext.parser.ITokenToStringConverter;
 import org.eclipse.xtext.parser.antlr.AntlrTokenDefProvider;
 import org.eclipse.xtext.parser.antlr.AntlrTokenToStringConverter;
@@ -37,7 +38,7 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
 		super.generate(grammar, ctx);
 		String srcGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN).getPath();
-		String absoluteGrammarFileName = srcGenPath+"/"+getGrammarFileName(grammar).replace('.', '/')+".g";
+		String absoluteGrammarFileName = srcGenPath+"/"+getGrammarFileName(grammar, getNaming()).replace('.', '/')+".g";
 		AntlrToolRunner.run(absoluteGrammarFileName);
 		splitParserAndLexerIfEnabled(absoluteGrammarFileName);
 	}
@@ -56,8 +57,8 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 	@Override
 	public String[] getExportedPackagesRt(Grammar grammar) {
 		return new String[]{
-				GrammarUtil.getNamespace(grammar) + ".parser.antlr",
-				GrammarUtil.getNamespace(grammar) + ".parser.antlr.internal"
+				getNaming().basePackageRuntime(grammar) + ".parser.antlr",
+				getNaming().basePackageRuntime(grammar) + ".parser.antlr.internal"
 		};
 	}
 	
@@ -71,16 +72,16 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 	@Override
 	public Set<Binding> getGuiceBindingsRt(Grammar grammar) {
 		return new BindFactory()
-			.addTypeToType(IAntlrParser.class.getName(),getParserClassName(grammar))
+			.addTypeToType(IAntlrParser.class.getName(),getParserClassName(grammar, getNaming()))
 			.addTypeToType(ITokenToStringConverter.class.getName(),AntlrTokenToStringConverter.class.getName())
-			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getAntlrTokenFileProviderClassName(grammar))
-			.addTypeToType(Lexer.class.getName(), getLexerClassName(grammar))
-			.addTypeToProviderInstance(getLexerClassName(grammar), "org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getLexerClassName(grammar) + ".class)")
+			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getAntlrTokenFileProviderClassName(grammar, getNaming()))
+			.addTypeToType(Lexer.class.getName(), getLexerClassName(grammar, getNaming()))
+			.addTypeToProviderInstance(getLexerClassName(grammar, getNaming()), "org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getLexerClassName(grammar, getNaming()) + ".class)")
 			.addConfiguredBinding("RuntimeLexer", 
 					"binder.bind(" + Lexer.class.getName() + ".class)"+
 					".annotatedWith(com.google.inject.name.Names.named(" +
 					"org.eclipse.xtext.parser.antlr.LexerBindings.RUNTIME" +
-					")).to(" + getLexerClassName(grammar) +".class)")
+					")).to(" + getLexerClassName(grammar, getNaming()) +".class)")
 			.addTypeToType(ITokenDefProvider.class.getName(), AntlrTokenDefProvider.class.getName())
 			.getBindings();
 	}
@@ -95,7 +96,7 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 					"binder.bind(" + Lexer.class.getName() + ".class)"+
 					".annotatedWith(com.google.inject.name.Names.named(" +
 					"org.eclipse.xtext.ui.LexerUIBindings.HIGHLIGHTING" +
-					")).to(" + getLexerClassName(grammar) +".class)")
+					")).to(" + getLexerClassName(grammar, getNaming()) +".class)")
 			.addConfiguredBinding("HighlightingTokenDefProvider", 
 					"binder.bind(" + ITokenDefProvider.class.getName() + ".class)"+
 					".annotatedWith(com.google.inject.name.Names.named(" +
@@ -104,24 +105,24 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 			.getBindings();
 	}
 	
-	public static String getAntlrTokenFileProviderClassName(Grammar grammar) {
-		return GrammarUtil.getNamespace(grammar) + ".parser.antlr" +"." + GrammarUtil.getName(grammar)	+ "AntlrTokenFileProvider";
+	public static String getAntlrTokenFileProviderClassName(Grammar grammar, Naming naming) {
+		return naming.basePackageRuntime(grammar) + ".parser.antlr." + GrammarUtil.getName(grammar)	+ "AntlrTokenFileProvider";
 	}
 	
-	public static String getLexerClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g)	+ "Lexer";
+	public static String getLexerClassName(Grammar g, Naming naming) {
+		return naming.basePackageRuntime(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g)	+ "Lexer";
 	}
 
-	public static String getParserClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr." + GrammarUtil.getName(g) + "Parser";
+	public static String getParserClassName(Grammar g, Naming naming) {
+		return naming.basePackageRuntime(g) + ".parser.antlr." + GrammarUtil.getName(g) + "Parser";
 	}
 
-	public static String getInternalParserClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g) + "Parser";
+	public static String getInternalParserClassName(Grammar g, Naming naming) {
+		return naming.basePackageRuntime(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g) + "Parser";
 	}
 
-	public static String getGrammarFileName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g);
+	public static String getGrammarFileName(Grammar g, Naming naming) {
+		return naming.basePackageRuntime(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g);
 	}
 
 }

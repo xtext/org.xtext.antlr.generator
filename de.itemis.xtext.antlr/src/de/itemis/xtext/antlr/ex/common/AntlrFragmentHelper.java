@@ -22,6 +22,7 @@ import org.eclipse.xtext.Group;
 import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.TerminalRule;
 import org.eclipse.xtext.UnorderedGroup;
+import org.eclipse.xtext.generator.Naming;
 
 /**
  * The fragment helper will be passed to the extended Antlr grammar template and allows to
@@ -31,8 +32,14 @@ import org.eclipse.xtext.UnorderedGroup;
  */
 public class AntlrFragmentHelper {
 
+	private final Naming naming;
+
+	public AntlrFragmentHelper(Naming naming) {
+		this.naming = naming;
+	}
+
 	public String getAntlrTokenFileProviderClassName(Grammar grammar) {
-		return GrammarUtil.getNamespace(grammar) + ".parser.antlr." + GrammarUtil.getName(grammar)	+ "AntlrTokenFileProvider";
+		return naming.basePackageRuntime(grammar) + ".parser.antlr." + GrammarUtil.getName(grammar)	+ "AntlrTokenFileProvider";
 	}
 	
 	public String getLexerClassName(Grammar g) {
@@ -40,7 +47,7 @@ public class AntlrFragmentHelper {
 	}
 
 	public String getParserClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr." + GrammarUtil.getName(g) + "Parser";
+		return naming.basePackageRuntime(g) + ".parser.antlr." + GrammarUtil.getName(g) + "Parser";
 	}
 
 	public String getInternalParserClassName(Grammar g) {
@@ -48,15 +55,15 @@ public class AntlrFragmentHelper {
 	}
 
 	public String getLexerGrammarFileName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr.lexer.Internal" + GrammarUtil.getName(g);
+		return naming.basePackageRuntime(g) + ".parser.antlr.lexer.Internal" + GrammarUtil.getName(g);
 	}
 	
 	public String getParserGrammarFileName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g);
+		return naming.basePackageRuntime(g) + ".parser.antlr.internal.Internal" + GrammarUtil.getName(g);
 	}
 
 	public String getContentAssistParserClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr." + GrammarUtil.getName(g) + "Parser";
+		return naming.basePackageUi(g) + ".contentassist.antlr." + GrammarUtil.getName(g) + "Parser";
 	}
 
 	public String getInternalContentAssistLexerClassName(Grammar g) {
@@ -76,11 +83,11 @@ public class AntlrFragmentHelper {
 	}
 
 	public String getContentAssistLexerGrammarFileName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.lexer.Internal" + GrammarUtil.getName(g);
+		return naming.basePackageUi(g) + ".contentassist.antlr.lexer.Internal" + GrammarUtil.getName(g);
 	}
 	
 	public String getContentAssistParserGrammarFileName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g);
+		return naming.basePackageUi(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g);
 	}
 
 	public Collection<? extends AbstractElement> getAllAlternatives(Grammar g) {

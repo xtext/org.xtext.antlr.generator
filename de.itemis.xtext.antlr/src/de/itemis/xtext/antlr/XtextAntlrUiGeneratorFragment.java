@@ -27,6 +27,7 @@ import org.eclipse.xtext.UnorderedGroup;
 import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
+import org.eclipse.xtext.generator.Naming;
 
 /**
  * A {@link IGeneratorFragment} to generate a lightweight AntLR based parser used in content assist.
@@ -39,7 +40,7 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
 		super.generate(grammar, ctx);
 		String srcUiGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN_UI).getPath();
-		String absoluteGrammarFileName = srcUiGenPath + "/" + getGrammarFileName(grammar).replace('.', '/') + ".g";
+		String absoluteGrammarFileName = srcUiGenPath + "/" + getGrammarFileName(grammar, getNaming()).replace('.', '/') + ".g";
 		AntlrToolRunner.run(absoluteGrammarFileName);
 		splitParserAndLexerIfEnabled(absoluteGrammarFileName);
 	}
@@ -63,15 +64,15 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 					"org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory")
 			.addTypeToType(
 					"org.eclipse.xtext.ui.editor.contentassist.antlr.IContentAssistParser",
-					getParserClassName(grammar))
+					getParserClassName(grammar, getNaming()))
 			.addConfiguredBinding("ContentAssistLexerProvider", 
-					"binder.bind(" + getInternalLexerClassName(grammar) +".class)"+
-					".toProvider(org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getInternalLexerClassName(grammar) + ".class))")
+					"binder.bind(" + getInternalLexerClassName(grammar, getNaming()) +".class)"+
+					".toProvider(org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getInternalLexerClassName(grammar, getNaming()) + ".class))")
 			.addConfiguredBinding("ContentAssistLexer", 
 					"binder.bind(org.eclipse.xtext.ui.editor.contentassist.antlr.internal.Lexer.class)"+
 					".annotatedWith(com.google.inject.name.Names.named(" +
 					"org.eclipse.xtext.ui.LexerUIBindings.CONTENT_ASSIST" +
-					")).to(" + getInternalLexerClassName(grammar) +".class)")
+					")).to(" + getInternalLexerClassName(grammar, getNaming()) +".class)")
 			.getBindings();
 	}
 
@@ -82,25 +83,25 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 
 	@Override
 	public String[] getExportedPackagesUi(Grammar grammar) {
-		return new String[] { GrammarUtil.getNamespace(grammar) + ".contentassist.antlr" };
+		return new String[] { getNaming().basePackageUi(grammar) + ".contentassist.antlr" };
 	}
 
-	public static String getParserClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr." + GrammarUtil.getName(g) + "Parser";
+	public static String getParserClassName(Grammar g, Naming naming) {
+		return naming.basePackageUi(g) + ".contentassist.antlr." + GrammarUtil.getName(g) + "Parser";
 	}
 
-	public static String getInternalLexerClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g)
+	public static String getInternalLexerClassName(Grammar g, Naming naming) {
+		return naming.basePackageUi(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g)
 				+ "Lexer";
 	}
 
-	public static String getInternalParserClassName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g)
+	public static String getInternalParserClassName(Grammar g, Naming naming) {
+		return  naming.basePackageUi(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g)
 				+ "Parser";
 	}
 
-	public static String getGrammarFileName(Grammar g) {
-		return GrammarUtil.getNamespace(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g);
+	public static String getGrammarFileName(Grammar g, Naming naming) {
+		return naming.basePackageUi(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g);
 	}
 
 	public static Collection<Alternatives> getAllAlternatives(Grammar g) {

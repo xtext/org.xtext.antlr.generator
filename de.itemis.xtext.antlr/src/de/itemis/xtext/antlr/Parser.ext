@@ -7,23 +7,36 @@
  *
  *******************************************************************************/
 import org::eclipse::xtext;
+import org::eclipse::xtext::generator;
 
-// These are candidates for genParameters of the parser's GenService 
+extension org::eclipse::xtext::generator::Naming;
 
 String getAntlrTokenFileProviderClassName(Grammar grammar) :
-	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getAntlrTokenFileProviderClassName(org.eclipse.xtext.Grammar);
+	getAntlrTokenFileProviderClassName(grammar, getNaming());
 
 String getParserClassName(Grammar grammar) :
-	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getParserClassName(org.eclipse.xtext.Grammar);
+	getParserClassName(grammar, getNaming());
 
 String getLexerClassName(Grammar grammar) :
-	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getLexerClassName(org.eclipse.xtext.Grammar);
+	getLexerClassName(grammar, getNaming());
 
 String getInternalParserClassName(Grammar grammar) :
-	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getInternalParserClassName(org.eclipse.xtext.Grammar);
+	getInternalParserClassName(grammar, getNaming());
 
 String getGrammarFileName(Grammar grammar) :
-	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getGrammarFileName(org.eclipse.xtext.Grammar);
+	getGrammarFileName(grammar, getNaming());
 
-Void runAntlrTool(String grammarFullPath) :
-	JAVA de.itemis.xtext.antlr.AntlrToolRunner.run(java.lang.String);
+private String getAntlrTokenFileProviderClassName(Grammar grammar, Naming naming) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getAntlrTokenFileProviderClassName(org.eclipse.xtext.Grammar, org.eclipse.xtext.generator.Naming);
+
+private String getParserClassName(Grammar grammar, Naming naming) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getParserClassName(org.eclipse.xtext.Grammar, org.eclipse.xtext.generator.Naming);
+
+private String getLexerClassName(Grammar grammar, Naming naming) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getLexerClassName(org.eclipse.xtext.Grammar, org.eclipse.xtext.generator.Naming);
+
+private String getInternalParserClassName(Grammar grammar, Naming naming) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getInternalParserClassName(org.eclipse.xtext.Grammar, org.eclipse.xtext.generator.Naming);
+
+private String getGrammarFileName(Grammar grammar, Naming naming) :
+	JAVA de.itemis.xtext.antlr.XtextAntlrGeneratorFragment.getGrammarFileName(org.eclipse.xtext.Grammar, org.eclipse.xtext.generator.Naming);

@@ -28,7 +28,7 @@ public class AbstractAntlrGeneratorFragmentEx extends AbstractAntlrGeneratorFrag
 
 	public AntlrFragmentHelper getFragmentHelper() {
 		if (fragmentHelper == null)
-			fragmentHelper = new AntlrFragmentHelper();
+			fragmentHelper = new AntlrFragmentHelper(getNaming());
 		return fragmentHelper;
 	}
 	

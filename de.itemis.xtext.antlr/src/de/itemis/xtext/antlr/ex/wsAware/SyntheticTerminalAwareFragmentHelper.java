@@ -9,6 +9,7 @@ package de.itemis.xtext.antlr.ex.wsAware;
 
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.TerminalRule;
+import org.eclipse.xtext.generator.Naming;
 
 import de.itemis.xtext.antlr.ex.common.AntlrFragmentHelper;
 
@@ -19,6 +20,10 @@ import de.itemis.xtext.antlr.ex.common.AntlrFragmentHelper;
  */
 public class SyntheticTerminalAwareFragmentHelper extends AntlrFragmentHelper {
 	
+	public SyntheticTerminalAwareFragmentHelper(Naming naming) {
+		super(naming);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * <p>

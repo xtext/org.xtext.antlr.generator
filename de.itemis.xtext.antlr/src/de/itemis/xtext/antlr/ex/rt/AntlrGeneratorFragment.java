@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.emf.mwe.core.issues.Issues;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.Grammar;
-import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
@@ -65,7 +64,7 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 					return new FileInputStream(srcGenPath+"/"+getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/') + ".tokens");
 				}
 				catch (FileNotFoundException e) {
-					throw new RuntimeException();
+					throw new RuntimeException(e);
 				}
 			}
 		});
@@ -91,8 +90,8 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 	@Override
 	public String[] getExportedPackagesRt(Grammar grammar) {
 		return new String[]{
-				GrammarUtil.getNamespace(grammar) + ".parser.antlr",
-				GrammarUtil.getNamespace(grammar) + ".parser.antlr.internal"
+				getNaming().basePackageRuntime(grammar) + ".parser.antlr",
+				getNaming().basePackageRuntime(grammar) + ".parser.antlr.internal"
 		};
 	}
 	
