@@ -46,7 +46,7 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 	public String caseAlternatives(Alternatives object) {
 		result.append('(');
 		boolean first = true;
-		for(AbstractElement elem: object.getGroups()) {
+		for(AbstractElement elem: object.getElements()) {
 			if (!first) result.append('|');
 			first = false;
 			doSwitch(elem);
@@ -79,7 +79,7 @@ public class TerminalRuleToLexerBody extends XtextSwitch<String>{
 		if (!Strings.isEmpty(object.getCardinality()))
 			result.append('(');
 		boolean first = true;
-		for (AbstractElement elem : object.getTokens()) {
+		for (AbstractElement elem : object.getElements()) {
 			if (!first) result.append(' ');
 			first = false;
 			doSwitch(elem);

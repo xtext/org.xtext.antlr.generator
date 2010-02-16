@@ -227,12 +227,8 @@ finally {
 «DEFINE localVariables FOR AbstractElement-»
 «ENDDEFINE»
 
-«DEFINE localVariables FOR Group-»
-«EXPAND localVariables FOREACH tokens-»
-«ENDDEFINE»
-
-«DEFINE localVariables FOR Alternatives-»
-«EXPAND localVariables FOREACH groups-»
+«DEFINE localVariables FOR CompoundElement-»
+«EXPAND localVariables FOREACH elements-»
 «ENDDEFINE»
 
 «DEFINE localVariables FOR UnorderedGroup-»
@@ -246,9 +242,9 @@ finally {
 
 «DEFINE dataTypeEbnf2 FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
 
-«DEFINE dataTypeEbnf2 FOR Alternatives-»«EXPAND dataTypeEbnf FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
+«DEFINE dataTypeEbnf2 FOR Alternatives-»«EXPAND dataTypeEbnf FOREACH elements SEPARATOR '\n    |'»«ENDDEFINE»
 
-«DEFINE dataTypeEbnf2 FOR Group»«EXPAND dataTypeEbnf FOREACH tokens»«ENDDEFINE»
+«DEFINE dataTypeEbnf2 FOR Group»«EXPAND dataTypeEbnf FOREACH elements»«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2 FOR UnorderedGroup»
 «LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
@@ -314,9 +310,9 @@ finally {
 
 «DEFINE ebnf2(AntlrOptions options) FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
 
-«DEFINE ebnf2(AntlrOptions options) FOR Alternatives-»«EXPAND ebnf(options) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
+«DEFINE ebnf2(AntlrOptions options) FOR Alternatives-»«EXPAND ebnf(options) FOREACH elements SEPARATOR '\n    |'»«ENDDEFINE»
 
-«DEFINE ebnf2(AntlrOptions options) FOR Group»«EXPAND ebnf(options) FOREACH tokens»«ENDDEFINE»
+«DEFINE ebnf2(AntlrOptions options) FOR Group»«EXPAND ebnf(options) FOREACH elements»«ENDDEFINE»
 
 «DEFINE ebnf2(AntlrOptions options) FOR UnorderedGroup»
 «LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
@@ -355,7 +351,7 @@ finally {
 «ENDDEFINE»
 
 «DEFINE crossrefEbnf(CrossReference ref) FOR Alternatives-»
-		(«EXPAND crossrefEbnf(ref) FOREACH groups SEPARATOR '\n    |'»)
+		(«EXPAND crossrefEbnf(ref) FOREACH elements SEPARATOR '\n    |'»)
 «ENDDEFINE»
 
 «DEFINE crossrefEbnf(CrossReference ref) FOR RuleCall-»
@@ -430,7 +426,7 @@ finally {
 
 «DEFINE assignmentEbnf(Assignment assignment, AntlrOptions options) FOR Alternatives-»
 (
-«EXPAND assignmentEbnf(assignment, options) FOREACH groups SEPARATOR '\n    |'»
+«EXPAND assignmentEbnf(assignment, options) FOREACH elements SEPARATOR '\n    |'»
 )
 «ENDDEFINE»
 

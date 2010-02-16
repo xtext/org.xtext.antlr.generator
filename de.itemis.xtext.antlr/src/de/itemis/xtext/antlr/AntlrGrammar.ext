@@ -45,11 +45,8 @@ List[AbstractElement] contentsAsList(ParserRule this):
 List[AbstractElement] contentsAsList(AbstractElement this):
 	{this};
 	
-List[AbstractElement] contentsAsList(Alternatives this):
-	this.groups.contentsAsList();
-
-List[AbstractElement] contentsAsList(Group this):
-	this.tokens.contentsAsList();
+List[AbstractElement] contentsAsList(CompoundElement this):
+	this.elements.contentsAsList();
 
 List[AbstractElement] contentsAsList(UnorderedGroup this):
 	{this}.addAll(this.elements.contentsAsList());

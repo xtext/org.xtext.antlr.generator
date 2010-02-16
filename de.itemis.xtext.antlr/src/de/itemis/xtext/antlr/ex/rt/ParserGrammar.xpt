@@ -213,12 +213,8 @@ finally {
 «DEFINE localVariables FOR AbstractElement-»
 «ENDDEFINE»
 
-«DEFINE localVariables FOR Group-»
-«EXPAND localVariables FOREACH tokens-»
-«ENDDEFINE»
-
-«DEFINE localVariables FOR Alternatives-»
-«EXPAND localVariables FOREACH groups-»
+«DEFINE localVariables FOR CompoundElement-»
+«EXPAND localVariables FOREACH elements-»
 «ENDDEFINE»
 
 «DEFINE localVariables FOR UnorderedGroup-»
@@ -236,9 +232,9 @@ finally {
 
 «DEFINE dataTypeEbnf2(Grammar grammar) FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
 
-«DEFINE dataTypeEbnf2(Grammar grammar) FOR Alternatives-»«EXPAND dataTypeEbnf(grammar) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
+«DEFINE dataTypeEbnf2(Grammar grammar) FOR Alternatives-»«EXPAND dataTypeEbnf(grammar) FOREACH elements SEPARATOR '\n    |'»«ENDDEFINE»
 
-«DEFINE dataTypeEbnf2(Grammar grammar) FOR Group»«EXPAND dataTypeEbnf(grammar) FOREACH tokens»«ENDDEFINE»
+«DEFINE dataTypeEbnf2(Grammar grammar) FOR Group»«EXPAND dataTypeEbnf(grammar) FOREACH elements»«ENDDEFINE»
 
 «DEFINE dataTypeEbnf2(Grammar grammar) FOR UnorderedGroup»
 «LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
@@ -304,9 +300,9 @@ finally {
 
 «DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR AbstractElement»ERROR «metaType.name» not matched«ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Alternatives-»«EXPAND ebnf(grammar, options) FOREACH groups SEPARATOR '\n    |'»«ENDDEFINE»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Alternatives-»«EXPAND ebnf(grammar, options) FOREACH elements SEPARATOR '\n    |'»«ENDDEFINE»
 
-«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Group»«EXPAND ebnf(grammar, options) FOREACH tokens»«ENDDEFINE»
+«DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR Group»«EXPAND ebnf(grammar, options) FOREACH elements»«ENDDEFINE»
 
 «DEFINE ebnf2(Grammar grammar, AntlrOptions options) FOR UnorderedGroup»
 «LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
@@ -345,7 +341,7 @@ finally {
 «ENDDEFINE»
 
 «DEFINE crossrefEbnf(Grammar grammar, CrossReference ref) FOR Alternatives-»
-		(«EXPAND crossrefEbnf(grammar, ref) FOREACH groups SEPARATOR '\n    |'»)
+		(«EXPAND crossrefEbnf(grammar, ref) FOREACH elements SEPARATOR '\n    |'»)
 «ENDDEFINE»
 
 «DEFINE crossrefEbnf(Grammar grammar, CrossReference ref) FOR RuleCall-»
@@ -420,7 +416,7 @@ finally {
 
 «DEFINE assignmentEbnf(Grammar grammar, Assignment assignment, AntlrOptions options) FOR Alternatives-»
 (
-«EXPAND assignmentEbnf(grammar, assignment, options) FOREACH groups SEPARATOR '\n    |'»
+«EXPAND assignmentEbnf(grammar, assignment, options) FOREACH elements SEPARATOR '\n    |'»
 )
 «ENDDEFINE»
 
