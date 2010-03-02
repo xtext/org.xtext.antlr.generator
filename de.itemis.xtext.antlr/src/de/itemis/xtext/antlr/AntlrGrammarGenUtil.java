@@ -19,11 +19,11 @@ import org.eclipse.xtext.util.Strings;
 public class AntlrGrammarGenUtil {
 
 	public static String toAntlrString(String string) {
-		return Strings.convertToJavaString(string).replace("\\\"", "\"");
+		return Strings.convertToJavaString(string, true).replace("\\\"", "\"");
 	}
 
 	public static String toStringInAntlrAction(String string) {
-		return Strings.convertToJavaString(string).replace("%", "\\%");
+		return Strings.convertToJavaString(string, true).replace("%", "\\%");
 	}
 
 	public static String toAntlrStringIgnoreCase(String string) {
