@@ -23,7 +23,9 @@ import org.eclipse.xtext.parser.antlr.AntlrTokenToStringConverter;
 import org.eclipse.xtext.parser.antlr.IAntlrParser;
 import org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider;
 import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
+import org.eclipse.xtext.parser.antlr.IUnorderedGroupHelper;
 import org.eclipse.xtext.parser.antlr.Lexer;
+import org.eclipse.xtext.parser.antlr.UnorderedGroupHelper;
 
 /**
  * Converts the Xtext grammar to an AntLR grammar runs the AntLR generator. 
@@ -71,7 +73,7 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 	
 	@Override
 	public Set<Binding> getGuiceBindingsRt(Grammar grammar) {
-		return new BindFactory()
+		BindFactory factory = new BindFactory()
 			.addTypeToType(IAntlrParser.class.getName(),getParserClassName(grammar, getNaming()))
 			.addTypeToType(ITokenToStringConverter.class.getName(),AntlrTokenToStringConverter.class.getName())
 			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getAntlrTokenFileProviderClassName(grammar, getNaming()))
@@ -82,8 +84,10 @@ public class XtextAntlrGeneratorFragment extends AbstractAntlrGeneratorFragment 
 					".annotatedWith(com.google.inject.name.Names.named(" +
 					"org.eclipse.xtext.parser.antlr.LexerBindings.RUNTIME" +
 					")).to(" + getLexerClassName(grammar, getNaming()) +".class)")
-			.addTypeToType(ITokenDefProvider.class.getName(), AntlrTokenDefProvider.class.getName())
-			.getBindings();
+			.addTypeToType(ITokenDefProvider.class.getName(), AntlrTokenDefProvider.class.getName());
+		if (containsUnorderedGroup(grammar))
+			factory = factory.addTypeToType(IUnorderedGroupHelper.class.getName(), UnorderedGroupHelper.class.getName());
+		return factory.getBindings();
 	}
 
 	@Override

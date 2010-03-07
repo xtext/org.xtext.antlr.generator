@@ -18,7 +18,10 @@ import org.eclipse.xtext.AbstractRule;
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.ParserRule;
+import org.eclipse.xtext.UnorderedGroup;
 import org.eclipse.xtext.generator.AbstractGeneratorFragment;
+
+import com.google.common.collect.Iterators;
 
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
@@ -101,6 +104,15 @@ public abstract class AbstractAntlrGeneratorFragment extends AbstractGeneratorFr
 	
 	protected void splitParserAndLexerIfEnabled(String absoluteGrammarFileName) {
 		splitParserAndLexerIfEnabled(absoluteGrammarFileName, absoluteGrammarFileName);
+	}
+	
+	protected boolean containsUnorderedGroup(Grammar grammar) {
+		for(ParserRule rule: GrammarUtil.allParserRules(grammar)) {
+			if (Iterators.filter(rule.eAllContents(), UnorderedGroup.class).hasNext()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

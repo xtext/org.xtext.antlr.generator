@@ -28,7 +28,9 @@ import org.eclipse.xtext.parser.antlr.AntlrTokenToStringConverter;
 import org.eclipse.xtext.parser.antlr.IAntlrParser;
 import org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider;
 import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
+import org.eclipse.xtext.parser.antlr.IUnorderedGroupHelper;
 import org.eclipse.xtext.parser.antlr.Lexer;
+import org.eclipse.xtext.parser.antlr.UnorderedGroupHelper;
 
 import de.itemis.xtext.antlr.AntlrGrammarGenUtil;
 import de.itemis.xtext.antlr.AntlrToolRunner;
@@ -104,7 +106,7 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 	
 	@Override
 	public Set<Binding> getGuiceBindingsRt(Grammar grammar) {
-		return new BindFactory()
+		BindFactory factory = new BindFactory()
 			.addTypeToType(IAntlrParser.class.getName(),getFragmentHelper().getParserClassName(grammar))
 			.addTypeToType(ITokenToStringConverter.class.getName(),AntlrTokenToStringConverter.class.getName())
 			.addTypeToType(IAntlrTokenFileProvider.class.getName(),getFragmentHelper().getAntlrTokenFileProviderClassName(grammar))
@@ -115,8 +117,10 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 					".annotatedWith(com.google.inject.name.Names.named(" +
 					"org.eclipse.xtext.parser.antlr.LexerBindings.RUNTIME" +
 					")).to(" + getFragmentHelper().getLexerClassName(grammar) +".class)")
-			.addTypeToType(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName())
-			.getBindings();
+			.addTypeToType(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName());
+		if (containsUnorderedGroup(grammar))
+			factory = factory.addTypeToType(IUnorderedGroupHelper.class.getName(), UnorderedGroupHelper.class.getName());
+		return factory.getBindings();
 	}
 
 	@Override

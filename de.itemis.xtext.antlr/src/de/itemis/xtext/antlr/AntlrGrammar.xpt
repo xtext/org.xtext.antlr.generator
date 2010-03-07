@@ -142,7 +142,6 @@ finally {
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-» 
-«EXPAND localVariables FOR alternatives-»
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -180,7 +179,6 @@ finally {
 «IF definesHiddenTokens-»
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens(«FOREACH hiddenTokens AS hidden SEPARATOR ", "»"«hidden.ruleName()»"«ENDFOREACH-»);
 «ENDIF-» 
-«EXPAND localVariables FOR alternatives-»
     }
     @after { resetLookahead(); 
 	    lastConsumedNode = currentNode;
@@ -224,18 +222,6 @@ finally {
 «IF mustBeParenthesized()»(«EXPAND ebnf2(options)»)«ELSE»«EXPAND ebnf2(options)»«ENDIF»«cardinality-»
 «ENDDEFINE»
 
-«DEFINE localVariables FOR AbstractElement-»
-«ENDDEFINE»
-
-«DEFINE localVariables FOR CompoundElement-»
-«EXPAND localVariables FOREACH elements-»
-«ENDDEFINE»
-
-«DEFINE localVariables FOR UnorderedGroup-»
-	  boolean[] «localVar()» = new boolean[«elements.size»];
-«EXPAND localVariables FOREACH elements-»
-«ENDDEFINE»
-
 «DEFINE dataTypeEbnf FOR AbstractElement-»
 «IF mustBeParenthesized()»(«EXPAND dataTypeEbnf2»)«ELSE»«EXPAND dataTypeEbnf2»«ENDIF»«cardinality-»
 «ENDDEFINE»
@@ -250,30 +236,29 @@ finally {
 «LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
 (
 	{ 
-	  «localVar()» = new boolean[«elements.size»];
-«IF mandatoryContent != 0-»
-	  int remaining_«localVar()» = «mandatoryContent»;
-«ENDIF-»
+	  getUnorderedGroupHelper().enter(grammarAccess.«gaRuleElementAccessor()»);
 	}
 	(
 		(
 «FOREACH elements AS element ITERATOR it»
 			( 
-				{!«localVar()»[«it.counter0»]}?=>(
+				{getUnorderedGroupHelper().canSelect(grammarAccess.«gaRuleElementAccessor()», «it.counter0»)}?=>(
 					{ 
-	 				  «localVar()»[«it.counter0»] = true;
-	 				  «IF !element.isOptionalCardinality()»remaining_«localVar()»--;«ENDIF»
+	 				  getUnorderedGroupHelper().select(grammarAccess.«gaRuleElementAccessor()», «it.counter0»);
 	 				}
 					(«EXPAND dataTypeEbnf2 FOR element»)«IF element.isMultipleCardinality()»+«ENDIF»
+					{ 
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.«gaRuleElementAccessor()»);
+	 				}
  				)
 			)  «IF !it.lastIteration»|«ENDIF»
 «ENDFOREACH»
 		)«IF mandatoryContent != 0-»+
-	  	{remaining_«localVar()»==0}?«ELSE»*«ENDIF»	
+	  	{getUnorderedGroupHelper().canLeave(grammarAccess.«gaRuleElementAccessor()»)}?«ELSE»*«ENDIF»	
 	)
 )
 	{ 
-	  «localVar()» = new boolean[«elements.size»];
+	  getUnorderedGroupHelper().leave(grammarAccess.«gaRuleElementAccessor()»);
 	}
 «ENDLET»
 «ENDDEFINE»
@@ -318,30 +303,29 @@ finally {
 «LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
 (
 	{ 
-	  «localVar()» = new boolean[«elements.size»];
-«IF mandatoryContent != 0-»
-	  int remaining_«localVar()» = «mandatoryContent»;
-«ENDIF-»
+	  getUnorderedGroupHelper().enter(grammarAccess.«gaRuleElementAccessor()»);
 	}
 	(
 		(
 «FOREACH elements AS element ITERATOR it»
 			( 
-				{!«localVar()»[«it.counter0»]}?=>(
+				{getUnorderedGroupHelper().canSelect(grammarAccess.«gaRuleElementAccessor()», «it.counter0»)}?=>(
 					{ 
-	 				  «localVar()»[«it.counter0»] = true;
-	 				  «IF !element.isOptionalCardinality()»remaining_«localVar()»--;«ENDIF»
+	 				  getUnorderedGroupHelper().select(grammarAccess.«gaRuleElementAccessor()», «it.counter0»);
 	 				}
 					(«EXPAND ebnf2(options) FOR element»)«IF element.isMultipleCardinality()»+«ENDIF»
+					{ 
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.«gaRuleElementAccessor()»);
+	 				}
  				)
 			)  «IF !it.lastIteration»|«ENDIF»
 «ENDFOREACH»
 		)«IF mandatoryContent != 0-»+
-	  	{remaining_«localVar()»==0}?«ELSE»*«ENDIF»	
+	  	{getUnorderedGroupHelper().canLeave(grammarAccess.«gaRuleElementAccessor()»)}?«ELSE»*«ENDIF»	
 	)
 )
 	{ 
-	  «localVar()» = new boolean[«elements.size»];
+	  getUnorderedGroupHelper().leave(grammarAccess.«gaRuleElementAccessor()»);
 	}
 «ENDLET»
 «ENDDEFINE»
