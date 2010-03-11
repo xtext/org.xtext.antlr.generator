@@ -2,9 +2,8 @@
 <feature
       id="de.itemis.xtext.antlr.tests"
       label="%featureName"
-      version="0.8.0.qualifier"
+      version="1.0.0.qualifier"
       provider-name="%providerName">
-
 
    <description>
       %description
@@ -111,13 +110,20 @@ This Agreement is governed by the laws of the State of New York and the intellec
    <includes
          id="de.itemis.xtext.antlr.feature"
          version="0.0.0"/>
-<plugin
-  id="org.eclipse.test"
-  download-size="0" install-size="0" version="0.0.0"/>
- 
-<plugin
-  id="org.eclipse.ant.optional.junit"
-  download-size="0" install-size="0" version="0.0.0" fragment="true"/>
+
+   <plugin
+         id="org.eclipse.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.ant.optional.junit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
+
    <plugin
          id="de.itemis.xtext.antlr.tests"
          download-size="0"
