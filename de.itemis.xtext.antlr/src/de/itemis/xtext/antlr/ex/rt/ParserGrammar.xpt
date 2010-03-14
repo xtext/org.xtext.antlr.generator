@@ -90,6 +90,11 @@ import «gaFQName()»;
     protected String getFirstRuleName() {
     	return "«allParserRules().first().name»";	
    	} 
+   	   	
+   	@Override
+   	protected «gaSimpleName()» getGrammarAccess() {
+   		return grammarAccess;
+   	}
 }
 
 @rulecatch { 
