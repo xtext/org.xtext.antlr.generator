@@ -21,7 +21,7 @@
 			Nightly: ${ftpServerRoot}/updates/nightly/site 
 		 -->
 		<property name="zipsTarget" value="${ftpServerRoot}/antlr/" />
-		<property name="updateSiteTarget" value="${ftpServerRoot}/updates/milestones/site" />
+		<property name="updateSiteTarget" value="${ftpServerRoot}/updates/nightly/site" />
 
 		<echo>Uploading zips from ${zipsSource} to ${zipsTarget}</echo>
 		<antcall target="uploadToItemisFtp">
