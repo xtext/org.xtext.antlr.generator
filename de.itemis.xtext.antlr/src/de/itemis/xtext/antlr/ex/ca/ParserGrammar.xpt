@@ -55,6 +55,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream.HiddenTokens;
+import org.eclipse.xtext.ui.editor.contentassist.antlr.internal.DFA;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.internal.AbstractInternalContentAssistParser;
 import «gaFQName()»;
 
@@ -175,6 +176,93 @@ finally {
 «ENDIF-»
 «ENDDEFINE»
 
+«DEFINE rule(Grammar original) FOR UnorderedGroup»
+«IF isCalled(original, containingRule())-»
+«LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
+rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
+    @init {
+    	int stackSize = keepStackSize();
+		getUnorderedGroupHelper().enter(grammarAccess.«gaRuleElementAccessor()»);
+    }
+:
+	rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__0
+	«IF mandatoryContent!=0»
+	{getUnorderedGroupHelper().canLeave(grammarAccess.«gaRuleElementAccessor()»)}?
+	«ELSE»?
+	«ENDIF»
+;
+finally {
+	getUnorderedGroupHelper().leave(grammarAccess.«gaRuleElementAccessor()»);
+	restoreStackSize(stackSize);
+}
+
+«EXPAND ruleImpl FOR this-»
+
+«EXPAND ruleImpl(this, 0) FOR elements-»
+«ENDLET-»
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE ruleImpl FOR UnorderedGroup»
+rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__Impl
+	@init {
+		int stackSize = keepStackSize();
+    }
+:
+		(
+«FOREACH elements AS element ITERATOR it»
+			( 
+				{getUnorderedGroupHelper().canSelect(grammarAccess.«gaRuleElementAccessor()», «it.counter0»)}?=>(
+					{ 
+	 				  getUnorderedGroupHelper().select(grammarAccess.«gaRuleElementAccessor()», «it.counter0»);
+	 				}
+					(
+					«IF element.isMultipleCardinality()-»
+					(«ENDIF»
+						{ before(grammarAccess.«element.grammarElementAccess()»); }
+						(«EXPAND ebnf2 FOR element»)
+						{ after(grammarAccess.«element.grammarElementAccess()»); }
+					«IF element.isMultipleCardinality()-»
+					)
+					(
+						{ before(grammarAccess.«element.grammarElementAccess()»); }
+						(«EXPAND ebnf2 FOR element»)*
+						{ after(grammarAccess.«element.grammarElementAccess()»); }
+					)«ENDIF-»
+					)
+					{ 
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.«gaRuleElementAccessor()»);
+	 				}
+ 				)
+			)  «IF !it.lastIteration»|«ENDIF»
+«ENDFOREACH»
+		)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+«ENDDEFINE»
+
+«DEFINE ruleImpl(UnorderedGroup unorderedGroup, int index) FOR List[AbstractElement]»
+rule__«unorderedGroup.containingRule().gaRuleIdentifyer()»__«unorderedGroup.gaElementIdentifyer()»__«index»
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+	rule__«unorderedGroup.containingRule().gaRuleIdentifyer()»__«unorderedGroup.gaElementIdentifyer()»__Impl
+«IF size > 1-»
+	rule__«unorderedGroup.containingRule().gaRuleIdentifyer()»__«unorderedGroup.gaElementIdentifyer()»__«index + 1»?
+«ENDIF-» 
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+«IF size > 1-»
+«EXPAND ruleImpl(unorderedGroup, index+1) FOR withoutFirst()»
+«ENDIF»
+«ENDDEFINE»
+
 «DEFINE rule(Grammar original) FOR Assignment»
 «IF isCalled(original, containingRule())-»
 rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
@@ -189,55 +277,6 @@ finally {
 }
 «ENDIF-»
 «ENDDEFINE»
-
-«DEFINE rule(Grammar original) FOR UnorderedGroup»
-«IF isCalled(original, containingRule())-»
-«LET elements.reject(e|e.isOptionalCardinality()).size AS mandatoryContent»
-rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»
-    @init {
-		int stackSize = keepStackSize();
-		getUnorderedGroupHelper().enter(grammarAccess.«gaRuleElementAccessor()»);
-    }
-:
-	(
-		(
-«FOREACH elements AS element ITERATOR it»
-			( 
-				{getUnorderedGroupHelper().canSelect(grammarAccess.«gaRuleElementAccessor()», «it.counter0»)}?=>(
-					{ 
-	 				  getUnorderedGroupHelper().select(grammarAccess.«gaRuleElementAccessor()», «it.counter0»);
-	 				}
-					(«IF !element.isOptionalCardinality() && element.isMultipleCardinality()-»
-					(«ENDIF»
-						{ before(grammarAccess.«grammarElementAccess(element)»); }
-						(«EXPAND ebnf2 FOR element»)
-						{ after(grammarAccess.«grammarElementAccess(element)»); }
-					«IF !element.isOptionalCardinality() && element.isMultipleCardinality()-»
-					)
-					(
-						{ before(grammarAccess.«grammarElementAccess(element)»); }
-						(«EXPAND ebnf2 FOR element»)*
-						{ after(grammarAccess.«grammarElementAccess(element)»); }
-					)«ENDIF-»
-					)
-					{ 
-	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.«gaRuleElementAccessor()»);
-	 				}
- 				)
-			)  «IF !it.lastIteration»|«ENDIF»
-«ENDFOREACH»
-		)*«IF mandatoryContent!=0»
-	  	{getUnorderedGroupHelper().canLeave(grammarAccess.«gaRuleElementAccessor()»)}?«ENDIF»	
-	)
-;
-finally {
-	getUnorderedGroupHelper().leave(grammarAccess.«gaRuleElementAccessor()»);
-	restoreStackSize(stackSize);
-}
-«ENDLET»
-«ENDIF-»
-«ENDDEFINE»
-
 
 «DEFINE rule(Grammar original) FOR Group»
 «IF isCalled(original, containingRule())-»
