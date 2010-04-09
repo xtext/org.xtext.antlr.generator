@@ -28,7 +28,7 @@
 			<fileset includes="N201004081911/**"/>
 		</ftp>
 		<ftp action="rmdir" verbose="true" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
-			<fileset includes="N201004081911"/>
+			<fileset includes="N201004081911/**"/>
 		</ftp>
 		
 		<echo>Uploading zips from ${zipsSource} to ${zipsTarget}</echo>
