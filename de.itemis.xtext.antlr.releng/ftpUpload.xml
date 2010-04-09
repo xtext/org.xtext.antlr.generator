@@ -27,7 +27,7 @@
 		<ftp action="delete" verbose="false" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
 			<fileset includes="N*/**"/>
 		</ftp>
-		<ftp action="rmdir" verbose="false" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
+		<ftp action="rmdir" verbose="true" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
 			<fileset includes="N*/**"/>
 		</ftp>
 		
