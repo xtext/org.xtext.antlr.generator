@@ -23,6 +23,14 @@
 		<property name="zipsTarget" value="${ftpServerRoot}/antlr/" />
 		<property name="updateSiteTarget" value="${ftpServerRoot}/updates/nightly/site" />
 
+		<echo>Removing existing nightly builds from ${zipsTarget}</echo>
+		<ftp action="delete" verbose="true" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
+			<fileset includes="N201004081911/**"/>
+		</ftp>
+		<ftp action="rmdir" verbose="true" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
+			<fileset includes="N201004081911"/>
+		</ftp>
+		
 		<echo>Uploading zips from ${zipsSource} to ${zipsTarget}</echo>
 		<antcall target="uploadToItemisFtp">
 			<param name="sourceDir" value="${zipsSource}" />
