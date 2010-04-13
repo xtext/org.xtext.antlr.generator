@@ -93,7 +93,8 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 	public String[] getExportedPackagesRt(Grammar grammar) {
 		return new String[]{
 				getNaming().basePackageRuntime(grammar) + ".parser.antlr",
-				getNaming().basePackageRuntime(grammar) + ".parser.antlr.internal"
+				getNaming().basePackageRuntime(grammar) + ".parser.antlr.internal",
+				getNaming().basePackageRuntime(grammar) + ".parser.antlr.lexer"
 		};
 	}
 	
