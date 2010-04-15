@@ -58,6 +58,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream.HiddenTokens;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.internal.AbstractInternalContentAssistParser;
+import org.eclipse.xtext.ui.editor.contentassist.antlr.internal.DFA;
 import «gaFQName()»;
 
 }
@@ -190,7 +191,7 @@ finally {
 
 «EXPAND ruleImpl FOR this-»
 
-«EXPAND ruleImpl(this, 0) FOR elements-»
+«EXPAND ruleImpl(0) FOR this-»
 «ENDLET-»
 «ENDIF-»
 «ENDDEFINE»
@@ -199,6 +200,7 @@ finally {
 rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__Impl
 	@init {
 		int stackSize = keepStackSize();
+		boolean selected = false;
     }
 :
 		(
@@ -207,6 +209,7 @@ rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__Impl
 				{getUnorderedGroupHelper().canSelect(grammarAccess.«gaRuleElementAccessor()», «it.counter0»)}?=>(
 					{ 
 	 				  getUnorderedGroupHelper().select(grammarAccess.«gaRuleElementAccessor()», «it.counter0»);
+	 				  selected = true;
 	 				}
 					(
 					«IF element.isMultipleCardinality()-»
@@ -222,36 +225,35 @@ rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__Impl
 						{ after(grammarAccess.«element.grammarElementAccess()»); }
 					)«ENDIF-»
 					)
-					{ 
-	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.«gaRuleElementAccessor()»);
-	 				}
  				)
 			)  «IF !it.lastIteration»|«ENDIF»
 «ENDFOREACH»
 		)
 ;
 finally {
+	if (selected)
+		getUnorderedGroupHelper().returnFromSelection(grammarAccess.«gaRuleElementAccessor()»);
 	restoreStackSize(stackSize);
 }
 «ENDDEFINE»
 
-«DEFINE ruleImpl(UnorderedGroup unorderedGroup, int index) FOR List[AbstractElement]»
-rule__«unorderedGroup.containingRule().gaRuleIdentifyer()»__«unorderedGroup.gaElementIdentifyer()»__«index»
+«DEFINE ruleImpl(int index) FOR UnorderedGroup»
+rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__«index»
     @init {
 		int stackSize = keepStackSize();
     }
 :
-	rule__«unorderedGroup.containingRule().gaRuleIdentifyer()»__«unorderedGroup.gaElementIdentifyer()»__Impl
-«IF size > 1-»
-	rule__«unorderedGroup.containingRule().gaRuleIdentifyer()»__«unorderedGroup.gaElementIdentifyer()»__«index + 1»?
+	rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__Impl
+«IF elements.size > index + 1-»
+	rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__«index + 1»?
 «ENDIF-» 
 ;
 finally {
 	restoreStackSize(stackSize);
 }
 
-«IF size > 1-»
-«EXPAND ruleImpl(unorderedGroup, index+1) FOR withoutFirst()»
+«IF elements.size > index + 1-»
+«EXPAND ruleImpl(index+1) FOR this»
 «ENDIF»
 «ENDDEFINE»
 
