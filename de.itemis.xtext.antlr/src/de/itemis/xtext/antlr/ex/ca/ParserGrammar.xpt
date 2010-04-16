@@ -216,6 +216,8 @@ rule__«containingRule().gaRuleIdentifyer()»__«gaElementIdentifyer()»__Impl
 				{getUnorderedGroupHelper().canSelect(grammarAccess.«gaRuleElementAccessor()», «it.counter0»)}?=>(
 					{ 
 	 				  getUnorderedGroupHelper().select(grammarAccess.«gaRuleElementAccessor()», «it.counter0»);
+	 				}
+	 				{
 	 				  selected = true;
 	 				}
 					(
