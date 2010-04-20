@@ -23,6 +23,10 @@ import org.eclipse.xtext.generator.AbstractGeneratorFragment;
 
 import com.google.common.collect.Iterators;
 
+import de.itemis.xtext.antlr.splitting.AntlrLexerSplitter;
+import de.itemis.xtext.antlr.splitting.AntlrParserSplitter;
+import de.itemis.xtext.antlr.splitting.UnorderedGroupsSplitter;
+
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
  */
@@ -87,6 +91,23 @@ public abstract class AbstractAntlrGeneratorFragment extends AbstractGeneratorFr
 		String content = readFileIntoString(filename);
 		AntlrParserSplitter splitter = new AntlrParserSplitter(content);
 		writeStringIntoFile(filename, splitter.transform());
+	}
+	
+	protected void simplifyUnorderedGroupPredicatesIfRequired(Grammar grammar, String absoluteParserFileName) {
+		try {
+			if (containsUnorderedGroup(grammar)) {
+				String javaFile = absoluteParserFileName.replaceAll("\\.g$", "Parser.java");
+				simplifyUnorderedGroupPredicates(javaFile);
+			}
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	protected void simplifyUnorderedGroupPredicates(String javaFile) throws IOException {
+		String content = readFileIntoString(javaFile);
+		UnorderedGroupsSplitter splitter = new UnorderedGroupsSplitter(content);
+		writeStringIntoFile(javaFile, splitter.transform());
 	}
 
 	protected void splitParserAndLexerIfEnabled(String absoluteLexerGrammarFileName,

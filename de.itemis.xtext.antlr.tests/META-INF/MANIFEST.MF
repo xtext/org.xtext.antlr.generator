@@ -6,8 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: itemis AG
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.junit;bundle-version="[3.8.2,4.0.0)",
+ de.itemis.xtext.antlr,
  org.eclipse.xtext.junit,
- org.eclipse.xtext,
- de.itemis.xtext.antlr
+ org.eclipse.xtext
 Export-Package: de.itemis.xtext.antlr,
  de.itemis.xtext.antlr.tests

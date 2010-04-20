@@ -37,6 +37,7 @@ public class ContentAssistParserGeneratorFragment extends AbstractAntlrGenerator
 		String absoluteParserFileName = srcGenPath+"/"+getFragmentHelper().getContentAssistParserGrammarFileName(grammar).replace('.', '/')+".g";
 		AntlrToolRunner.runWithParams(absoluteLexerFileName);
 		AntlrToolRunner.runWithParams(absoluteParserFileName, "-lib", libPath);
+		simplifyUnorderedGroupPredicatesIfRequired(grammar, absoluteParserFileName);
 		splitParserAndLexerIfEnabled(absoluteLexerFileName, absoluteParserFileName);
 		helper.discardHelper(grammar);
 	}

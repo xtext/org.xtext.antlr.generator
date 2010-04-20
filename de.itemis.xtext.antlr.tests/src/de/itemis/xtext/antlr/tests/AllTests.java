@@ -10,10 +10,11 @@ package de.itemis.xtext.antlr.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import de.itemis.xtext.antlr.AntlrGrammarGenUtilTest;
-import de.itemis.xtext.antlr.AntlrLexerSplitterTest;
-import de.itemis.xtext.antlr.AntlrParserSplitterTest;
 import de.itemis.xtext.antlr.TerminalRuleToLexerBodyTest;
 import de.itemis.xtext.antlr.ex.common.KeywordHelperTest;
+import de.itemis.xtext.antlr.splitting.AntlrLexerSplitterTest;
+import de.itemis.xtext.antlr.splitting.AntlrParserSplitterTest;
+import de.itemis.xtext.antlr.splitting.CondititionSimplifierTest;
 
 /**
  * @author huebner - Initial contribution and API
@@ -26,6 +27,7 @@ public class AllTests {
 		suite.addTestSuite(KeywordHelperTest.class);
 		suite.addTestSuite(AntlrLexerSplitterTest.class);
 		suite.addTestSuite(AntlrParserSplitterTest.class);
+		suite.addTestSuite(CondititionSimplifierTest.class);
 		return suite;
 	}
 }

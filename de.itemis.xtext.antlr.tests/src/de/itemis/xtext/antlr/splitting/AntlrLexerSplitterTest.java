@@ -6,12 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package de.itemis.xtext.antlr;
+package de.itemis.xtext.antlr.splitting;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.itemis.xtext.antlr.AntlrLexerSplitter.ExtractedMethod;
+import de.itemis.xtext.antlr.AbstractAntlrSplitterTest;
+import de.itemis.xtext.antlr.splitting.AntlrLexerSplitter;
+import de.itemis.xtext.antlr.splitting.AntlrLexerSplitter.ExtractedMethod;
 
 /**
  *
@@ -48,7 +50,7 @@ public class AntlrLexerSplitterTest extends AbstractAntlrSplitterTest {
 		AntlrLexerSplitter splitter = new AntlrLexerSplitter(content);
 		String actual = splitter.transform();
 		assertNotNull(actual);
-		System.out.println(actual);
+//		System.out.println(actual);
 		assertTrue(!actual.equals(content));
 	}
 	

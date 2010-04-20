@@ -6,11 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package de.itemis.xtext.antlr;
+package de.itemis.xtext.antlr.splitting;
 
 import java.util.regex.Matcher;
 
-import de.itemis.xtext.antlr.AntlrParserSplitter.ExtractedClass;
+import de.itemis.xtext.antlr.AbstractAntlrSplitterTest;
+import de.itemis.xtext.antlr.splitting.AntlrParserSplitter;
+import de.itemis.xtext.antlr.splitting.AntlrParserSplitter.ExtractedClass;
 
 /**
  *
