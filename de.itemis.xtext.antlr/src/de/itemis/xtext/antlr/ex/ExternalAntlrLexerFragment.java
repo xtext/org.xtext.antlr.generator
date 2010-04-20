@@ -8,6 +8,7 @@
 package de.itemis.xtext.antlr.ex;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.mwe.core.issues.Issues;
@@ -18,6 +19,8 @@ import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.DefaultGeneratorFragment;
 import org.eclipse.xtext.generator.Generator;
 import org.eclipse.xtext.parser.antlr.Lexer;
+
+import com.google.common.collect.Lists;
 
 import de.itemis.xtext.antlr.AntlrToolRunner;
 
@@ -33,6 +36,17 @@ public class ExternalAntlrLexerFragment extends DefaultGeneratorFragment {
 	private boolean runtime;
 	
 	private boolean contentAssist;
+	
+	private List<String> antlrParams = Lists.newArrayList();
+	
+	public void addAntlrParam(String param) {
+		antlrParams.add(param);
+	}
+	
+	public String[] getAntlrParams() {
+		String[] result = antlrParams.toArray(new String[antlrParams.size()]);
+		return result;
+	}
 	
 	@Override
 	public void generate(Grammar grammar, XpandExecutionContext ctx) {
@@ -51,7 +65,9 @@ public class ExternalAntlrLexerFragment extends DefaultGeneratorFragment {
 			generateTo = lexerGrammar.substring(0, lexerGrammar.lastIndexOf('.'));
 		}
 		generateTo = srcGenPath + "/" + generateTo.replace('.', '/');
-		AntlrToolRunner.runWithParams(grammarFile, "-fo", generateTo);
+		addAntlrParam("-fo");
+		addAntlrParam(generateTo);
+		AntlrToolRunner.runWithParams(grammarFile, getAntlrParams());
 	}
 
 	@Override

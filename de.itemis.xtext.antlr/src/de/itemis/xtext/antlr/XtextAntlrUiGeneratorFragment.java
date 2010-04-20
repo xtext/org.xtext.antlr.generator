@@ -41,7 +41,7 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 		super.generate(grammar, ctx);
 		String srcUiGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN_UI).getPath();
 		String absoluteGrammarFileName = srcUiGenPath + "/" + getGrammarFileName(grammar, getNaming()).replace('.', '/') + ".g";
-		AntlrToolRunner.run(absoluteGrammarFileName);
+		AntlrToolRunner.runWithParams(absoluteGrammarFileName, getAntlrParams());
 		simplifyUnorderedGroupPredicatesIfRequired(grammar, absoluteGrammarFileName);
 		splitParserAndLexerIfEnabled(absoluteGrammarFileName);
 	}

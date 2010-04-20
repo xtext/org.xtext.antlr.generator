@@ -55,8 +55,10 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 		libPath = libPath.substring(0, libPath.lastIndexOf('/'));
 		String absoluteLexerFileName = srcGenPath+"/"+getFragmentHelper().getLexerGrammarFileName(grammar).replace('.', '/')+".g";
 		String absoluteParserFileName = srcGenPath+"/"+getFragmentHelper().getParserGrammarFileName(grammar).replace('.', '/')+".g";
-		AntlrToolRunner.runWithParams(absoluteLexerFileName);
-		AntlrToolRunner.runWithParams(absoluteParserFileName, "-lib", libPath);
+		AntlrToolRunner.runWithParams(absoluteLexerFileName, getAntlrParams());
+		addAntlrParam("-lib");
+		addAntlrParam(libPath);
+		AntlrToolRunner.runWithParams(absoluteParserFileName, getAntlrParams());
 		simplifyUnorderedGroupPredicatesIfRequired(grammar, absoluteParserFileName);
 		splitParserAndLexerIfEnabled(absoluteLexerFileName, absoluteParserFileName);
 		

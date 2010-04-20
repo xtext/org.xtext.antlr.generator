@@ -22,6 +22,7 @@ import org.eclipse.xtext.UnorderedGroup;
 import org.eclipse.xtext.generator.AbstractGeneratorFragment;
 
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 
 import de.itemis.xtext.antlr.splitting.AntlrLexerSplitter;
 import de.itemis.xtext.antlr.splitting.AntlrParserSplitter;
@@ -40,6 +41,17 @@ public abstract class AbstractAntlrGeneratorFragment extends AbstractGeneratorFr
 	
 	public AntlrOptions getOptions() {
 		return options;
+	}
+	
+	private List<String> antlrParams = Lists.newArrayList();
+	
+	public void addAntlrParam(String param) {
+		antlrParams.add(param);
+	}
+	
+	public String[] getAntlrParams() {
+		String[] result = antlrParams.toArray(new String[antlrParams.size()]);
+		return result;
 	}
 
 	@Override
