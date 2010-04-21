@@ -296,10 +296,21 @@ rule__«group.containingRule().gaRuleIdentifyer()»__«group.gaElementIdentifyer()»
 		int stackSize = keepStackSize();
     }
 :
-	«EXPAND ebnf FOR first()»
+	rule__«group.containingRule().gaRuleIdentifyer()»__«group.gaElementIdentifyer()»__«index»__Impl
 «IF size > 1-»
 	rule__«group.containingRule().gaRuleIdentifyer()»__«group.gaElementIdentifyer()»__«index + 1»
 «ENDIF-» 
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__«group.containingRule().gaRuleIdentifyer()»__«group.gaElementIdentifyer()»__«index»__Impl
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+«EXPAND ebnf FOR first()»
 ;
 finally {
 	restoreStackSize(stackSize);
