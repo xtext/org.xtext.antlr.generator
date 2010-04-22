@@ -24,7 +24,7 @@ import com.google.common.base.Preconditions;
  */
 public class AntlrParserSplitter {
 
-	public static final int FIELDS_PER_CLASS = 5000;
+	public static final int FIELDS_PER_CLASS = 2500;
 
 	public static final Pattern DECLARATION_PATTERN = Pattern.compile("public static final BitSet (FOLLOW_.*?)(\\s*=.*;)", 0);
 	public static final Pattern REFERENCE_PATTERN = Pattern.compile("(?<!BitSet )(FOLLOW_[\\w]+)", 0);
