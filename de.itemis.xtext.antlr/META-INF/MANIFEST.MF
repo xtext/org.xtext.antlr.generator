@@ -16,18 +16,20 @@ Require-Bundle: org.eclipse.xtext;bundle-version="1.0.0",
  org.eclipse.emf.common,
  org.antlr.gen;visibility:=reexport
 Export-Package: de.itemis.xtext.antlr,
+ de.itemis.xtext.antlr.ex,
  de.itemis.xtext.antlr.ex.ca,
  de.itemis.xtext.antlr.ex.common,
  de.itemis.xtext.antlr.ex.rt,
  de.itemis.xtext.antlr.ex.wsAware,
  de.itemis.xtext.antlr.splitting,
- de.itemis.xtext.antlr.splitting.services,
+ de.itemis.xtext.antlr.splitting.formatting,
  de.itemis.xtext.antlr.splitting.parseTreeConstruction,
  de.itemis.xtext.antlr.splitting.parser.antlr,
  de.itemis.xtext.antlr.splitting.parser.antlr.internal,
- de.itemis.xtext.antlr.splitting.validation,
+ de.itemis.xtext.antlr.splitting.services,
  de.itemis.xtext.antlr.splitting.simpleExpressions,
  de.itemis.xtext.antlr.splitting.simpleExpressions.impl,
- de.itemis.xtext.antlr.splitting.simpleExpressions.util
+ de.itemis.xtext.antlr.splitting.simpleExpressions.util,
+ de.itemis.xtext.antlr.splitting.validation
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
