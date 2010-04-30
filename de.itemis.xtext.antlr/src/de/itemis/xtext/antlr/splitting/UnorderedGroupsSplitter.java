@@ -25,7 +25,7 @@ import org.eclipse.xtext.resource.IResourceFactory;
 import org.eclipse.xtext.resource.XtextResource;
 
 import com.google.inject.Injector;
-import com.google.inject.internal.Maps;
+import com.google.common.collect.Maps;
 
 import de.itemis.xtext.antlr.splitting.simpleExpressions.IfCondition;
 
