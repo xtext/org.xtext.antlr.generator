@@ -20,12 +20,12 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.parsetree.reconstr.Serializer;
+import org.eclipse.xtext.parsetree.reconstr.SerializerOptions;
 import org.eclipse.xtext.resource.IResourceFactory;
 import org.eclipse.xtext.resource.XtextResource;
 
-import com.google.inject.Injector;
 import com.google.common.collect.Maps;
+import com.google.inject.Injector;
 
 import de.itemis.xtext.antlr.splitting.simpleExpressions.IfCondition;
 
@@ -46,7 +46,7 @@ public class UnorderedGroupsSplitter {
 	public String transform() {
 		Injector injector = new SimpleExpressionsStandaloneSetup().createInjectorAndDoEMFRegistration();
 		IResourceFactory resourceFactory = injector.getInstance(IResourceFactory.class);
-		return transformContent(resourceFactory); 
+		return transformContent(resourceFactory);
 	}
 
 	protected String transformContent(IResourceFactory resourceFactory) {
@@ -56,7 +56,7 @@ public class UnorderedGroupsSplitter {
 				StringWriter writer = new StringWriter(content.length());
 				PrintWriter printer = new PrintWriter(writer);
 				String line = reader.readLine();
-				while(line != null) {
+				while (line != null) {
 					line = transfromLine(line, resourceFactory);
 					printer.println(line);
 					line = reader.readLine();
@@ -66,11 +66,11 @@ public class UnorderedGroupsSplitter {
 			} finally {
 				reader.close();
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public String transfromLine(String line, IResourceFactory resourceFactory) throws IOException {
 		if (shouldSimplify(line)) {
 			int braceIdx = line.indexOf('{');
@@ -106,7 +106,7 @@ public class UnorderedGroupsSplitter {
 		try {
 			Map<String, Object> options = Maps.newHashMap();
 			options.put(XtextResource.OPTION_ENCODING, INTERNAL_ENCODING);
-			options.put(XtextResource.OPTION_SERIALIZATION_OPTIONS, Serializer.NO_FORMATTING);
+			options.put(XtextResource.OPTION_SERIALIZATION_OPTIONS, new SerializerOptions().setFormatting(false));
 			resource.save(out, options);
 			String result = new String(out.toByteArray(), INTERNAL_ENCODING);
 			return result;
@@ -132,7 +132,8 @@ public class UnorderedGroupsSplitter {
 
 	public boolean shouldSimplify(String line) {
 		String trimmedLine = line.trim();
-		return (trimmedLine.startsWith("else if") || trimmedLine.startsWith("if")) && trimmedLine.contains("getUnorderedGroupHelper()");
+		return (trimmedLine.startsWith("else if") || trimmedLine.startsWith("if"))
+				&& trimmedLine.contains("getUnorderedGroupHelper()");
 	}
-	
+
 }
