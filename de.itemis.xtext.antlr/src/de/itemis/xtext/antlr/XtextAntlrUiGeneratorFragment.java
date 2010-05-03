@@ -44,6 +44,7 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 		AntlrToolRunner.runWithParams(absoluteGrammarFileName, getAntlrParams());
 		simplifyUnorderedGroupPredicatesIfRequired(grammar, absoluteGrammarFileName);
 		splitParserAndLexerIfEnabled(absoluteGrammarFileName);
+		suppressWarnings(absoluteGrammarFileName);
 	}
 
 	@Override
@@ -133,4 +134,5 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 		}
 		return result;
 	}
+
 }

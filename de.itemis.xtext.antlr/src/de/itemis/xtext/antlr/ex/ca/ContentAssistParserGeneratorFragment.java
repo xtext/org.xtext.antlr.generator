@@ -41,6 +41,7 @@ public class ContentAssistParserGeneratorFragment extends AbstractAntlrGenerator
 		AntlrToolRunner.runWithParams(absoluteParserFileName, getAntlrParams());
 		simplifyUnorderedGroupPredicatesIfRequired(grammar, absoluteParserFileName);
 		splitParserAndLexerIfEnabled(absoluteLexerFileName, absoluteParserFileName);
+		suppressWarnings(absoluteLexerFileName, absoluteParserFileName);
 		helper.discardHelper(grammar);
 	}
 

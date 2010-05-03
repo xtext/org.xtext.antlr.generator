@@ -24,6 +24,7 @@ import org.eclipse.xtext.generator.AbstractGeneratorFragment;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
+import de.itemis.xtext.antlr.postProcessing.SuppressWarningsProcessor;
 import de.itemis.xtext.antlr.splitting.AntlrLexerSplitter;
 import de.itemis.xtext.antlr.splitting.AntlrParserSplitter;
 import de.itemis.xtext.antlr.splitting.UnorderedGroupsSplitter;
@@ -120,6 +121,26 @@ public abstract class AbstractAntlrGeneratorFragment extends AbstractGeneratorFr
 		String content = readFileIntoString(javaFile);
 		UnorderedGroupsSplitter splitter = new UnorderedGroupsSplitter(content);
 		writeStringIntoFile(javaFile, splitter.transform());
+	}
+	
+	private void suppressWarningsImpl(String javaFile) throws IOException {
+		String content = readFileIntoString(javaFile);
+		content = new SuppressWarningsProcessor().process(content);
+		writeStringIntoFile(javaFile, content);
+	}
+	
+	protected void suppressWarnings(String grammarFileName) {
+		suppressWarnings(grammarFileName, grammarFileName);
+	}
+	
+	protected void suppressWarnings(String absoluteLexerGrammarFileName,
+			String absoluteParserGrammarFileName) {
+		try {
+			suppressWarningsImpl(absoluteLexerGrammarFileName.replaceAll("\\.g$", "Lexer.java"));
+			suppressWarningsImpl(absoluteParserGrammarFileName.replaceAll("\\.g$", "Parser.java"));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected void splitParserAndLexerIfEnabled(String absoluteLexerGrammarFileName,

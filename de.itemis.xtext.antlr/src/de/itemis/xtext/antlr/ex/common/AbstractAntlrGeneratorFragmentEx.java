@@ -18,7 +18,7 @@ import de.itemis.xtext.antlr.AbstractAntlrGeneratorFragment;
 /**
  * @author Sebastian Zarnekow - Initial contribution and API
  */
-public class AbstractAntlrGeneratorFragmentEx extends AbstractAntlrGeneratorFragment {
+public abstract class AbstractAntlrGeneratorFragmentEx extends AbstractAntlrGeneratorFragment {
 
 	private AntlrFragmentHelper fragmentHelper;
 	

@@ -61,6 +61,7 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 		AntlrToolRunner.runWithParams(absoluteParserFileName, getAntlrParams());
 		simplifyUnorderedGroupPredicatesIfRequired(grammar, absoluteParserFileName);
 		splitParserAndLexerIfEnabled(absoluteLexerFileName, absoluteParserFileName);
+		suppressWarnings(absoluteLexerFileName, absoluteParserFileName);
 		
 		MutableTokenDefProvider provider = new MutableTokenDefProvider();
 		provider.setAntlrTokenFileProvider(new IAntlrTokenFileProvider() {
