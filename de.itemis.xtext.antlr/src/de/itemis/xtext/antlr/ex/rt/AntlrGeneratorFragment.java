@@ -31,6 +31,8 @@ import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
 import org.eclipse.xtext.parser.antlr.IUnorderedGroupHelper;
 import org.eclipse.xtext.parser.antlr.Lexer;
 import org.eclipse.xtext.parser.antlr.UnorderedGroupHelper;
+import org.eclipse.xtext.parsetree.reconstr.ITokenSerializer;
+import org.eclipse.xtext.parsetree.reconstr.impl.IgnoreCaseKeywordSerializer;
 
 import de.itemis.xtext.antlr.AntlrGrammarGenUtil;
 import de.itemis.xtext.antlr.AntlrToolRunner;
@@ -125,6 +127,9 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 			.addTypeToType(ITokenDefProvider.class.getName(),AntlrTokenDefProvider.class.getName());
 		if (containsUnorderedGroup(grammar))
 			factory = factory.addTypeToType(IUnorderedGroupHelper.class.getName(), UnorderedGroupHelper.class.getName());
+		if (getOptions().isIgnoreCase()) {
+			factory = factory.addTypeToType(ITokenSerializer.IKeywordSerializer.class.getName(), IgnoreCaseKeywordSerializer.class.getName());
+		}
 		return factory.getBindings();
 	}
 
