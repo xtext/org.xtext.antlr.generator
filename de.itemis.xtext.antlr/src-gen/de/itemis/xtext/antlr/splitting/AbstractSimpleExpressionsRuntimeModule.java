@@ -13,6 +13,7 @@ import com.google.inject.name.Names;
 /**
  * Manual modifications go to {de.itemis.xtext.antlr.splitting.SimpleExpressionsRuntimeModule}
  */
+ @SuppressWarnings("all")
 public abstract class AbstractSimpleExpressionsRuntimeModule extends DefaultRuntimeModule {
 	
 	@Override

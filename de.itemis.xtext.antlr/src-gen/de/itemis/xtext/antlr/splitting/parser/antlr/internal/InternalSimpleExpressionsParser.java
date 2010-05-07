@@ -21,6 +21,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
+@SuppressWarnings("all")
 public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_INT", "RULE_ID", "RULE_STRING", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'else'", "'if'", "'('", "')'", "'{'", "'||'", "'&&'", "'=='", "'<='", "'>='", "'!'", "','", "'.'"
@@ -115,7 +116,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
         EObject lv_condition_3_0 = null;
 
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:91:6: ( ( ( (lv_elseif_0_0= 'else' ) )? 'if' '(' ( (lv_condition_3_0= ruleExpression ) ) ')' '{' ) )
@@ -283,7 +284,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
         EObject lv_right_3_0 = null;
 
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:175:6: ( (this_AndExpression_0= ruleAndExpression ( () '||' ( (lv_right_3_0= ruleAndExpression ) ) )* ) )
@@ -455,7 +456,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
         EObject lv_right_3_0 = null;
 
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:251:6: ( (this_Comparison_0= ruleComparison ( () '&&' ( (lv_right_3_0= ruleComparison ) ) )* ) )
@@ -630,7 +631,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
         EObject lv_right_3_0 = null;
 
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:327:6: ( (this_PrefixExpression_0= rulePrefixExpression ( () ( ( (lv_operator_2_1= '==' | lv_operator_2_2= '<=' | lv_operator_2_3= '>=' ) ) ) ( (lv_right_3_0= rulePrefixExpression ) ) )? ) )
@@ -901,7 +902,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
         EObject this_Atom_3 = null;
 
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:459:6: ( ( ( () '!' ( (lv_expression_2_0= ruleAtom ) ) ) | this_Atom_3= ruleAtom ) )
@@ -1078,7 +1079,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
         EObject this_MethodCall_2 = null;
 
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:531:6: ( (this_ParenthesizedExpression_0= ruleParenthesizedExpression | this_NumberLiteral_1= ruleNumberLiteral | this_MethodCall_2= ruleMethodCall ) )
@@ -1225,7 +1226,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
 
         Token lv_value_0_0=null;
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:583:6: ( ( (lv_value_0_0= RULE_INT ) ) )
@@ -1326,7 +1327,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
         EObject this_Expression_1 = null;
 
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:630:6: ( ( '(' this_Expression_1= ruleExpression ')' ) )
@@ -1419,7 +1420,7 @@ public class InternalSimpleExpressionsParser extends AbstractInternalAntlrParser
         AntlrDatatypeRuleToken lv_value_0_0 = null;
 
 
-         @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+         EObject temp=null; setCurrentLookahead(); resetLookahead(); 
             
         try {
             // ../de.itemis.xtext.antlr/src-gen/de/itemis/xtext/antlr/splitting/parser/antlr/internal/InternalSimpleExpressions.g:670:6: ( ( (lv_value_0_0= ruleMethodCallLiteral ) ) )
