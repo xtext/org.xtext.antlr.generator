@@ -19,6 +19,8 @@ import java.util.Set;
 import org.eclipse.emf.mwe.core.issues.Issues;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xtext.Grammar;
+import org.eclipse.xtext.conversion.impl.AbstractIDValueConverter;
+import org.eclipse.xtext.conversion.impl.IgnoreCaseIDValueConverter;
 import org.eclipse.xtext.generator.BindFactory;
 import org.eclipse.xtext.generator.Binding;
 import org.eclipse.xtext.generator.Generator;
@@ -128,7 +130,9 @@ public class AntlrGeneratorFragment extends AbstractAntlrGeneratorFragmentEx {
 		if (containsUnorderedGroup(grammar))
 			factory = factory.addTypeToType(IUnorderedGroupHelper.class.getName(), UnorderedGroupHelper.class.getName());
 		if (getOptions().isIgnoreCase()) {
-			factory = factory.addTypeToType(ITokenSerializer.IKeywordSerializer.class.getName(), IgnoreCaseKeywordSerializer.class.getName());
+			factory = factory
+				.addTypeToType(ITokenSerializer.IKeywordSerializer.class.getName(), IgnoreCaseKeywordSerializer.class.getName())
+				.addTypeToType(AbstractIDValueConverter.class.getName(), IgnoreCaseIDValueConverter.class.getName());
 		}
 		return factory.getBindings();
 	}
