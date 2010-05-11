@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.parsetree.reconstr.SerializerOptions;
 import org.eclipse.xtext.resource.IResourceFactory;
+import org.eclipse.xtext.resource.SaveOptions;
 import org.eclipse.xtext.resource.XtextResource;
 
 import com.google.common.collect.Maps;
@@ -104,9 +104,9 @@ public class UnorderedGroupsSplitter {
 	protected String saveResource(Resource resource) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream(content.length());
 		try {
-			Map<String, Object> options = Maps.newHashMap();
+			Map<Object, Object> options = Maps.newHashMap();
 			options.put(XtextResource.OPTION_ENCODING, INTERNAL_ENCODING);
-			options.put(XtextResource.OPTION_SERIALIZATION_OPTIONS, new SerializerOptions().setFormatting(false));
+			SaveOptions.defaultOptions().addTo(options);
 			resource.save(out, options);
 			String result = new String(out.toByteArray(), INTERNAL_ENCODING);
 			return result;
