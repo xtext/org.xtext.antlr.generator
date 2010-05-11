@@ -37,19 +37,14 @@ import org.eclipse.xtext.generator.Naming;
 public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragment {
 
 	@Override
-	public void generate(final Grammar grammar, XpandExecutionContext ctx) {
+	public void generate(Grammar grammar, XpandExecutionContext ctx) {
 		super.generate(grammar, ctx);
-		final String srcUiGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN_UI).getPath();
-		final String absoluteGrammarFileName = srcUiGenPath + "/"
-				+ getGrammarFileName(grammar, getNaming()).replace('.', '/') + ".g";
-//		new Thread(new Runnable() {
-//			public void run() {
-				AntlrToolRunner.runWithParams(absoluteGrammarFileName, getAntlrParams());
-				simplifyUnorderedGroupPredicatesIfRequired(grammar, absoluteGrammarFileName);
-				splitParserAndLexerIfEnabled(absoluteGrammarFileName);
-				suppressWarnings(absoluteGrammarFileName);
-//			}
-//		}).start();
+		String srcUiGenPath = ctx.getOutput().getOutlet(Generator.SRC_GEN_UI).getPath();
+		String absoluteGrammarFileName = srcUiGenPath + "/" + getGrammarFileName(grammar, getNaming()).replace('.', '/') + ".g";
+		AntlrToolRunner.runWithParams(absoluteGrammarFileName, getAntlrParams());
+		simplifyUnorderedGroupPredicatesIfRequired(grammar, absoluteGrammarFileName);
+		splitParserAndLexerIfEnabled(absoluteGrammarFileName);
+		suppressWarnings(absoluteGrammarFileName);
 	}
 
 	@Override
@@ -62,25 +57,25 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 			issues.addError("This fragment does not support the option 'ignoreCase'. Use 'de.itemis.xtext.antlr.ex.ca.ContentAssistParserGeneratorFragment' instead");
 		}
 	}
-
+	
 	@Override
 	public Set<Binding> getGuiceBindingsUi(Grammar grammar) {
 		return new BindFactory()
-				.addTypeToType("org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext.Factory",
-						"org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory")
-				.addTypeToType("org.eclipse.xtext.ui.editor.contentassist.antlr.IContentAssistParser",
-						getParserClassName(grammar, getNaming()))
-				.addConfiguredBinding(
-						"ContentAssistLexerProvider",
-						"binder.bind(" + getInternalLexerClassName(grammar, getNaming()) + ".class)"
-								+ ".toProvider(org.eclipse.xtext.parser.antlr.LexerProvider.create("
-								+ getInternalLexerClassName(grammar, getNaming()) + ".class))")
-				.addConfiguredBinding(
-						"ContentAssistLexer",
-						"binder.bind(org.eclipse.xtext.ui.editor.contentassist.antlr.internal.Lexer.class)"
-								+ ".annotatedWith(com.google.inject.name.Names.named("
-								+ "org.eclipse.xtext.ui.LexerUIBindings.CONTENT_ASSIST" + ")).to("
-								+ getInternalLexerClassName(grammar, getNaming()) + ".class)").getBindings();
+			.addTypeToType(
+					"org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext.Factory",
+					"org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory")
+			.addTypeToType(
+					"org.eclipse.xtext.ui.editor.contentassist.antlr.IContentAssistParser",
+					getParserClassName(grammar, getNaming()))
+			.addConfiguredBinding("ContentAssistLexerProvider", 
+					"binder.bind(" + getInternalLexerClassName(grammar, getNaming()) +".class)"+
+					".toProvider(org.eclipse.xtext.parser.antlr.LexerProvider.create(" + getInternalLexerClassName(grammar, getNaming()) + ".class))")
+			.addConfiguredBinding("ContentAssistLexer", 
+					"binder.bind(org.eclipse.xtext.ui.editor.contentassist.antlr.internal.Lexer.class)"+
+					".annotatedWith(com.google.inject.name.Names.named(" +
+					"org.eclipse.xtext.ui.LexerUIBindings.CONTENT_ASSIST" +
+					")).to(" + getInternalLexerClassName(grammar, getNaming()) +".class)")
+			.getBindings();
 	}
 
 	@Override
@@ -98,11 +93,13 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 	}
 
 	public static String getInternalLexerClassName(Grammar g, Naming naming) {
-		return naming.basePackageUi(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g) + "Lexer";
+		return naming.basePackageUi(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g)
+				+ "Lexer";
 	}
 
 	public static String getInternalParserClassName(Grammar g, Naming naming) {
-		return naming.basePackageUi(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g) + "Parser";
+		return  naming.basePackageUi(g) + ".contentassist.antlr.internal.Internal" + GrammarUtil.getName(g)
+				+ "Parser";
 	}
 
 	public static String getGrammarFileName(Grammar g, Naming naming) {
@@ -112,7 +109,7 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 	public static Collection<Alternatives> getAllAlternatives(Grammar g) {
 		return getAllElementsByType(g, Alternatives.class);
 	}
-
+	
 	public static Collection<UnorderedGroup> getAllUnorderedGroups(Grammar g) {
 		return getAllElementsByType(g, UnorderedGroup.class);
 	}
@@ -120,7 +117,7 @@ public class XtextAntlrUiGeneratorFragment extends AbstractAntlrGeneratorFragmen
 	public static Collection<Group> getAllGroups(Grammar g) {
 		return getAllElementsByType(g, Group.class);
 	}
-
+	
 	public static Collection<Assignment> getAllAssignments(Grammar g) {
 		return getAllElementsByType(g, Assignment.class);
 	}
