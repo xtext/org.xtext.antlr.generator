@@ -19,15 +19,10 @@ import org.eclipse.xtext.parser.antlr.AntlrTokenDefProvider;
 public class MutableTokenDefProvider extends AntlrTokenDefProvider {
 	
 	public void writeTokenFile(PrintWriter out) throws IOException {
-		int i = 0;
 		for(Map.Entry<Integer, String> entry: getTokenDefMap().entrySet()) {
-			if (i != 0) {
-				out.println();
-			}
-			i++;
 			out.print(entry.getValue());
 			out.print('=');
-			out.print(entry.getKey());
+			out.println(entry.getKey());
 		}
 		out.close();
 	}
