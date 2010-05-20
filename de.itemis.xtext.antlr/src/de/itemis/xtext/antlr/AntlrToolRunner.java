@@ -13,7 +13,6 @@ import java.io.Writer;
 
 import org.antlr.Tool;
 import org.antlr.tool.Grammar;
-import org.eclipse.xtext.util.TailWriter;
 
 /**
  * @author Jan Köhnlein - Initial contribution and API

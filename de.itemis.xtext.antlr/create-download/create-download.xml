@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="default" basedir="..">
+	<property file="create-download/create-download.properties"/>
+	<property name="jar.file" value="antlr-generator-3.0.1.jar"/>
+	
+    <target name="default" >
+    	<echo>Deleting old file '${jar.file}'</echo>
+    	<delete>
+			<fileset file="${jar.file}"/>
+		</delete>
+
+    	<echo>Creating jarfile ${jar.file}</echo>
+    	<jar id="files" jarfile="${jar.file}" compress="true">
+    	    <zipfileset src="./../org.antlr/antlr-2.7.7.jar" includes="**/*"/>
+    	    <zipfileset src="./../org.antlr/antlr-3.0.1.jar" includes="**/*"/>
+    	    <zipfileset src="./../org.antlr/stringtemplate-3.1b1.jar" includes="**/*"/>
+    	    <fileset dir="./bin" includes="**/*.java **/*.class"/>
+    	</jar>
+
+    	<echo>Uploading jarfile</echo>
+		<ftp password="${ftp.passwd}" server="ftp.itemis.de" userid="${ftp.user}" remotedir="/home/ftp/download" verbose="true" passive="true">
+			<fileset file="${jar.file}"/>
+		</ftp>
+    	<echo>Finished</echo>
+    </target>
+
+</project>
