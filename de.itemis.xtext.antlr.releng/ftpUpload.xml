@@ -21,8 +21,8 @@
 			Nightly: ${ftpServerRoot}/updates/nightly/site 
 		 -->
 		<property name="zipsTarget" value="${ftpServerRoot}/antlr/" />
-	<!--	<property name="updateSiteTarget" value="${ftpServerRoot}/updates/nightly/site" />-->
-		<property name="updateSiteTarget" value="${ftpServerRoot}/updates/milestones/site" />
+		<property name="updateSiteTarget" value="${ftpServerRoot}/updates/nightly/site" />
+	<!--	<property name="updateSiteTarget" value="${ftpServerRoot}/updates/milestones/site" />-->
 
 		<echo>Removing existing nightly builds from ${zipsTarget}</echo>
 		<ftp action="delete" verbose="false" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
