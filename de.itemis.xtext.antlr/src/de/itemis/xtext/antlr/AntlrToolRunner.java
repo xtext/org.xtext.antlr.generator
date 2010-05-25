@@ -8,7 +8,6 @@
  *******************************************************************************/
 package de.itemis.xtext.antlr;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -20,11 +19,11 @@ import org.antlr.tool.Grammar;
  * @author Sebastian Zarnekow
  */
 public class AntlrToolRunner {
-	
+    
 	public static void runWithParams(String grammarFullPath, String... furtherArgs) {
 		String[] args = new String[furtherArgs.length + 1];
 		System.arraycopy(furtherArgs, 0, args, 0, furtherArgs.length);
-		args[furtherArgs.length] = getCanonicalPath(grammarFullPath);
+		args[furtherArgs.length] = grammarFullPath;
 		Tool antlr = new Tool(args) {
         	/**
         	 * Use a writer that suppresses the first comment line of java files, because
@@ -44,13 +43,4 @@ public class AntlrToolRunner {
     public static void run(String grammarFullPath) {
     	runWithParams(grammarFullPath);
     }
-    
-	protected static String getCanonicalPath(String path){
-		File file = new File (path);			
-		try {
-			return file.getCanonicalPath().toString();
-		} catch (IOException e) {
-			return path;
-		}
-	}
 }
