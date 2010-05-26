@@ -6,13 +6,15 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  *******************************************************************************/
-package de.itemis.xtext.antlr;
+package de.itemis.xtext.antlr.toolrunner;
 
 import java.io.IOException;
 import java.io.Writer;
 
 import org.antlr.Tool;
 import org.antlr.tool.Grammar;
+
+import de.itemis.xtext.antlr.TailWriter;
 
 /**
  * @author Jan Köhnlein - Initial contribution and API

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package de.itemis.xtext.antlr;
+package de.itemis.xtext.antlr.toolrunner;
 
 import java.io.IOException;
 import java.io.Writer;
