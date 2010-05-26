@@ -10,6 +10,6 @@ Require-Bundle: org.antlr.runtime,
  org.antlr.gen;visibility:=reexport,
  org.apache.ant;bundle-version="1.7.1",
  org.eclipse.ant.core;bundle-version="3.2.100"
-Export-Package: de.itemis.xtext.antlr
+Export-Package: de.itemis.xtext.antlr.toolrunner
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
