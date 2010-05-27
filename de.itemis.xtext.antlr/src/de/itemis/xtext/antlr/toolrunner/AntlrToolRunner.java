@@ -32,7 +32,7 @@ public class AntlrToolRunner {
 			@Override
 			public Writer getOutputFile(Grammar g, String fileName) throws IOException {
 				Writer result = super.getOutputFile(g, fileName);
-				if (fileName.endsWith(".java"))
+				if (fileName.endsWith(".java")) //$NON-NLS-1$
 					result = new TailWriter(result, 2);
 				return result;
 			}
