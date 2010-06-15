@@ -9,17 +9,14 @@
     </repositories>
   </contributions>
   <contributions label="Xtext&amp;Co.">
-    <repositories location="http://download.eclipse.org/modeling/tmf/updates/milestones/">
-      <metadataRepository href="p2:http://download.eclipse.org/modeling/tmf/updates/milestones#//@metadataRepository"/>
+    <repositories location="http://download.eclipse.org/modeling/tmf/updates/">
+      <metadataRepository href="p2:http://download.eclipse.org/modeling/tmf/updates#//@metadataRepository"/>
     </repositories>
-    <repositories location="http://download.eclipse.org/modeling/m2t/xpand/updates/milestones/">
-      <metadataRepository href="p2:http://download.eclipse.org/modeling/m2t/xpand/updates/milestones#//@metadataRepository"/>
+    <repositories location="http://download.eclipse.org/modeling/m2t/xpand/updates/">
+      <metadataRepository href="p2:http://download.eclipse.org/modeling/m2t/xpand/updates#//@metadataRepository"/>
     </repositories>
-    <repositories location="http://download.eclipse.org/modeling/emft/mwe/updates/milestones/">
-      <metadataRepository href="p2:http://download.eclipse.org/modeling/emft/mwe/updates/milestones#//@metadataRepository"/>
-    </repositories>
-    <repositories location="http://download.eclipse.org/modeling/emft/emfindex/updates/milestones/">
-      <metadataRepository href="p2:http://download.eclipse.org/modeling/emft/emfindex/updates/milestones#//@metadataRepository"/>
+    <repositories location="http://download.eclipse.org/modeling/emft/mwe/updates/">
+      <metadataRepository href="p2:http://download.eclipse.org/modeling/emft/mwe/updates#//@metadataRepository"/>
     </repositories>
     <repositories location="http://download.itemis.com/updates/milestones/site/">
       <metadataRepository href="p2:http://download.itemis.com/updates/milestones/site#//@metadataRepository"/>
