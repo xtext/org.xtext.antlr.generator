@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?compositeArtifactRepository version='1.0.1'?>
 <repository name='&quot;TMF Xtext Update Site (Nightly)&quot;'
-    type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
+    type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.1'>
   <properties size='1'>
     <property name='p2.timestamp' value='1247702401'/>
   </properties>
