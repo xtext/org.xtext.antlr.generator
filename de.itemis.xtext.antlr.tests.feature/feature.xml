@@ -2,7 +2,7 @@
 <feature
       id="de.itemis.xtext.antlr.tests"
       label="%featureName"
-      version="1.0.1.qualifier"
+      version="2.0.0.qualifier"
       provider-name="%providerName">
 
    <description>

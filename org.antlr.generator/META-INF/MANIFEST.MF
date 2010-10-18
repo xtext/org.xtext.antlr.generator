@@ -5,3 +5,13 @@ Bundle-SymbolicName: org.antlr.generator
 Bundle-Version: 3.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.antlr.runtime;bundle-version="3.2.0"
+Export-Package: org.antlr;version="3.2.0",
+ org.antlr.analysis;version="3.2.0",
+ org.antlr.codegen;version="3.2.0",
+ org.antlr.grammar.v2;version="3.2.0",
+ org.antlr.grammar.v3;version="3.2.0",
+ org.antlr.misc;version="3.2.0",
+ org.antlr.stringtemplate;version="3.2.0",
+ org.antlr.stringtemplate.language;version="3.2.0",
+ org.antlr.stringtemplate.misc;version="3.2.0",
+ org.antlr.tool;version="3.2.0"
