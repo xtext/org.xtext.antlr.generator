@@ -6,7 +6,7 @@ fragment@org.eclipse.ant.optional.junit=v20050226,:pserver:anonymous@dev.eclipse
 
 
 !*** Antlr Features
-feature@de.itemis.xtext.antlr.sdk=./de.itemis.xtext.antlr.sdk.feature
+feature@de.itemis.xtext.antlr.sdk=de.itemis.xtext.antlr.sdk.feature
 feature@de.itemis.xtext.antlr.feature=./de.itemis.xtext.antlr.feature
 !***feature@de.itemis.xtext.antlr.tests=./de.itemis.xtext.antlr.tests.feature
 
