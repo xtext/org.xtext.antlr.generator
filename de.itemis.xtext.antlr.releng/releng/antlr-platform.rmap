@@ -23,7 +23,7 @@
 	</searchPath>
 
 	<searchPath name="xpand">
-		<provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false">
+		<provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false">
 			<uri format="{0}">
 				<bc:propertyRef key="xpand.p2.repository" />
 			</uri>
@@ -31,7 +31,7 @@
 	</searchPath>
 
 	<searchPath name="orbit">
-		<provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false">
+		<provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false">
 			<uri format="{0}/tools/orbit/downloads/drops/R20100519200754/repository">
 				<bc:propertyRef key="eclipse.download" />
 			</uri>
@@ -39,7 +39,7 @@
 	</searchPath>
 
 	<searchPath name="platform">
-		<provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false">
+		<provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false">
 			<uri format="{0}/eclipse/updates/3.5">
 				<bc:propertyRef key="eclipse.download" />
 			</uri>
