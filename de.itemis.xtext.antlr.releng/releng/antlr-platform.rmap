@@ -9,7 +9,6 @@
 	<locator pattern="^de\.itemis\.xtext\.antlr\.releng$" searchPathRef="local.releng" />
 	<locator pattern="^org\.apache(?:\..+)?$" searchPathRef="orbit" failOnError="false" />
 	<locator pattern="^com\.google\.(?:inject|collect)?$" searchPathRef="orbit" />
-	<locator pattern="^org\.aopalliance?$" searchPathRef="orbit" />
 	<locator pattern="^org\.antlr\.runtime$" searchPathRef="xpand" />
 	<locator searchPathRef="platform" />
 
