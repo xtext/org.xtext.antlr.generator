@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="antlr.rmap">
     <cq:rootRequest name="de.itemis.xtext.antlr.build.feature" componentType="eclipse.feature"/>
-    <cq:advisorNode namePattern="^de\.itemis\.xtext\.antlr\.feature.\source$" skipComponent="true"/>
+    <cq:advisorNode namePattern="^de\.itemis\.xtext\.antlr(?:\..*)?\.source$" skipComponent="true"/>
     <cq:advisorNode namePattern="^de\.itemis\.xtext\.antlr\.releng$" useMaterialization="false" useWorkspace="false"/>
 </cq:componentQuery>

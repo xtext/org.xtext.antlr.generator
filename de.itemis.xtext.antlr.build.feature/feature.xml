@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="de.itemis.xtext.antlr.build"
+      id="de.itemis.xtext.antlr.build.feature"
       label="Xtext Antlr Build Feature"
       version="1.0.0.qualifier"
       provider-name="%providerName"
