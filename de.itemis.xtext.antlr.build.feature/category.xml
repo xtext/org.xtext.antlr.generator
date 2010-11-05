@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+	<feature id="de.itemis.xtext.antlr.sdk" version="0.0.0">
+		<category name="xtextAntlr"/>
+	</feature>
+	<feature id="de.itemis.xtext.antlr" version="0.0.0" >
+		<category name="xtextAntlr"/>
+	</feature>
+	<category-def name="xtextAntlr" label="Xtext Antlr">
+      <description>
+       Xtext Antlr
+      </description>
+   </category-def>
+</site>
