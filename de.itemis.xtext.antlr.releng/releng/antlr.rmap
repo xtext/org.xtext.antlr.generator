@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
-	<rm:locator pattern="^de\.itemis\.xtext\.antlr\.(?:sdk|build)?$$" searchPathRef="antlr.feature" />
+	<rm:locator pattern="^de\.itemis\.xtext\.antlr\.sdk$" searchPathRef="antlr.feature" />
 	<rm:locator pattern="^de\.itemis\.xtext\.antlr?(?:\..+)?$" searchPathRef="antlr" />
 	<rm:locator pattern="^org\.antlr\.generator$" searchPathRef="antlr" />
 
@@ -14,7 +14,7 @@
 		</rm:provider>
 	</rm:searchPath>
 	<rm:searchPath name="antlr.feature">
-		<rm:provider componentTypes="eclipse.feature,buckminster" readerType="local" mutable="false">
+		<rm:provider componentTypes="eclipse.feature" readerType="local" mutable="false">
 			<rm:uri format="{0}/{1}.feature">
 				<bc:propertyRef key="checkout.location" />
 				<bc:propertyRef key="buckminster.component" />
