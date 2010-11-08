@@ -53,7 +53,7 @@
 				<cs:property key="targets" value="package.ius" />
 			</cs:actorProperties>
 			<cs:properties>
-				<cs:property key="content.ius" value="de.itemis.xtext.antlr.feature.group" />
+				<cs:property key="content.ius" value="de.itemis.xtext.antlr.feature.feature.group" />
 				<cs:property key="package.name" value="xtext-antlr-runtime" />
 			</cs:properties>
 			<cs:prerequisites>
@@ -70,7 +70,7 @@
 			</cs:actorProperties>
 			<cs:properties>
 				<cs:property key="content.ius" value="de.itemis.xtext.antlr.sdk.feature.group" />
-				<cs:property key="prerequisite.ius" value="de.itemis.xtext.antlr.feature.group" />
+				<cs:property key="prerequisite.ius" value="de.itemis.xtext.antlr.feature.feature.group" />
 				<cs:property key="package.name" value="xtext-antlr-SDK" />
 			</cs:properties>
 			<cs:prerequisites>
