@@ -37,9 +37,9 @@
 		
 	<target name="package.site" depends="-define.package.qualifier">
 		<mkdir dir="${sp:output}" />
-
+		<mkdir dir="${sp:output}/${build.id}"/>
 		<!-- create the desired ZIP file -->
-		<zip basedir="${sp:repository}" destfile="${sp:output}/${package.name}${package.qualifier}.zip" />
+		<zip basedir="${sp:repository}" destfile="${sp:output}/${build.id}/${package.name}${package.qualifier}.zip" />
 	</target>
 
 	<target name="-locate.launcher.jar" unless="launcher.jar">
@@ -211,7 +211,7 @@
 		</delete>
 
 		<!-- create the desired ZIP file -->
-		<zip basedir="${temp.directory}" destfile="${sp:output}/${package.name}${package.qualifier}.zip">
+		<zip basedir="${temp.directory}" destfile="${sp:output}/${build.id}/${package.name}${package.qualifier}.zip">
 			<include name="${install.directory.name}/**" />
 		</zip>
 
@@ -335,7 +335,7 @@
 		</delete>
 
 		<!-- create the desired ZIP file -->
-		<zip basedir="${temp.directory}" destfile="${sp:output}/${package.name}${package.qualifier}.zip">
+		<zip basedir="${temp.directory}" destfile="${sp:output}/${build.id}/${package.name}${package.qualifier}.zip">
 			<include name="${target.directory.name}/**" />
 		</zip>
 
