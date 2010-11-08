@@ -2,8 +2,8 @@
 <cs:cspecExtension xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
 	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<cs:dependencies>
-		<!-- <cs:dependency name="org.eclipse.emf.mwe.releng" componentType="buckminster" />
-		<cs:dependency name="org.eclipse.emf.mwe.tests" componentType="eclipse.feature" /> -->
+		<cs:dependency name="de.itemis.xtext.antlr.build" componentType="buckminster" />
+		<!-- <cs:dependency name="org.eclipse.emf.mwe.tests" componentType="eclipse.feature" /> -->
 	</cs:dependencies>
 
 
