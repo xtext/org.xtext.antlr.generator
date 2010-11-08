@@ -3,12 +3,12 @@
 	<feature id="de.itemis.xtext.antlr.sdk" version="0.0.0">
 		<category name="xtextAntlr${package.qualifier}"/>
 	</feature>
-	<feature id="de.itemis.xtext.antlr" version="0.0.0" >
+	<feature id="de.itemis.xtext.antlr.feature" version="0.0.0" >
 		<category name="xtextAntlr${package.qualifier}"/>
 	</feature>
 	<category-def name="xtextAntlr${package.qualifier}" label="Xtext Antlr${package.qualifier}">
       <description>
-       Xtext Antlr
+        Antlr Generator for Xtext
       </description>
    </category-def>
 </site>

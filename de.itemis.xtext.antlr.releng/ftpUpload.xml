@@ -13,8 +13,8 @@
 		<echo>Local root: ${localRoot}</echo>
 		<echo>FTP server root: ${ftpServerRoot}</echo>
 
-		<property name="zipsSource" value="${localRoot}/promote/downloads" />
-		<property name="updateSiteSource" value="${localRoot}/promote/updates/" />
+		<property name="zipsSource" value="${localRoot}/antlr.downloads/" />
+		<property name="updateSiteSource" value="${localRoot}/antlr.p2.repository/" />
 		
 		<!-- WARNING! Setup updateSiteTarget folder here:
 			Milestones: ${ftpServerRoot}/updates/milestones/site
