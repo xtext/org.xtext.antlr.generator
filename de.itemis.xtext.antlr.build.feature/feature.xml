@@ -26,11 +26,7 @@ http://www.eclipse.org/legal/epl-v10.html
       <update label="%UpdateSiteName" url="http://download.itemis.de/updates/"/>
       <discovery label="%UpdateSiteName" url="http://download.itemis.de/updates/"/>
    </url>
-
-   <includes
-         id="de.itemis.xtext.antlr.feature"
-         version="0.0.0"/>
-
+   
    <includes
          id="de.itemis.xtext.antlr.sdk"
          version="0.0.0"/>
