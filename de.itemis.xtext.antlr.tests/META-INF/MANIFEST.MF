@@ -5,7 +5,7 @@ Bundle-SymbolicName: de.itemis.xtext.antlr.tests
 Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: itemis AG
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.junit;bundle-version="[3.8.2,4.0.0)",
- de.itemis.xtext.antlr,
- org.eclipse.xtext.junit,
+Require-Bundle: de.itemis.xtext.antlr,
+ org.eclipse.xtext.junit4,
  org.eclipse.xtext
+Import-Package: org.junit;version="4.5.0"
