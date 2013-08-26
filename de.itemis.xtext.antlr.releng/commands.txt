@@ -1,9 +1,0 @@
-setpref targetPlatformPath="${WORKSPACE}/buildroot/target.platform"
-
-import "${checkout.location}/de.itemis.xtext.antlr.releng/releng/antlr-platform.mspec"
-resolve "${checkout.location}/de.itemis.xtext.antlr.releng/releng/antlr.cquery"
-
-build
-
-perform --properties "${WORKSPACE}/buildroot/build.properties" -Dbuckminster.reference.repository="https://kiel1/hudson/job/xtext-antlr-bucky/lastSuccessfulBuild"  "de.itemis.xtext.antlr.build.feature#build"
-perform --properties "${WORKSPACE}/buildroot/build.properties" "de.itemis.xtext.antlr.releng#setup.promoter"
