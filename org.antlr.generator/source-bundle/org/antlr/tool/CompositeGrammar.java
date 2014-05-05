@@ -219,7 +219,8 @@ public class CompositeGrammar {
 	public List<Grammar> getIndirectDelegates(Grammar g) {
 		List<Grammar> direct = getDirectDelegates(g);
 		List<Grammar> delegates = getDelegates(g);
-		delegates.removeAll(direct);
+		if(direct != null)
+			delegates.removeAll(direct);
 		return delegates;
 	}
 
