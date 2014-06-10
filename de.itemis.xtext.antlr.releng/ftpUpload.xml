@@ -5,17 +5,17 @@
 		</condition>
 	</target>
 
-	<target name="upload" depends="ftpUpload"  if="shouldUpload">
+	<target name="upload" depends="ftpUpload" if="shouldUpload">
 		<property file="${ftpProperties}" />
 
-		<property name="ftpServerRoot" value="/home/ftp/download" />
+		<property name="ftpServerRoot" value="/data/ftp/download" />
 		<property name="localRoot" value="${workspace}" />
 		<echo>Local root: ${localRoot}</echo>
 		<echo>FTP server root: ${ftpServerRoot}</echo>
 
 		<property name="zipsSource" value="${localRoot}/antlr.downloads/" />
 		<property name="updateSiteSource" value="${localRoot}/antlr.p2.repository/" />
-		
+
 		<!-- WARNING! Setup updateSiteTarget folder here:
 			Milestones: ${ftpServerRoot}/updates/milestones/site
 			Nightly: ${ftpServerRoot}/updates/nightly/site 
@@ -25,13 +25,14 @@
 		<!--	<property name="updateSiteTarget" value="${ftpServerRoot}/updates/milestones/site" />-->
 		<!--	<property name="updateSiteTarget" value="${ftpServerRoot}/updates/releases/site" />-->
 		<echo>Removing existing nightly builds from ${zipsTarget}</echo>
+		<!--
 		<ftp action="delete" verbose="false" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
-			<fileset includes="N*/**"/>
+			<fileset includes="N*/**" />
 		</ftp>
 		<ftp action="rmdir" verbose="true" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
-			<fileset includes="N*/**"/>
+			<fileset includes="N*/**" />
 		</ftp>
-		
+		-->
 		<echo>Uploading zips from ${zipsSource} to ${zipsTarget}</echo>
 		<antcall target="uploadToItemisFtp">
 			<param name="sourceDir" value="${zipsSource}" />
@@ -47,11 +48,11 @@
 
 	</target>
 
-	<target name="uploadToItemisFtp">
-		<ftp verbose="true" server="ftp.itemis.de" port="21" remotedir="${targetDir}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
+	<target name="uploadToItemisFtp" if="targetDir">
+		<scp file="${jar.file}" todir="oaw@ftp.itemis.de:${targetDir}" keyfile="${user.home}/.ssh/id_rsa">
 			<fileset dir="${sourceDir}">
 				<include name="**/*" />
 			</fileset>
-		</ftp>
+		</scp>
 	</target>
 </project>
