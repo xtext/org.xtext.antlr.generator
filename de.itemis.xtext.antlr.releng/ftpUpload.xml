@@ -10,6 +10,7 @@
 
 		<property name="ftpServerRoot" value="/data/ftp/download" />
 		<property name="localRoot" value="${workspace}" />
+		
 		<echo>Local root: ${localRoot}</echo>
 		<echo>FTP server root: ${ftpServerRoot}</echo>
 
@@ -24,21 +25,15 @@
 		<property name="updateSiteTarget" value="${ftpServerRoot}/updates/nightly/site" />
 		<!--	<property name="updateSiteTarget" value="${ftpServerRoot}/updates/milestones/site" />-->
 		<!--	<property name="updateSiteTarget" value="${ftpServerRoot}/updates/releases/site" />-->
-		<echo>Removing existing nightly builds from ${zipsTarget}</echo>
-		<!--
-		<ftp action="delete" verbose="false" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
-			<fileset includes="N*/**" />
-		</ftp>
-		<ftp action="rmdir" verbose="true" server="ftp.itemis.de" port="21" remotedir="${zipsTarget}" userid="${ftpUser}" password="${ftpPassword}" passive="yes">
-			<fileset includes="N*/**" />
-		</ftp>
-		-->
+
+		<echo>Removing existing nightly builds from ${zipsTarget} and ${updateSiteTarget}</echo>
+		<antcall target="-cleanup-remote" />
+
 		<echo>Uploading zips from ${zipsSource} to ${zipsTarget}</echo>
 		<antcall target="uploadToItemisFtp">
 			<param name="sourceDir" value="${zipsSource}" />
 			<param name="targetDir" value="${zipsTarget}" />
 		</antcall>
-
 
 		<echo>Uploading updatesite from ${updateSiteSource} to ${updateSiteTarget}</echo>
 		<antcall target="uploadToItemisFtp">
@@ -46,6 +41,10 @@
 			<param name="targetDir" value="${updateSiteTarget}" />
 		</antcall>
 
+	</target>
+
+	<target name="-cleanup-remote" if="zipsTarget">
+		<sshexec host="ftp.itemis.de" username="oaw" keyfile="${user.home}/.ssh/id_rsa" command="rm -rf ${zipsTarget}/N*; rm -rf ${updateSiteTarget}/*" />
 	</target>
 
 	<target name="uploadToItemisFtp" if="targetDir">
