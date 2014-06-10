@@ -13,19 +13,6 @@
 
 	<name>Antlr 3.2 Generator</name>
 
-	<profiles>
-		<profile>
-			<id>macosx-props</id>
-			<activation>
-				<os>
-					<family>mac</family>
-				</os>
-			</activation>
-			<properties>
-				<javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
-			</properties>
-		</profile>
-	</profiles>
 	<properties>
 		<mavenVersion>3.0.4</mavenVersion>
 		<log4j.version>1.2.16</log4j.version>
@@ -91,7 +78,7 @@
 				</executions>
 				<configuration>
 					<sourcepath>source-bundle</sourcepath>
-					 <additionalparam>-Xdoclint:none</additionalparam>
+					<!-- <additionalparam>-Xdoclint:none</additionalparam>  -->
 				</configuration>
 			</plugin>
 			<plugin>
