@@ -44,11 +44,11 @@
 	</target>
 
 	<target name="-cleanup-remote" if="zipsTarget">
-		<sshexec host="ftp.itemis.de" username="oaw" keyfile="${user.home}/.ssh/id_rsa" command="rm -rf ${zipsTarget}/N*; rm -rf ${updateSiteTarget}/*" />
+		<sshexec host="ftp.itemis.de" username="oaw" trust="true" keyfile="${user.home}/.ssh/id_rsa" command="rm -rf ${zipsTarget}/N*; rm -rf ${updateSiteTarget}/*" />
 	</target>
 
 	<target name="uploadToItemisFtp" if="targetDir">
-		<scp file="${jar.file}" todir="oaw@ftp.itemis.de:${targetDir}" keyfile="${user.home}/.ssh/id_rsa">
+		<scp file="${jar.file}" todir="oaw@ftp.itemis.de:${targetDir}" trust="true" keyfile="${user.home}/.ssh/id_rsa">
 			<fileset dir="${sourceDir}">
 				<include name="**/*" />
 			</fileset>
